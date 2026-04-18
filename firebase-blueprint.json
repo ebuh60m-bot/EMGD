@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "EmergencyEntry": {
+      "title": "Emergency Training Entry",
+      "description": "A user's submission for emergency procedures on a specific date.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date of the training in YYYY-MM-DD format."
+        },
+        "content": {
+          "type": "string",
+          "description": "The procedures described by the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        }
+      },
+      "required": ["date", "content", "createdAt"]
+    },
+    "LimitationEntry": {
+      "title": "Limitations Training Entry",
+      "description": "A summary of a user's attempt at the limitations test.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date of the training in YYYY-MM-DD format."
+        },
+        "filled": {
+          "type": "integer",
+          "description": "Number of fields filled by the user."
+        },
+        "correct": {
+          "type": "integer",
+          "description": "Number of correct answers."
+        },
+        "wrong": {
+          "type": "integer",
+          "description": "Number of wrong answers."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        }
+      },
+      "required": ["date", "filled", "correct", "wrong", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/emergencies/{id}": {
+      "schema": "EmergencyEntry",
+      "description": "Collection of anonymous emergency procedure submissions."
+    },
+    "/limitations/{id}": {
+      "schema": "LimitationEntry",
+      "description": "Collection of anonymous limitations test results."
+    }
+  }
+}

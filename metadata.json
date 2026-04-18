@@ -1,0 +1,6 @@
+{
+  "name": "UH-60M Training System",
+  "description": "Sistemas de treinamento para pilotos de UH-60M Black Hawk com persistência local de emergências e limitações.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

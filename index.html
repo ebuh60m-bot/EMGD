@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UH-60M Training System</title>
+<!-- Flatpickr for custom calendar -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+    :root {
+      /* Aeronautic Premium Palette */
+      --bg-deep: #050608;
+      --bg-surface: #0E1014;
+      --panel-bg: rgba(26, 28, 34, 0.7);
+      --accent-gold: #D4AF37;
+      --gold-glow: rgba(212, 175, 55, 0.2);
+      --accent-blue: #2D9CDB;
+      --blue-glow: rgba(45, 156, 219, 0.2);
+      --text-primary: #F2F2F2;
+      --text-dim: #949494;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(212, 175, 55, 0.3);
+      --success: #27AE60;
+      --danger: #EB5757;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      
+      /* functional color mappings for tables */
+      --pink: rgba(235, 87, 87, 0.05);
+      --pink-strong: rgba(235, 87, 87, 0.12);
+      --blue: rgba(45, 156, 219, 0.05);
+      --blue-strong: rgba(45, 156, 219, 0.12);
+      --green: rgba(39, 174, 96, 0.05);
+      --green-strong: rgba(39, 174, 96, 0.12);
+      --yellow: rgba(242, 201, 76, 0.05);
+      --yellow-strong: rgba(242, 201, 76, 0.12);
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0;}
+    
+    body {
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 50% -20%, #1A1C22 0%, transparent 70%),
+        radial-gradient(circle at 0% 100%, #0A0B0D 0%, transparent 50%);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+    header {
+      background: rgba(14, 16, 20, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 60px;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .logo-area { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      font-weight: 800; 
+      letter-spacing: 2px; 
+      color: var(--accent-gold); 
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .header-status {
+      font-family: var(--font-mono); 
+      font-size: 11px; 
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    footer {
+      background: #050608;
+      border-top: 1px solid var(--border-subtle);
+      padding: 15px 24px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .status-indicator { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+    
+    main#app-viewport {
+      flex: 1;
+      padding: 24px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .screen { 
+      opacity: 0; 
+      transform: translateY(10px); 
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      display: none;
+    }
+    .screen.active { 
+      display: block; 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    .glass-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    /* Corner Decorators */
+    .glass-card::before, .glass-card::after {
+      content: ''; position: absolute; width: 15px; height: 15px; pointer-events: none;
+    }
+    .glass-card::before {
+      top: 0; left: 0; border-top: 2px solid var(--accent-gold); border-left: 2px solid var(--accent-gold); border-radius: 4px 0 0 0;
+    }
+    .glass-card::after {
+      bottom: 0; right: 0; border-bottom: 2px solid var(--accent-gold); border-right: 2px solid var(--accent-gold); border-radius: 0 0 4px 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .menu-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .full-row { grid-column: 1 / -1; }
+
+    .action-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 15px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-tile i {
+      font-size: 24px;
+      color: var(--accent-gold);
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 5px var(--gold-glow));
+    }
+    .action-tile span {
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+    }
+
+    .action-tile:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: var(--accent-gold);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+    }
+    .action-tile:hover i { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-gold)); }
+
+    .tile-red { border-bottom: 3px solid var(--danger); }
+    .tile-red i { color: var(--danger); filter: drop-shadow(0 0 5px rgba(235, 87, 87, 0.3)); }
+    .tile-red:hover { border-color: var(--danger); box-shadow: 0 10px 30px rgba(235, 87, 87, 0.15); }
+    
+    .tile-blue { border-bottom: 3px solid var(--accent-blue); }
+    .tile-blue i { color: var(--accent-blue); filter: drop-shadow(0 0 5px rgba(45, 156, 219, 0.3)); }
+    .tile-blue:hover { border-color: var(--accent-blue); box-shadow: 0 10px 30px rgba(45, 156, 219, 0.15); }
+
+    /* Tables & Content */
+    .group {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .group-title {
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      border-bottom: 1px solid var(--border-subtle);
+      letter-spacing: 2px;
+    }
+    
+    table { width: 100%; border-collapse: collapse; }
+    td, th {
+      padding: 12px 16px;
+      border: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
+    }
+    th { background: rgba(0,0,0,0.4); text-align: left; color: var(--accent-blue); }
+
+    .quiz-input {
+      background: #000;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      color: var(--accent-gold);
+      width: 100%;
+      padding: 8px;
+      font-family: var(--font-mono);
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .quiz-input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 10px var(--gold-glow);
+      outline: none;
+    }
+
+    /* Toolbar */
+    .emg-toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: rgba(0,0,0,0.3);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--text-primary); }
+
+    /* Date Picker Customization */
+    .date-input-wrapper {
+      background: #000;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      height: 50px;
+      margin-top: 8px;
+    }
+    .date-input-wrapper input {
+      background: transparent;
+      border: none !important;
+      color: var(--accent-gold);
+      font-family: var(--font-mono);
+      flex: 1;
+      font-size: 1rem;
+    }
+    .date-input-wrapper label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+
+    /* Custom Confirmation Modal */
+    #custom-confirm {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      z-index: 10000; align-items: center; justify-content: center; padding: 20px;
+      backdrop-filter: blur(5px);
+    }
+    .modal-box {
+      background: #111; border: 2px solid var(--danger); padding: 40px;
+      max-width: 500px; width: 100%; text-align: center; border-radius: 16px;
+      box-shadow: 0 0 50px rgba(235, 87, 87, 0.2);
+    }
+    
+    .btn-primary {
+      background: var(--accent-gold);
+      color: #000;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+      .menu-buttons { grid-template-columns: 1fr; gap: 8px; }
+      h1 { font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 8px; }
+      main#app-viewport { padding: 6px; }
+      .glass-card { padding: 12px 8px; margin: 4px auto !important; }
+      .action-tile { padding: 10px 8px; gap: 4px; border-radius: 8px; }
+      .action-tile i { font-size: 16px; }
+      .action-tile span { font-size: 0.75rem; }
+      header { height: 40px; padding: 0 10px; }
+      .logo-area { font-size: 0.75rem; gap: 6px; }
+      .logo-area i { width: 14px !important; }
+      .hero-logo { max-width: 90px; margin-bottom: 4px; }
+      .header-status { gap: 6px; font-size: 8px; }
+      footer { padding: 6px 12px; font-size: 7px; gap: 8px; }
+      .emg-toolbar { margin-bottom: 12px; padding: 8px; gap: 8px; }
+      .nav-btn { padding: 6px 12px; font-size: 9px; }
+      .btn-primary { padding: 10px 16px; font-size: 10px; }
+      .intro { font-size: 10px; margin-bottom: 10px; }
+      .date-box { margin-bottom: 16px !important; }
+      .glass-card > div[style*="padding: 24px"] { padding: 12px !important; }
+    }
+
+    /* Main Logo Image */
+    .hero-logo {
+      width: 100%;
+      max-width: 160px;
+      margin: 0 auto 10px;
+      display: block;
+      filter: drop-shadow(0 0 20px var(--gold-glow));
+    }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <i data-lucide="shield" style="color: var(--accent-gold); width: 20px;"></i>
+    UH-60M BLACK HAWK
+  </div>
+  <div class="header-status">
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      LINK: <span style="color: var(--success)">OK</span>
+    </div>
+    <div class="status-indicator">
+      <i data-lucide="cpu" style="width: 14px; opacity: 0.6"></i>
+      SYS: <span style="color: var(--accent-gold)">NOMINAL</span>
+    </div>
+  </div>
+</header>
+
+<div id="custom-confirm">
+  <div class="modal-box">
+    <h2 id="modal-title">CONFIRMAR?</h2>
+    <p id="modal-text">Você tem certeza?</p>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="document.getElementById('custom-confirm').style.display='none'">CANCELAR</button>
+      <button class="modal-btn confirm" id="modal-confirm-btn">CONFIRMAR RESET</button>
+    </div>
+  </div>
+</div>
+
+<main id="app-viewport">
+
+<!-- MENU SCREEN -->
+<section id="menu-screen" class="screen active">
+  <div class="glass-card" style="max-width: 600px; margin: 10px auto; text-align: center;">
+    <img src="/logo-m.png" class="hero-logo" alt="Black Hawk Logo" referrerPolicy="no-referrer">
+    <h1>OPERATIONAL INTERFACE</h1>
+    <div class="menu-buttons">
+      <button class="action-tile tile-red" type="button" onclick="showScreen('emergenciaDia')">
+        <i data-lucide="zap"></i>
+        <span>Emergência do Dia</span>
+      </button>
+      <button class="action-tile" type="button" onclick="showScreen('conferirRespostas')">
+        <i data-lucide="database"></i>
+        <span>Conferir Respostas</span>
+      </button>
+      <button class="action-tile tile-blue full-row" type="button" onclick="showScreen('treinamentoLimitacoes')">
+        <i data-lucide="activity"></i>
+        <span>Teste de Limitações</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCIA DO DIA SELECTOR -->
+<section id="emergenciaDia-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('menu')">
+      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 860px; margin: 0 auto;">
+    <h1>OPERATIONAL DATA</h1>
+    <div class="group">
+      <div class="group-title">CONFIGURAR PARÂMETROS DE MISSÃO</div>
+      <div style="padding: 24px;">
+        <div class="date-box" style="margin-bottom: 32px">
+          <label for="globalDate">DATA DO TREINAMENTO</label>
+          <div class="date-input-wrapper">
+            <input id="globalDate" type="text" placeholder="YYYY-MM-DD" readonly />
+            <div class="calendar-icon-btn" onclick="document.getElementById('globalDate')._flatpickr.open()">
+              <i data-lucide="calendar" style="width: 20px;"></i>
+            </div>
+          </div>
+        </div>
+        <div class="menu-buttons">
+          <button class="action-tile tile-red" type="button" onclick="showScreen('emergencias')">
+            <i data-lucide="alert-triangle"></i>
+            <span>Responder Emergências</span>
+          </button>
+          <button class="action-tile tile-blue" type="button" onclick="showScreen('limitacoesEnvio')">
+            <i data-lucide="clipboard-list"></i>
+            <span>Responder Limitações</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFERIR RESPOSTAS MENU -->
+<section id="conferirRespostas-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('menu')">
+      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 860px; margin: 0 auto;">
+    <h1>INTEL REVIEW</h1>
+    <div class="menu-buttons">
+      <button class="action-tile tile-red" type="button" onclick="showScreen('resultadosEmergencias')">
+        <i data-lucide="archive"></i>
+        <span>Emergências</span>
+      </button>
+      <button class="action-tile tile-blue" type="button" onclick="showScreen('resultadosLimitacoes')">
+        <i data-lucide="pie-chart"></i>
+        <span>Limitações</span>
+      </button>
+      <button class="action-tile tile-red full-row" type="button" onclick="window.handleGlobalReset(event)">
+        <i data-lucide="trash-2"></i>
+        <span>ZERAR TUDO</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADOS EMERGENCIAS -->
+<section id="resultadosEmergencias-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('conferirRespostas')">
+      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
+    <h1>DATA ARCHIVE - EMERGENCIES</h1>
+    <div class="group">
+      <div class="group-title">FILTRAGEM DE REGISTROS</div>
+      <div style="padding: 24px;">
+        <div class="date-box">
+          <label for="filterDateEMG">SELECIONAR DATA</label>
+          <div class="date-input-wrapper">
+            <input id="filterDateEMG" type="text" placeholder="YYYY-MM-DD" readonly />
+            <div class="calendar-icon-btn" onclick="document.getElementById('filterDateEMG')._flatpickr.open()">
+              <i data-lucide="calendar" style="width: 20px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="emergenciesList" class="result-list"></div>
+  </div>
+</section>
+
+<!-- RESULTADOS LIMITACOES -->
+<section id="resultadosLimitacoes-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('conferirRespostas')">
+      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
+    <h1>SYSTEM LOGS - LIMITATIONS</h1>
+    <div class="group">
+      <div class="group-title">FILTRAGEM POR DATA</div>
+      <div style="padding: 24px;">
+        <div class="date-box">
+          <label for="filterDateLIM">DATA DO REGISTRO</label>
+          <div class="date-input-wrapper">
+            <input id="filterDateLIM" type="text" placeholder="YYYY-MM-DD" readonly />
+            <div class="calendar-icon-btn" onclick="document.getElementById('filterDateLIM')._flatpickr.open()">
+              <i data-lucide="calendar" style="width: 20px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="limitationsStats" class="result-list"></div>
+  </div>
+</section>
+
+<!-- RESPONDER EMERGENCIAS -->
+<section id="emergencias-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('emergenciaDia')">
+      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
+    </button>
+    <button class="btn-primary" type="button" onclick="saveEmergencyEntries()">
+      <i data-lucide="send" style="width:14px"></i> TRANSMITIR RESPOSTAS
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 860px; margin: 0 auto; padding: 0;">
+    <h1 style="margin-top: 30px; margin-bottom: 10px;">PROCEDIMENTOS</h1>
+    <div class="group-title" style="background: rgba(235, 87, 87, 0.1); color: var(--danger); text-align: center;">
+      <i data-lucide="alert-octagon" style="width: 16px; margin-right: 8px;"></i>
+      OPERATIONAL EMERGENCY PROCEDURES
+    </div>
+    <div id="emgLines" style="background: #000; min-height: 400px; padding-bottom: 20px;"></div>
+  </div>
+</section>
+
+<!-- SCREEN: RESPONDER LIMITACOES (MODO ENVIO) -->
+<section id="limitacoesEnvio-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('emergenciaDia')">
+      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
+    </button>
+    <button class="btn-primary" type="button" onclick="saveLimitationsEntries()">
+      <i data-lucide="send" style="width:14px"></i> TRANSMITIR DADOS
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
+    <h1>OPERATIONAL LIMITATIONS - REPORT</h1>
+    <div id="limitationsForm" class="stack"></div>
+  </div>
+</section>
+
+<!-- SCREEN: TREINAMENTO LIVRE (OPCIONAL) -->
+<section id="treinamentoLimitacoes-screen" class="screen">
+  <div class="emg-toolbar">
+    <button class="nav-btn" type="button" onclick="showScreen('menu')">
+      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
+    </button>
+    <button class="btn-primary" type="button" onclick="checkTrainingAnswers()">
+      <i data-lucide="check-circle" style="width:14px"></i> VERIFICAR
+    </button>
+    <button class="nav-btn" type="button" id="answerKeyBtn" onclick="toggleAnswerKey()">
+      <i data-lucide="help-circle" style="width:14px"></i> GABARITO
+    </button>
+    <button class="nav-btn" type="button" onclick="clearTrainingForm()">
+      <i data-lucide="refresh-cw" style="width:14px"></i> LIMPAR
+    </button>
+  </div>
+  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
+    <h1>SIMULAÇÃO DE LIMITAÇÕES</h1>
+    <div class="intro">Simulação de alto desempenho. Preencha os parâmetros e execute a verificação.</div>
+    <div class="results-box" id="trainingResultsBox">AGUARDANDO INPUT...</div>
+    <div id="trainingForm" class="stack"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="status-indicator">
+    <div class="status-dot"></div>
+    ENGINEERING: NOMINAL
+  </div>
+  <div style="flex: 1; text-align: center; opacity: 0.5; font-size: 8px;">
+    BLACK HAWK TRAINING SYSTEM &copy; 2026 - SECURE OPS
+  </div>
+  <div class="status-indicator">
+    VER: 4.2.0-BRAVO
+  </div>
+</footer>
+
+<script>
+    // --- FIREBASE CONFIG ---
+    // Note: Config usually comes from firebase-applet-config.json.
+    // In a single-file environment, we'll initialize it here after imports.
+</script>
+
+<!-- Firebase SDKs -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js"
+    }
+  }
+</script>
+
+<script type="module">
+    import { initializeApp } from 'firebase/app';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, getDocFromServer, doc, deleteDoc, orderBy } from 'firebase/firestore';
+
+    const firebaseConfig = {
+      projectId: "gen-lang-client-0381452939",
+      appId: "1:951131788566:web:86bf6c394b4edba81aac37",
+      apiKey: "AIzaSyDd1ud66hGFQ94mmPa8g8z57p9d848C6Wo",
+      authDomain: "gen-lang-client-0381452939.firebaseapp.com",
+      firestoreDatabaseId: "ai-studio-5cbd23b3-1d4d-400f-a117-c6b83f3c7ee8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    let currentUser = null;
+
+    // --- ERROR HANDLING ---
+    async function handleFirestoreError(error, op, path = null) {
+      console.error(`Firestore Error [${op}]:`, error);
+      const authInfo = currentUser ? {
+        userId: currentUser.uid,
+        email: currentUser.email,
+        emailVerified: currentUser.emailVerified,
+        isAnonymous: currentUser.isAnonymous,
+        providerInfo: currentUser.providerData
+      } : { isAnonymous: true };
+
+      const errorInfo = {
+        error: error.message,
+        operationType: op,
+        path: path,
+        authInfo: authInfo
+      };
+      
+      alert(`Erro no Banco de Dados: ${error.message}`);
+      throw JSON.stringify(errorInfo);
+    }
+
+    // --- CONNECTION TEST ---
+    async function testConnection() {
+      try {
+        await getDocFromServer(doc(db, 'system', 'connection'));
+        console.log("Firebase Connection: OK");
+      } catch (error) {
+        if(error.message.includes('insufficient permissions')) {
+          console.log("Firebase Connection: OK (Rule restricted)");
+        } else {
+          console.error("Firebase Connection FAIL:", error);
+        }
+      }
+    }
+    testConnection();
+
+    // --- AUTH LOGIC ---
+    async function adminLogin() {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (error) {
+        alert("Erro ao fazer login: " + error.message);
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      const statusDot = document.querySelector('.status-dot');
+      const storageLabel = document.querySelector('.status-indicator');
+      
+      if (user) {
+        statusDot.style.background = '#27AE60';
+        storageLabel.innerHTML = `<div class="status-dot"></div> FIREBASE ON: ${user.email}`;
+      } else {
+        statusDot.style.background = '#EB5757';
+        storageLabel.innerHTML = `<div class="status-dot"></div> FIREBASE (CLD MODE)`;
+      }
+    });
+
+    // --- DATABASE OPERATIONS ---
+    window.saveEmergencyEntries = async function() {
+      const date = document.getElementById('globalDate').value;
+      if(!date) return alert('Selecione uma data.');
+
+      const texts = Array.from(document.querySelectorAll('#emergencias-screen textarea'))
+                         .map(t => t.value.trim())
+                         .filter(t => t.length > 0);
+
+      if(texts.length === 0) return alert('Preencha as linhas antes de salvar.');
+
+      const content = texts.join('\n');
+      
+      try {
+        await addDoc(collection(db, 'emergencies'), {
+          date: date,
+          content: content,
+          createdAt: serverTimestamp()
+        });
+        alert('Emergência salva no banco de dados!');
+        window.showScreen('emergenciaDia');
+      } catch (error) {
+        await handleFirestoreError(error, 'create', 'emergencies');
+      }
+    };
+
+    window.saveLimitationsEntries = async function() {
+      const date = document.getElementById('globalDate').value;
+      if(!date) return alert('Selecione uma data.');
+
+      const inputs = Array.from(document.querySelectorAll('#limitationsForm .quiz-input'));
+      const filledInputs = inputs.filter(i => i.value.trim().length > 0);
+      
+      if(filledInputs.length === 0) return alert('Preencha ao menos um campo.');
+
+      let totalFilled = filledInputs.length;
+      let correct = 0;
+      let wrong = 0;
+
+      filledInputs.forEach(input => {
+        const user = window.simplify(input.value);
+        const answers = (input.dataset.answer || '').split('||').map(a => window.simplify(a));
+        if(answers.includes(user)) correct++; else wrong++;
+      });
+
+      try {
+        await addDoc(collection(db, 'limitations'), {
+          date: date,
+          filled: totalFilled,
+          correct: correct,
+          wrong: wrong,
+          createdAt: serverTimestamp()
+        });
+        alert(`Limitações salvas!\nAcertos: ${correct}\nErros: ${wrong}`);
+        window.showScreen('emergenciaDia');
+      } catch (error) {
+        await handleFirestoreError(error, 'create', 'limitations');
+      }
+    };
+
+    window.loadEmergenciesResults = async function() {
+      const date = document.getElementById('filterDateEMG').value;
+      const list = document.getElementById('emergenciesList');
+      list.innerHTML = '<div class="stats-card">Carregando dados...</div>';
+      
+      if(!date) return;
+
+      try {
+        const q = query(collection(db, 'emergencies'), where('date', '==', date), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        
+        list.innerHTML = '';
+        if(querySnapshot.empty) {
+          list.innerHTML = '<div class="stats-card">Nenhuma resposta encontrada para esta data.</div>';
+          return;
+        }
+
+        let i = 0;
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const card = document.createElement('div');
+          card.className = 'result-card';
+          card.innerHTML = `
+            <div class="result-header">USUÁRIO ANÔNIMO #${++i} | ID: ${doc.id.substring(0,6)}</div>
+            <div class="result-content">${window.escapeHTML(data.content)}</div>
+          `;
+          list.appendChild(card);
+        });
+      } catch (error) {
+        list.innerHTML = '<div class="stats-card" style="color:var(--danger)">Erro ao carregar dados do banco.</div>';
+        handleFirestoreError(error, 'list', 'emergencies');
+      }
+    };
+
+    window.loadLimitationsResults = async function() {
+      const date = document.getElementById('filterDateLIM').value;
+      const container = document.getElementById('limitationsStats');
+      container.innerHTML = '<div class="stats-card">Carregando dados...</div>';
+
+      if(!date) return;
+
+      try {
+        const q = query(collection(db, 'limitations'), where('date', '==', date));
+        const querySnapshot = await getDocs(q);
+        
+        container.innerHTML = '';
+        if(querySnapshot.empty) {
+          container.innerHTML = '<div class="stats-card">Nenhum registro para esta data.</div>';
+          return;
+        }
+
+        const stats = querySnapshot.docs.map(d => d.data());
+        const totalUsers = stats.length;
+        const sumCorrect = stats.reduce((acc, curr) => acc + curr.correct, 0);
+        const sumWrong = stats.reduce((acc, curr) => acc + curr.wrong, 0);
+
+        container.innerHTML = `
+          <div class="stats-card">
+            <p>${totalUsers} usuário(s) responderam nesta data.</p>
+            <p style="color:#27AE60">Total de acertos: ${sumCorrect}</p>
+            <p style="color:#EB5757">Total de erros: ${sumWrong}</p>
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = '<div class="stats-card" style="color:var(--danger)">Erro ao carregar dados.</div>';
+        handleFirestoreError(error, 'list', 'limitations');
+      }
+    };
+
+    window.handleGlobalReset = function(e) {
+      console.log("handleGlobalReset requested");
+      const modal = document.getElementById('custom-confirm');
+      const modalTitle = document.getElementById('modal-title');
+      const modalText = document.getElementById('modal-text');
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+
+      modalTitle.textContent = "ALERTA DE SEGURANÇA";
+      modalText.textContent = "Isso apagará TODOS os registros de emergências e limitações salvos na nuvem (de todos os usuários e de todos os dias). Esta ação é IRREVERSÍVEL. Confirmar limpeza total?";
+      confirmBtn.textContent = "CONFIRMAR RESET";
+      modal.style.display = 'flex';
+
+      confirmBtn.onclick = async () => {
+        confirmBtn.textContent = "LIMPANDO...";
+        confirmBtn.disabled = true;
+        
+        try {
+          const collections = ['emergencies', 'limitations'];
+          let totalDeleted = 0;
+          
+          for (const colName of collections) {
+            const snapshot = await getDocs(collection(db, colName));
+            for (const d of snapshot.docs) {
+              await deleteDoc(doc(db, colName, d.id));
+              totalDeleted++;
+            }
+          }
+          
+          localStorage.clear();
+          modalText.textContent = `SUCESSO! ${totalDeleted} registros foram excluídos permanentemente.`;
+          confirmBtn.textContent = "CONCLUÍDO";
+          confirmBtn.disabled = false;
+          confirmBtn.onclick = () => {
+            modal.style.display = 'none';
+            window.showScreen('menu');
+          };
+        } catch (error) {
+          console.error("Erro no reset:", error);
+          modalText.textContent = 'ERRO AO APAGAR: ' + error.message;
+          confirmBtn.textContent = "FECHAR";
+          confirmBtn.disabled = false;
+          confirmBtn.onclick = () => { modal.style.display = 'none'; };
+        }
+      };
+    };
+
+    // --- SHARED UTILS ---
+    window.simplify = function(v) {
+      if(!v) return '';
+      return v.toString().toUpperCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+        .replace(/,/g, '.')
+        .replace(/\s+/g, '')
+        .replace(/MINUTOS?/g, '')
+        .replace(/KIAS/g, '')
+        .replace(/KT/g, '')
+        .replace(/PSI/g, '')
+        .replace(/FPM/g, '')
+        .replace(/AGL/g, '')
+        .replace(/LIBRAS/g, '')
+        .replace(/LB\/FT²/g, '')
+        .replace(/LB\/FT2/g, '')
+        .replace(/LB/g, '')
+        .replace(/FT\/MIN/g, '')
+        .replace(/FT/g, '')
+        .replace(/GROUNDSPEED/g, '')
+        .replace(/GS/g, '')
+        .replace(/[º°]/g, '')
+        .replace(/CONTINUAO/g, 'CONTINUO')
+        .replace(/CONTiNUO/g, 'CONTINUO')
+        .replace(/ATE/g, '-')
+        .replace(/(\d)A(\d)/g, '$1-$2');
+    };
+
+    window.escapeHTML = function(str) {
+      const p = document.createElement('p');
+      p.textContent = str;
+      return p.innerHTML;
+    };
+
+    // --- EXPOSE MODES ---
+    window.showScreen = function(name){
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      const map = {
+        menu: 'menu-screen',
+        emergenciaDia: 'emergenciaDia-screen',
+        emergencias: 'emergencias-screen',
+        limitacoesEnvio: 'limitacoesEnvio-screen',
+        conferirRespostas: 'conferirRespostas-screen',
+        treinamentoLimitacoes: 'treinamentoLimitacoes-screen',
+        resultadosEmergencias: 'resultadosEmergencias-screen',
+        resultadosLimitacoes: 'resultadosLimitacoes-screen'
+      };
+      
+      const target = document.getElementById(map[name]);
+      if(target) target.classList.add('active');
+
+      // Re-trigger icon rendering
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      if(name === 'emergencias') {
+        const date = document.getElementById('globalDate').value;
+        const mainH1 = document.querySelector('#emergencias-screen h1');
+        if(mainH1) mainH1.textContent = `PROCEDIMENTOS: ${window.getFormattedDate(date)}`;
+        window.clearEmergencyInputs();
+      }
+      if(name === 'limitacoesEnvio') {
+         const date = document.getElementById('globalDate').value;
+         const mainH1 = document.querySelector('#limitacoesEnvio-screen h1');
+         if(mainH1) mainH1.textContent = `RELATÓRIO: ${window.getFormattedDate(date)}`;
+         window.clearLimitationsInputs('limitationsForm');
+      }
+      if(name === 'resultadosEmergencias') window.loadEmergenciesResults();
+      if(name === 'resultadosLimitacoes') window.loadLimitationsResults();
+      
+      window.scrollTo({top:0, behavior:'auto'});
+    };
+
+    window.getFormattedDate = function(dateStr) {
+      if(!dateStr) return '';
+      const [y, m, d] = dateStr.split('-');
+      return `${d}/${m}/${y}`;
+    };
+
+    window.clearEmergencyInputs = function() {
+      document.querySelectorAll('#emergencias-screen textarea').forEach(t => t.value = '');
+    };
+
+    window.clearLimitationsInputs = function(parentId) {
+      document.querySelectorAll(`#${parentId} input`).forEach(i => {
+        i.value = '';
+        i.style.backgroundColor = '';
+        i.style.borderColor = '';
+      });
+    };
+
+    // Initialize UI on load
+    // REMOVED window.init() from here as it was causing a crash because init() is defined in the next script block.
+    
+    // Lucide and Flatpickr setup moved below to the final script block for safety.
+</script>
+
+<script>
+    // --- UI/TEMPLATING LOGIC (STAY IN GLOBAL SCOPE) ---
+    function init() {
+      const today = new Date().toISOString().split('T')[0];
+      const gd = document.getElementById('globalDate');
+      if(gd) gd.value = today;
+      const fe = document.getElementById('filterDateEMG');
+      if(fe) fe.value = today;
+      const fl = document.getElementById('filterDateLIM');
+      if(fl) fl.value = today;
+
+      generateEmgLines();
+      const content = getLimitationsTemplate();
+      const lf = document.getElementById('limitationsForm');
+      if(lf) lf.innerHTML = content;
+      const tf = document.getElementById('trainingForm');
+      if(tf) tf.innerHTML = content;
+    }
+
+    function generateEmgLines() {
+      const container = document.getElementById('emgLines');
+      if(!container) return;
+      container.innerHTML = '';
+      for(let i=0; i<20; i++) {
+        const div = document.createElement('div');
+        div.className = 'write-line';
+        div.innerHTML = '<textarea aria-label="Linha para resposta"></textarea>';
+        container.appendChild(div);
+      }
+    }
+
+    // --- TRAINING MODE (LOCAL ONLY) ---
+    function checkTrainingAnswers() {
+      const inputs = document.querySelectorAll('#trainingForm .quiz-input');
+      let correct = 0, wrong = 0;
+
+      inputs.forEach(input => {
+        const val = input.value.trim();
+        if(!val) return;
+        const user = window.simplify(val);
+        const answers = (input.dataset.answer || '').split('||').map(a => window.simplify(a));
+        const ok = answers.includes(user);
+        
+        input.style.backgroundColor = ok ? 'rgba(39, 174, 96, 0.2)' : 'rgba(235, 87, 87, 0.2)';
+        input.style.borderColor = ok ? '#27AE60' : '#EB5757';
+        if(ok) correct++; else wrong++;
+      });
+
+      document.getElementById('trainingResultsBox').textContent = `Resultados: ${correct} acertos, ${wrong} erros.`;
+    }
+
+    function clearTrainingForm() {
+      window.clearLimitationsInputs('trainingForm');
+      document.getElementById('trainingResultsBox').textContent = 'Preencha as respostas e clique em “Conferir”.';
+    }
+
+    let answerKeyVisible = false;
+    function toggleAnswerKey() {
+      answerKeyVisible = !answerKeyVisible;
+      const inputs = document.querySelectorAll('#trainingForm .quiz-input');
+      inputs.forEach(input => {
+        input.placeholder = answerKeyVisible ? input.dataset.answer.split('||')[0] : '...';
+        input.style.fontStyle = answerKeyVisible ? 'italic' : 'normal';
+      });
+      document.getElementById('answerKeyBtn').textContent = answerKeyVisible ? 'Ocultar Respostas' : 'Mostrar Respostas';
+    }
+
+    function getLimitationsTemplate() {
+      return `
+<!-- 1. NP -->
+<div class="group">
+<div class="group-title title-red pink">NP</div>
+<table>
+<tr class="pink-strong"><td class="center">114%</td><td class="center">Somente durante MTF</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="105" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="107" placeholder="até"/></div></td><td class="center">12 seg transiente</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="101" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Transiente</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="95" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="101" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="91" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="95" placeholder="até"/></div></td><td class="center">Transiente</td></tr>
+<tr class="pink-strong"><td><div class="range-answer no-wrap"><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="40" placeholder="até"/><span class="separator">e</span><input class="answer-short quiz-input" data-answer="60" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="90" placeholder="até"/></div></td><td class="center">Faixa a evitar</td></tr>
+</table>
+</div>
+
+<!-- 2. NG -->
+<div class="group">
+<div class="group-title title-red pink">NG</div>
+<table>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="105" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="106" placeholder="até"/></div></td><td class="center">12 segundos</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="0" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+</table>
+</div>
+
+<!-- 3. Q BIMOTOR -->
+<div class="group">
+<div class="group-title title-red pink">Q BIMOTOR</div>
+<table>
+<tr class="pink"><td class="center" rowspan="2">Abaixo de 80 KIAS</td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="120" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="144" placeholder="até"/></div></td><td class="center">10 segundos</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="0" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="120" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink"><td class="center" rowspan="2">Acima de 80 KIAS</td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="100" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="144" placeholder="até"/></div></td><td class="center">10 segundos</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="0" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="100" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+</table>
+</div>
+
+<!-- 4. Q MONOMOTOR -->
+<div class="group">
+<div class="group-title title-red pink">Q MONOMOTOR</div>
+<table>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="0" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="135" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="135" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="144" placeholder="até"/></div></td><td class="center">10 segundos</td></tr>
+</table>
+</div>
+
+<!-- 5. TGT -->
+<div class="group">
+<div class="group-title title-red pink">TGT</div>
+<table>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="903" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="949" placeholder="até"/></div></td><td class="center">12 seg transiente</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="879" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="903" placeholder="até"/></div></td><td class="center">2.5 min</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="846" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="879" placeholder="até"/></div></td><td class="center">10 min</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="793" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="846" placeholder="até"/></div></td><td class="center">30 min</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="0" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="793" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink-strong"><td><input class="answer quiz-input" data-answer="851" placeholder="resposta"/></td><td class="center">Abortar Partida</td></tr>
+</table>
+</div>
+
+<!-- 6. ENG OIL P -->
+<div class="group">
+<div class="group-title title-red pink">ENG OIL P</div>
+<table>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="100" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="120" placeholder="até"/></div></td><td class="center">5 min</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="26" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="100" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="22" placeholder="mín"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="26" placeholder="máx"/></div></td><td class="center">Idle transiente</td></tr>
+</table>
+</div>
+
+<!-- 7. ENG OIL T -->
+<div class="group">
+<div class="group-title title-red pink">ENG OIL T</div>
+<table>
+<tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="135" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="150" placeholder="até"/></div></td><td class="center">30 min</td></tr>
+<tr class="pink"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="135" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+</table>
+</div>
+
+<!-- 8. XMSN OIL P -->
+<div class="group">
+<div class="group-title blue">XMSN OIL P</div>
+<table>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="65" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="130" placeholder="até"/></div></td><td class="center">Precaução</td></tr>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="30" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="65" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="20" placeholder="mín"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="30" placeholder="máx"/></div></td><td class="center">Idle transiente</td></tr>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="30" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="35" placeholder="até"/></div></td><td class="center">10º cabrado</td></tr>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="10" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="15" placeholder="até"/></div></td><td class="center">15º cabrado</td></tr>
+</table>
+</div>
+
+<!-- 9. XMSN OIL T -->
+<div class="group">
+<div class="group-title blue">XMSN OIL T</div>
+<table>
+<tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="105" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="140" placeholder="até"/></div></td><td class="center">Precaução</td></tr>
+<tr class="blue"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+</table>
+</div>
+
+<!-- 10. BACKUP HYD PUMP -->
+<div class="group">
+<div class="group-title green">BACKUP HYD PUMP</div>
+<table>
+<tr class="green"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="54" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="32" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="green"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="33" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="38" placeholder="até"/></div></td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="24" placeholder="min"/><span class="separator">/</span><input class="answer-short quiz-input" data-answer="72" placeholder="min"/></div></td></tr>
+<tr class="green"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="39" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="52" placeholder="até"/></div></td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="16" placeholder="min"/><span class="separator">/</span><input class="answer-short quiz-input" data-answer="48" placeholder="min"/></div></td></tr>
+</table>
+</div>
+
+<!-- 11. STARTER -->
+<div class="group">
+<div class="group-title gray">STARTER</div>
+<table>
+<tr class="pink">
+  <td class="center" style="width:35%">≤ <input class="answer-short quiz-input" data-answer="15" placeholder="°C"/> °C</td>
+  <td>
+    <div class="range-answer" style="justify-content:flex-start; margin-bottom:4px;"><input class="answer-short quiz-input" data-answer="2" placeholder="nº"/><span class="separator">Partidas</span></div>
+    <div class="range-answer" style="justify-content:flex-start; margin-bottom:4px;"><input class="answer-short quiz-input" data-answer="3" placeholder="min"/><span class="separator">min descanso</span></div>
+    <div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="2" placeholder="nº"/><span class="separator">Partidas</span></div>
+  </td>
+</tr>
+<tr class="pink">
+  <td class="center">
+    <div class="range-answer no-border">
+      <span>></span><input class="answer-short quiz-input" data-answer="15" placeholder="°C"/><span class="separator">-</span><input class="answer-short quiz-input" data-answer="52" placeholder="°C"/><span>°C</span>
+    </div>
+  </td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="2" placeholder="nº"/><span class="separator">Partidas</span></div></td>
+</tr>
+<tr class="pink">
+  <td>Partidas adicionais</td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="30" placeholder="min"/><span class="separator">min descanso</span></div></td>
+</tr>
+<tr class="pink">
+  <td>Intervalo entre ciclos de partida</td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="1" placeholder="nº"/><span class="separator">Hora</span></div></td>
+</tr>
+</table>
+</div>
+
+<!-- 12. NR COM POTÊNCIA -->
+<div class="group">
+<div class="group-title gray">NR COM POTÊNCIA</div>
+<table>
+<tr class="gray"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="101" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="107" placeholder="até"/></div></td><td class="center">Transiente</td></tr>
+<tr class="gray"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="95" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="101" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="gray"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="91" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="95" placeholder="até"/></div></td><td class="center">Transiente</td></tr>
+</table>
+</div>
+
+<!-- 13. NR SEM POTÊNCIA -->
+<div class="group">
+<div class="group-title gray">NR SEM POTÊNCIA (AUTORROTAÇÃO)</div>
+<table>
+<tr class="gray-strong"><td class="center">120%</td><td class="center">Somente durante MTF</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="110" placeholder="resposta"/></td><td class="center">Máximo</td></tr>
+<tr class="gray"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="105" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="110" placeholder="até"/></div></td><td class="center">Transiente</td></tr>
+<tr class="gray"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="90" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Normal</td></tr>
+</table>
+</div>
+
+<!-- 14. APU -->
+<div class="group">
+<div class="group-title pink">APU</div>
+<table>
+<tr class="pink">
+  <td class="center">Rotor e motor ligados</td>
+  <td class="center">
+    <div class="range-answer">
+      <input class="answer quiz-input" data-answer="30" placeholder="min"/> <span>min</span>
+      <span>≥</span>
+      <input class="answer-short quiz-input" data-answer="43" placeholder="°C"/> <span>ºC</span>
+    </div>
+  </td>
+</tr>
+<tr class="pink">
+  <td class="center">Rotor e motor desligados</td>
+  <td class="center">
+    <div class="range-answer">
+      <input class="answer quiz-input" data-answer="CONTINUO" placeholder="tempo"/>
+      <span>≤</span>
+      <input class="answer-short quiz-input" data-answer="51" placeholder="°C"/> <span>ºC</span>
+    </div>
+  </td>
+</tr>
+<tr class="pink">
+  <td class="center">APU OIL HOT acesa</td>
+  <td class="center">
+    <div class="range-answer">
+      <input class="answer quiz-input" data-answer="30" placeholder="min"/> <span>min</span>
+    </div>
+  </td>
+</tr>
+</table>
+</div>
+
+<!-- 15. LIMITES DE BANK -->
+<div class="group">
+<div class="group-title gray">LIMITES DE BANK</div>
+<table>
+<tr class="gray"><td>Máx Roll</td><td><input class="answer quiz-input" data-answer="60" placeholder="resposta"/></td></tr>
+<tr class="gray"><td>Máx Pitch</td><td><input class="answer quiz-input" data-answer="30" placeholder="resposta"/></td></tr>
+<tr class="gray"><td>PRI SERVO PRESS acesa</td><td><input class="answer quiz-input" data-answer="30" placeholder="resposta"/></td></tr>
+</table>
+</div>
+
+<!-- 16. VELOCIDADES MÁXIMAS -->
+<div class="group">
+<div class="group-title gray">VELOCIDADES MÁXIMAS</div>
+<table>
+<tr class="pink-strong"><td><input class="answer quiz-input" data-answer="193" placeholder="resposta"/></td><td>VNE</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="180" placeholder="resposta"/></td><td>Farol extendido (pouso ou busca)</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="130" placeholder="resposta"/></td><td>Estender farol de pouso</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="100" placeholder="resposta"/></td><td>Estender farol de busca</td></tr>
+<tr class="green"><td><input class="answer quiz-input" data-answer="170" placeholder="resposta"/></td><td>Janela do MV aberta</td></tr>
+<tr class="green"><td><input class="answer quiz-input" data-answer="145" placeholder="resposta"/></td><td>A porta da cabine deve estar totalmente aberta</td></tr>
+<tr class="green"><td><input class="answer quiz-input" data-answer="80" placeholder="resposta"/></td><td>Abertura da porta da cabine em voo</td></tr>
+<tr class="blue"><td><input class="answer quiz-input" data-answer="170" placeholder="resposta"/></td><td>1 HYD Inop. ou 1 SAS Inop.</td></tr>
+<tr class="blue"><td><input class="answer quiz-input" data-answer="150" placeholder="resposta"/></td><td>2 HYD Inop. ou 2 SAS Inop.</td></tr>
+<tr class="blue"><td><input class="answer quiz-input" data-answer="140" placeholder="resposta"/></td><td>2 HYD Inop. ou 2 SAS Inop. (IMC)</td></tr>
+<tr class="pink"><td><input class="answer quiz-input" data-answer="150" placeholder="resposta"/></td><td>Autorrotação com peso de até 16825 libras</td></tr>
+<tr class="pink"><td><input class="answer quiz-input" data-answer="130" placeholder="resposta"/></td><td>Autorrotação com peso maior ou igual a 16825 libras</td></tr>
+<tr class="pink"><td><input class="answer quiz-input" data-answer="110" placeholder="resposta"/></td><td>Distância máx. em autorrotação (Clean)</td></tr>
+<tr class="pink"><td><input class="answer quiz-input" data-answer="120" placeholder="resposta"/></td><td>Autorrotação com pane no STAB</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="140" placeholder="resposta"/></td><td>Carga externa até 8000 libras</td></tr>
+<tr class="gray"><td><input class="answer quiz-input" data-answer="120" placeholder="resposta"/></td><td>Carga externa maior que 8000 libras e peso máximo maior que 22000 libras</td></tr>
+<tr class="pink"><td><input class="answer quiz-input" data-answer="130" placeholder="resposta"/></td><td>1 Eng inoperante</td></tr>
+<tr class="green"><td><input class="answer quiz-input" data-answer="60" placeholder="resposta"/></td><td>Ground Speed</td></tr>
+<tr class="blue"><td><input class="answer quiz-input" data-answer="45" placeholder="resposta"/></td><td>Vento máx. para acionamento e corte do rotor em qualquer direção</td></tr>
+<tr class="blue"><td><input class="answer quiz-input" data-answer="45" placeholder="resposta"/></td><td>Vento máx. lateral ou retaguarda para pairado / deslocamento lateral ou para trás</td></tr>
+</table>
+</div>
+
+<!-- 17. PRESSÃO MÁX ABASTECIMENTO -->
+<div class="group">
+<div class="group-title yellow">PRESSÃO MÁX ABASTECIMENTO</div>
+<table><tr class="yellow"><td class="center">300 Galões por minuto a <input class="answer-short quiz-input" data-answer="55" placeholder="PSI"/> PSI</td></tr></table>
+</div>
+
+<!-- 18. LIMITAÇÕES DE POUSO -->
+<div class="group">
+<div class="group-title gray">LIMITAÇÕES DE POUSO</div>
+<table>
+<tr class="gray">
+  <td style="width:50%">Nariz para cima, esquerda ou direita</td>
+  <td>
+    <div class="range-answer" style="justify-content:flex-start;">
+      <input class="answer-short quiz-input" data-answer="15" placeholder="°"/> <span>° inclinação</span>
+    </div>
+  </td>
+</tr>
+<tr class="gray">
+  <td colspan="2">
+    <div class="range-answer no-border" style="justify-content:center;">
+      <span>(reduzir</span>
+      <input class="answer-short quiz-input" data-answer="2" placeholder="°"/> <span>° para cada</span>
+      <input class="answer-short quiz-input" data-answer="5" placeholder="KT"/> <span>KT de vento)</span>
+    </div>
+  </td>
+</tr>
+<tr class="gray">
+  <td>Nariz para baixo</td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="6" placeholder="°"/><span>° inclinação</span></div></td>
+</tr>
+<tr class="gray">
+  <td>Vento de cauda máx (Nariz p/ baixo)</td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="15" placeholder="KT"/><span>KT</span></div></td>
+</tr>
+<tr class="gray">
+  <td class="center" rowspan="2">Peso de até <input class="answer-short quiz-input" data-answer="16825" placeholder="lb"/> libras</td>
+  <td>Nivelado — <input class="answer-short quiz-input" data-answer="540" placeholder="ft/min"/> ft/min</td>
+</tr>
+<tr class="gray"><td>Inclinado — <input class="answer-short quiz-input" data-answer="360" placeholder="ft/min"/> ft/min</td></tr>
+<tr class="gray">
+  <td class="center" rowspan="2">Peso maior que <input class="answer-short quiz-input" data-answer="16825" placeholder="lb"/> libras</td>
+  <td>Nivelado — <input class="answer-short quiz-input" data-answer="300" placeholder="ft/min"/> ft/min</td>
+</tr>
+<tr class="gray"><td>Inclinado — <input class="answer-short quiz-input" data-answer="180" placeholder="ft/min"/> ft/min</td></tr>
+</table>
+</div>
+
+<!-- 19. MANOBRAS PROIBIDAS -->
+<div class="group">
+<div class="group-title green">MANOBRAS PROIBIDAS</div>
+<table>
+  <tr class="green">
+    <td class="center" style="padding: 15px 10px;">
+      Mudanças de proa no pairado maior que 
+      <input class="answer-short quiz-input" data-answer="30" placeholder="°"/> ° 
+      <input class="answer-short quiz-input" data-answer="30" placeholder="°"/> ° 
+      por segundo são proibidas
+    </td>
+  </tr>
+</table>
+</div>
+
+<!-- 20. MANOBRAS RESTRITAS -->
+<div class="group">
+<div class="group-title">MANOBRAS RESTRITAS</div>
+<table>
+<tr><td>Pairado à retaguarda deve ser evitado para previnir o acúmulo de gases de exaustão no helicóptero e danos por aquecimento nas janelas das portas da cabine</td></tr>
+<tr><td>Táxi à retaguarda é <input class="answer-mid quiz-input" data-answer="PROIBIDO" placeholder="resposta"/></td></tr>
+</table>
+</div>
+
+<!-- 21. WINDSHIELD ANTI-ICE -->
+<div class="group">
+<div class="group-title blue">WINDSHIELD ANTI-ICE</div>
+<table><tr class="blue"><td class="center"><input class="answer-short quiz-input" data-answer="27" placeholder="°C"/> °C</td><td>Temp. máxima para realização do check</td></tr></table>
+</div>
+
+<!-- 22. GANCHO -->
+<div class="group">
+<div class="group-title blue">GANCHO</div>
+<table>
+<tr class="blue"><td>Carga máxima</td><td><div class="answer-wrap"><input class="answer-short quiz-input" data-answer="9000" placeholder="lb"/><span>libras</span></div></td></tr>
+<tr class="blue"><td>Bank máximo</td><td><input class="answer quiz-input" data-answer="30" placeholder="°"/></td></tr>
+<tr class="blue"><td>Voo à retaguarda</td><td><div class="answer-wrap"><input class="answer-short quiz-input" data-answer="35" placeholder="KT"/><span>KT</span></div></td></tr>
+</table>
+</div>
+
+<!-- 23. CARREGAMENTO -->
+<div class="group">
+<div class="group-title">CARREGAMENTO</div>
+<table>
+<tr><td class="center">300 lb/ft²</td><td>Piso da cabine</td></tr>
+<tr><td class="center">125 lb</td><td>Cada compartimento de armazenamento</td></tr>
+<tr><td class="center">4000 lb</td><td>4 engates de amarração no teto da cabine</td></tr>
+<tr><td class="center">5000 lb</td><td>17 engates de amarração no piso da cabina</td></tr>
+<tr><td class="center">3500 lb</td><td>8 anéis de contenção da rede de carga no compartimento de carga</td></tr>
+</table>
+</div>
+
+<!-- 24. MANOBRAS DE YAW EM ALTA VELOCIDADE -->
+<div class="group">
+<div class="group-title gray">MANOBRAS DE YAW EM ALTA VELOCIDADE</div>
+<table><tr class="gray"><td class="center">> <input class="answer-short quiz-input" data-answer="80" placeholder="KIAS"/> KIAS</td><td>Evite manobras abruptas aplicando todo o pedal</td></tr></table>
+</div>
+
+<!-- FLIGHT DIRECTOR SECTIONS -->
+<div class="group">
+<div class="group-title blue">Flight Director — BASIC MODES</div>
+<table>
+<tr class="pink"><td>IAS Hold</td><td> Entre <input class="answer-short quiz-input" data-answer="50" placeholder="KIAS"/> e 150 KIAS</td></tr>
+<tr class="green-strong"><td>RALT Hold</td><td> de 0 a <input class="answer-short quiz-input" data-answer="1500" placeholder="ft"/> ft AGL</td></tr>
+<tr class="pink"><td>VS Hold</td><td> Máx ± <input class="answer-short quiz-input" data-answer="2000" placeholder="FPM"/> FPM</td></tr>
+<tr class="gray-strong"><td>GA (Go Around)</td><td> Razão de <input class="answer-short quiz-input" data-answer="750" placeholder="fpm"/> fpm</td></tr>
+</table>
+</div>
+
+<div class="group">
+<div class="group-title blue">HOVER MODES</div>
+<table>
+<tr class="pink"><td>HVR DECL Engajamento</td><td> Abaixo de <input class="answer-short quiz-input" data-answer="60" placeholder="KIAS"/> KIAS</td></tr>
+<tr class="pink"><td>Desaceleração fixa</td><td> <input class="answer-short quiz-input" data-answer="2.5" placeholder="kts/sec"/> kts/sec</td></tr>
+<tr class="gray"><td>HVR VEL (Frente)</td><td> Mantém até <input class="answer-short quiz-input" data-answer="60" placeholder="kts"/> kts</td></tr>
+<tr class="gray"><td>HVR VEL (Trás/Lat)</td><td> Mantém até <input class="answer-short quiz-input" data-answer="20" placeholder="kts"/> kts</td></tr>
+</table>
+</div>
+
+<div class="group">
+<div class="group-title blue">Z-Axis Plunge</div>
+<table>
+<tr class="pink"><td>Abaixo de 60 KIAS</td><td>HVR <input class="answer quiz-input" data-answer="DECL" placeholder="modo"/></td></tr>
+<tr class="yellow"><td>Entre 60 e 80 KIAS</td><td>Mantém IAS de <input class="answer-short quiz-input" data-answer="80" placeholder="KIAS"/> KIAS</td></tr>
+<tr class="gray"><td>Entre 80 e 120 KIAS</td><td>Mantém a IAS <input class="answer quiz-input" data-answer="ATUAL" placeholder="modo"/></td></tr>
+<tr class="green-strong"><td>Acima de 120 KIAS</td><td>Mantém IAS de <input class="answer-short quiz-input" data-answer="120" placeholder="KIAS"/> KIAS</td></tr>
+</table>
+</div>
+
+<div class="group">
+<div class="group-title blue">POSN</div>
+<table>
+<tr class="yellow"><td>Beep trim < 1 seg.</td><td>Desloc. de <input class="answer-short quiz-input" data-answer="2" placeholder="ft"/> ft</td></tr>
+<tr class="yellow"><td>Beep trim > 1 seg.</td><td>Muda para o modo <input class="answer quiz-input" data-answer="VEL" placeholder="modo"/></td></tr>
+</table>
+</div>
+
+<div class="group">
+<div class="group-title blue">TRIM (MODOS DE CURVA)</div>
+<table>
+<tr class="blue"><td>TRIM Pedais (< 50 KT)</td><td class="center">Mudança de Proa</td></tr>
+<tr class="blue"><td>TRIM Colet (> 50 KT)</td><td class="center">Curva Padrão</td></tr>
+</table>
+</div>
+      `;
+    }
+
+    init();
+    
+    // UI Libraries Initialization
+    setTimeout(() => {
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      
+      const fpConfig = {
+        dateFormat: "Y-m-d",
+        locale: { firstDayOfWeek: 1 },
+        disableMobile: "true",
+        onChange: function(selectedDates, dateStr, instance) {
+          if (instance.element.id === 'filterDateEMG') window.loadEmergenciesResults?.();
+          if (instance.element.id === 'filterDateLIM') window.loadLimitationsResults?.();
+        }
+      };
+      
+      if (typeof flatpickr !== 'undefined') {
+        flatpickr("#globalDate", fpConfig);
+        flatpickr("#filterDateEMG", fpConfig);
+        flatpickr("#filterDateLIM", fpConfig);
+      }
+    }, 100);
+</script>
+</body>
+</html>

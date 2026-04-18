@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && request.auth.token.email == 'eb.uh60m@gmail.com' && request.auth.token.email_verified == true; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidDate(d) { return d is string && d.matches('^\\d{4}-\\d{2}-\\d{2}$'); }
+
+    // --- Emergencies ---
+    match /emergencies/{id} {
+      allow create: if isValidId(id) && isValidEmergencyEntry(incoming());
+      allow list: if true; // Allow statistical viewing
+      allow get: if true;
+      allow delete: if isAdmin();
+    }
+
+    function isValidEmergencyEntry(data) {
+      return data.keys().hasAll(['date', 'content', 'createdAt'])
+        && data.keys().size() == 3
+        && isValidDate(data.date)
+        && data.content is string && data.content.size() > 0 && data.content.size() <= 10000
+        && data.createdAt == request.time;
+    }
+
+    // --- Limitations ---
+    match /limitations/{id} {
+      allow create: if isValidId(id) && isValidLimitationEntry(incoming());
+      allow list: if true;
+      allow get: if true;
+      allow delete: if isAdmin();
+    }
+
+    function isValidLimitationEntry(data) {
+      return data.keys().hasAll(['date', 'filled', 'correct', 'wrong', 'createdAt'])
+        && data.keys().size() == 5
+        && isValidDate(data.date)
+        && data.filled is int && data.filled >= 0
+        && data.correct is int && data.correct >= 0
+        && data.wrong is int && data.wrong >= 0
+        && (data.correct + data.wrong == data.filled) // Integrity check
+        && data.createdAt == request.time;
+    }
+  }
+}
