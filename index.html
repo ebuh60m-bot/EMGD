@@ -457,7 +457,10 @@
         <!-- Category 2: Treinamento -->
         <div class="menu-section">
           <div class="menu-section-label">Treinamento</div>
-          <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoLimitacoes')">Teste de Limitações</button>
+          <div class="menu-buttons" style="max-width: none; width: 100%;">
+            <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoLimitacoes')">Limitações</button>
+            <button class="menu-btn blue" type="button" onclick="startQuizSetup()">Teste de Limitações</button>
+          </div>
         </div>
 
       </div>
@@ -574,6 +577,79 @@
   </div>
 </section>
 
+<!-- SCREEN: QUIZ SETUP -->
+<section id="quizSetup-screen" class="screen">
+  <div class="emg-toolbar">
+    <button type="button" onclick="showScreen('menu')">Voltar</button>
+  </div>
+  <div class="emg-page">
+    <h1>TESTE DE LIMITAÇÕES</h1>
+    <div class="select-card" style="max-width: 500px;">
+      <div class="emg-sheet-title">Configurar Teste</div>
+      <div class="select-body" style="padding: 30px; text-align: center;">
+        <p style="margin-bottom: 20px; color: var(--text-primary);">Quantas perguntas deseja responder?</p>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;">
+          <input type="number" id="quizQuestionCount" value="10" min="1" max="50" style="width: 80px; text-align: center; font-size: 1.5rem; background: #000; border: 1px solid var(--accent-blue); color: var(--accent-blue); padding: 10px;">
+        </div>
+        <button class="menu-btn blue" style="min-height: 60px; width: 100%;" onclick="runQuiz()">INICIAR TESTE</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN: QUIZ ACTIVE -->
+<section id="quizActive-screen" class="screen">
+  <div class="emg-toolbar">
+    <button type="button" onclick="confirmExitQuiz()">Sair do Teste</button>
+  </div>
+  <div class="emg-page">
+    <div id="quizProgress" style="max-width: 600px; margin: 0 auto 10px; font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between;">
+      <span>QUESTÃO: <span id="currentQNum">0</span>/<span id="totalQNum">0</span></span>
+      <span>ACERTOS: <span id="quizScore">0</span></span>
+    </div>
+    
+    <div class="select-card" style="max-width: 600px;">
+      <div id="quizCategoryLabel" class="emg-sheet-title" style="background: rgba(45, 156, 219, 0.1); color: var(--accent-blue);">CATEGORIA</div>
+      <div class="select-body" style="padding: 40px 20px;">
+        <div id="quizQuestionText" style="font-size: 1.2rem; margin-bottom: 30px; font-weight: 700; color: var(--text-primary); text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+          Pergunta...
+        </div>
+        
+        <div id="quizInputArea" style="margin-bottom: 30px;">
+          <!-- Inputs will be injected here -->
+        </div>
+
+        <div id="quizFeedback" style="display:none; padding: 15px; border-radius: 4px; margin-bottom: 20px; text-align: center; font-weight: 800; font-family: var(--font-mono);">
+          FEEDBACK
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+          <button id="quizCheckBtn" class="menu-btn blue" style="min-height: 60px; flex: 1;" onclick="checkQuizAnswer()">CONFERIR</button>
+          <button id="quizNextBtn" class="menu-btn" style="min-height: 60px; flex: 1; display: none;" onclick="nextQuizQuestion()">PRÓXIMA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN: QUIZ RESULTS -->
+<section id="quizResults-screen" class="screen">
+  <div class="emg-page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh;">
+    <h1 style="font-size: 3rem; margin-bottom: 20px;">FIM DO TESTE</h1>
+    <div class="select-card" style="max-width: 500px; width: 100%;">
+      <div class="select-body" style="padding: 40px; text-align: center;">
+        <div style="font-size: 4rem; font-weight: 900; color: var(--accent-yellow); margin-bottom: 10px;" id="finalScoreVal">0/0</div>
+        <div style="font-family: var(--font-mono); color: var(--text-dim); margin-bottom: 40px;" id="finalScorePercent">0% de aproveitamento</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+           <button class="menu-btn" style="min-height: 60px;" onclick="showScreen('menu')">Sair</button>
+           <button class="menu-btn blue" style="min-height: 60px;" onclick="showScreen('quizSetup')">Refazer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SCREEN: RESPONDER LIMITACOES (MODO ENVIO) -->
 <section id="limitacoesEnvio-screen" class="screen">
 <div class="toolbar">
@@ -649,6 +725,202 @@
     let currentUser = null;
 
     // --- ERROR HANDLING ---
+    // --- QUIZ LOGIC (RANDOMIZED TEST) ---
+    let quizState = {
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      totalRequested: 0,
+      answered: false
+    };
+
+    window.startQuizSetup = function() {
+      showScreen('quizSetup');
+    };
+
+    window.runQuiz = function() {
+      const count = parseInt(document.getElementById('quizQuestionCount').value) || 10;
+      quizState.totalRequested = count;
+      
+      // 1. Parse all possible questions from template
+      const allPossible = parseAllQuestionsFromTemplate();
+      
+      // 2. Shuffle and take requested count
+      if (allPossible.length === 0) return alert("Nenhuma pergunta encontrada no sistema.");
+      
+      quizState.questions = allPossible.sort(() => Math.random() - 0.5).slice(0, count);
+      quizState.currentIndex = 0;
+      quizState.score = 0;
+      quizState.answered = false;
+      
+      showScreen('quizActive');
+      renderCurrentQuizQuestion();
+    };
+
+    function parseAllQuestionsFromTemplate() {
+      // Temporary div to render the template and query it
+      const temp = document.createElement('div');
+      temp.innerHTML = getLimitationsTemplate();
+      
+      const qList = [];
+      const groups = temp.querySelectorAll('.group');
+      
+      groups.forEach(group => {
+        const category = group.querySelector('.group-title').textContent.trim();
+        const rows = group.querySelectorAll('tr');
+        
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length < 1) return;
+          
+          const inputs = row.querySelectorAll('.quiz-input');
+          if (inputs.length === 0) return;
+          
+          // Question text extraction (it varies by row type)
+          let qText = "";
+          if (cells.length === 2) {
+             const firstHasInput = cells[0].querySelector('.quiz-input');
+             qText = firstHasInput ? cells[1].innerText.trim() : cells[0].innerText.trim();
+          } else if (cells.length === 1) {
+             // Clone to remove input text before getting outer text
+             const cloned = cells[0].cloneNode(true);
+             cloned.querySelectorAll('.quiz-input').forEach(i => i.remove());
+             qText = cloned.innerText.trim();
+          } else if (cells.length === 3) {
+             qText = cells[0].innerText.trim() + " - " + cells[2].innerText.trim();
+          }
+
+          // Clean up question text
+          qText = qText.replace(/(\n|\r)+/g, " ")
+                       .replace(/\s+/g, " ")
+                       .replace(/resposta|at[eé]|de|minutos|min|segundos|transiente|cont[ií]nuo|ft\/min|libras|lb|kt|psi|[\(\)°º]/gi, "")
+                       .trim();
+          
+          if (!qText || qText.length < 2) qText = `Valor técnico: ${category}`;
+
+          // Create a task object
+          qList.push({
+            category: category,
+            label: qText,
+            rowHtml: row.innerHTML,
+            answers: Array.from(inputs).map(i => i.dataset.answer)
+          });
+        });
+      });
+      
+      return qList;
+    }
+
+    function renderCurrentQuizQuestion() {
+      const q = quizState.questions[quizState.currentIndex];
+      const curNum = quizState.currentIndex + 1;
+      
+      document.getElementById('currentQNum').textContent = curNum;
+      document.getElementById('totalQNum').textContent = quizState.questions.length;
+      document.getElementById('quizScore').textContent = quizState.score;
+      
+      document.getElementById('quizCategoryLabel').textContent = q.category;
+      document.getElementById('quizQuestionText').textContent = q.label;
+      
+      // Inject the inputs area based on rowHtml but without values
+      const area = document.getElementById('quizInputArea');
+      area.innerHTML = `
+        <div style="display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--font-mono);">
+          ${q.rowHtml}
+        </div>
+      `;
+      
+      // Post-process the injected row to clean up text and hide answers
+      const rowDiv = area.firstChild;
+      // Remove the original question text from inside the injected area since it's already in quizQuestionText
+      // This is a bit brute-force: find text nodes and empty them if they match labels
+      const inputs = area.querySelectorAll('.quiz-input');
+      inputs.forEach(input => {
+        input.value = "";
+        input.readOnly = false;
+        input.style.backgroundColor = "";
+        input.style.borderColor = "";
+      });
+
+      document.getElementById('quizFeedback').style.display = 'none';
+      document.getElementById('quizCheckBtn').style.display = 'block';
+      document.getElementById('quizNextBtn').style.display = 'none';
+      quizState.answered = false;
+      
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    window.checkQuizAnswer = function() {
+      if (quizState.answered) return;
+      
+      const q = quizState.questions[quizState.currentIndex];
+      const inputs = document.querySelectorAll('#quizInputArea .quiz-input');
+      let allCorrect = true;
+      
+      const expected = q.answers;
+      const userAnswers = [];
+
+      inputs.forEach((input, i) => {
+        const val = input.value.trim();
+        const user = window.simplify(val);
+        const correctOnes = (expected[i] || "").split('||').map(a => window.simplify(a));
+        const ok = correctOnes.includes(user);
+        
+        input.style.borderColor = ok ? 'var(--success)' : 'var(--danger)';
+        input.style.backgroundColor = ok ? 'rgba(39, 174, 96, 0.1)' : 'rgba(235, 87, 87, 0.1)';
+        input.readOnly = true;
+        
+        userAnswers.push(val || "(vazio)");
+        if (!ok) allCorrect = false;
+      });
+
+      const feedback = document.getElementById('quizFeedback');
+      feedback.style.display = 'block';
+      
+      if (allCorrect) {
+        feedback.textContent = "CORRETO!";
+        feedback.style.color = "var(--success)";
+        feedback.style.background = "rgba(39, 174, 96, 0.15)";
+        feedback.style.border = "1px solid var(--success)";
+        quizState.score++;
+      } else {
+        feedback.innerHTML = `INCORRETO!<br><span style="font-size:11px; font-weight:normal; opacity:0.8;">CORRETO: ${expected.join(' / ')}</span>`;
+        feedback.style.color = "var(--danger)";
+        feedback.style.background = "rgba(235, 87, 87, 0.15)";
+        feedback.style.border = "1px solid var(--danger)";
+      }
+      
+      document.getElementById('quizCheckBtn').style.display = 'none';
+      document.getElementById('quizNextBtn').style.display = 'block';
+      document.getElementById('quizScore').textContent = quizState.score;
+      quizState.answered = true;
+    };
+
+    window.nextQuizQuestion = function() {
+      quizState.currentIndex++;
+      if (quizState.currentIndex < quizState.questions.length) {
+        renderCurrentQuizQuestion();
+      } else {
+        finishQuiz();
+      }
+    };
+
+    function finishQuiz() {
+      showScreen('quizResults');
+      const total = quizState.questions.length;
+      const score = quizState.score;
+      const percent = Math.round((score / total) * 100);
+      
+      document.getElementById('finalScoreVal').textContent = `${score}/${total}`;
+      document.getElementById('finalScorePercent').textContent = `${percent}% de aproveitamento`;
+    }
+
+    window.confirmExitQuiz = function() {
+      if (confirm("Deseja realmente sair do teste? Seu progresso será perdido.")) {
+        showScreen('menu');
+      }
+    };
+
     async function handleFirestoreError(error, op, path = null) {
       console.error(`Firestore Error [${op}]:`, error);
       const authInfo = currentUser ? {
@@ -928,7 +1200,10 @@
         conferirRespostas: 'conferirRespostas-screen',
         treinamentoLimitacoes: 'treinamentoLimitacoes-screen',
         resultadosEmergencias: 'resultadosEmergencias-screen',
-        resultadosLimitacoes: 'resultadosLimitacoes-screen'
+        resultadosLimitacoes: 'resultadosLimitacoes-screen',
+        quizSetup: 'quizSetup-screen',
+        quizActive: 'quizActive-screen',
+        quizResults: 'quizResults-screen'
       };
       
       const target = document.getElementById(map[name]);
