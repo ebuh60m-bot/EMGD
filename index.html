@@ -777,26 +777,42 @@
           if (inputs.length === 0) return;
           
           // Question text extraction (it varies by row type)
-          let qText = "";
+          let rawText = "";
           if (cells.length === 2) {
              const firstHasInput = cells[0].querySelector('.quiz-input');
-             qText = firstHasInput ? cells[1].innerText.trim() : cells[0].innerText.trim();
+             rawText = firstHasInput ? cells[1].innerText.trim() : cells[0].innerText.trim();
           } else if (cells.length === 1) {
              // Clone to remove input text before getting outer text
              const cloned = cells[0].cloneNode(true);
              cloned.querySelectorAll('.quiz-input').forEach(i => i.remove());
-             qText = cloned.innerText.trim();
+             rawText = cloned.innerText.trim();
           } else if (cells.length === 3) {
-             qText = cells[0].innerText.trim() + " - " + cells[2].innerText.trim();
+             rawText = cells[0].innerText.trim() + " - " + cells[2].innerText.trim();
+          }
+
+          // Special logic for Transients (Inferior vs Superior) in NP/NR
+          let suffix = "";
+          const isTransiente = rawText.toLowerCase().includes("transiente");
+          if (isTransiente && (category.includes("NP") || category.includes("NR"))) {
+             const answers = Array.from(inputs).map(i => i.dataset.answer);
+             const firstVal = parseFloat(answers[0]);
+             if (!isNaN(firstVal)) {
+               if (firstVal >= 101) suffix = " (SUPERIOR)";
+               else if (firstVal <= 95) suffix = " (INFERIOR)";
+             }
           }
 
           // Clean up question text
-          qText = qText.replace(/(\n|\r)+/g, " ")
+          let qText = rawText.replace(/(\n|\r)+/g, " ")
                        .replace(/\s+/g, " ")
                        .replace(/resposta|at[eé]|de|minutos|min|segundos|transiente|cont[ií]nuo|ft\/min|libras|lb|kt|psi|[\(\)°º]/gi, "")
                        .trim();
           
           if (!qText || qText.length < 2) qText = `Valor técnico: ${category}`;
+          
+          // Add the transient indicator back if it was a transient
+          if (isTransiente) qText += " - TRANSIENTE" + suffix;
+          else if (rawText.toLowerCase().includes("contínuo")) qText += " - CONTÍNUO";
 
           // Create a task object
           qList.push({
@@ -916,9 +932,21 @@
     }
 
     window.confirmExitQuiz = function() {
-      if (confirm("Deseja realmente sair do teste? Seu progresso será perdido.")) {
-        showScreen('menu');
-      }
+      const modal = document.getElementById('custom-confirm');
+      const title = document.getElementById('modal-title');
+      const text = document.getElementById('modal-text');
+      const btn = document.getElementById('modal-confirm-btn');
+
+      title.textContent = "SAIR DO TESTE?";
+      text.textContent = "Seu progresso será perdido. Deseja retornar ao menu inicial?";
+      btn.textContent = "SAIR DO TESTE";
+      
+      modal.style.display = 'flex';
+      
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        window.showScreen('menu');
+      };
     };
 
     async function handleFirestoreError(error, op, path = null) {
