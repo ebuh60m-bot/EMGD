@@ -12,355 +12,383 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
     :root {
-      /* Aeronautic Premium Palette */
-      --bg-deep: #050608;
-      --bg-surface: #0E1014;
-      --panel-bg: rgba(26, 28, 34, 0.7);
-      --accent-gold: #D4AF37;
-      --gold-glow: rgba(212, 175, 55, 0.2);
+      --bg-deep: #0D0E10;
+      --panel-bg: #1A1C1E;
+      --accent-yellow: #F2C94C;
       --accent-blue: #2D9CDB;
-      --blue-glow: rgba(45, 156, 219, 0.2);
-      --text-primary: #F2F2F2;
-      --text-dim: #949494;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(212, 175, 55, 0.3);
+      --text-primary: #E0E0E0;
+      --text-dim: #828282;
+      --border-color: #333333;
       --success: #27AE60;
       --danger: #EB5757;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-      
-      /* functional color mappings for tables */
-      --pink: rgba(235, 87, 87, 0.05);
-      --pink-strong: rgba(235, 87, 87, 0.12);
-      --blue: rgba(45, 156, 219, 0.05);
-      --blue-strong: rgba(45, 156, 219, 0.12);
-      --green: rgba(39, 174, 96, 0.05);
-      --green-strong: rgba(39, 174, 96, 0.12);
-      --yellow: rgba(242, 201, 76, 0.05);
-      --yellow-strong: rgba(242, 201, 76, 0.12);
-    }
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+      --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-mono: 'Courier New', Courier, monospace;
 
+      /* Keep functional color mappings for tables */
+      --pink: rgba(237, 220, 220, 0.1);
+      --pink-strong: rgba(239, 199, 199, 0.2);
+      --blue: rgba(199, 215, 238, 0.1);
+      --blue-strong: rgba(186, 208, 239, 0.2);
+      --green: rgba(215, 229, 207, 0.1);
+      --green-strong: rgba(195, 221, 184, 0.2);
+      --yellow: rgba(236, 236, 177, 0.1);
+      --yellow-strong: rgba(232, 232, 160, 0.2);
+      --gray: rgba(212, 212, 212, 0.1);
+      --gray-strong: rgba(200, 200, 200, 0.2);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0;}
-    
     body {
+      margin: 0;
       background-color: var(--bg-deep);
-      background-image: 
-        radial-gradient(circle at 50% -20%, #1A1C22 0%, transparent 70%),
-        radial-gradient(circle at 0% 100%, #0A0B0D 0%, transparent 50%);
+      background: radial-gradient(circle at center, #1a1c1e 0%, #0d0e10 100%);
       color: var(--text-primary);
       font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-deep); }
-    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
-
     header {
-      background: rgba(14, 16, 20, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--panel-bg);
+      border-bottom: 2px solid var(--accent-yellow);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
-      height: 60px;
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      height: auto;
+      min-height: 60px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-
     .logo-area { 
       display: flex; 
       align-items: center; 
-      gap: 12px; 
+      gap: 8px; 
       font-weight: 800; 
-      letter-spacing: 2px; 
-      color: var(--accent-gold); 
-      font-size: 1.1rem;
-      text-shadow: 0 0 10px var(--gold-glow);
+      letter-spacing: 1px; 
+      color: var(--accent-yellow); 
+      font-size: 0.9rem;
     }
-
+    .logo-icon { 
+      width: 28px; height: 28px; border: 2px solid var(--accent-yellow); 
+      display: grid; place-items: center; font-size: 16px; flex-shrink: 0;
+    }
     .header-status {
       font-family: var(--font-mono); 
-      font-size: 11px; 
+      font-size: 10px; 
       color: var(--text-dim);
+      text-align: right;
+    }
+    footer {
+      background: #000;
+      border-top: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      gap: 15px;
-    }
-
-    footer {
-      background: #050608;
-      border-top: 1px solid var(--border-subtle);
-      padding: 15px 24px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-dim);
-      display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 12px;
+      padding: 10px 16px;
+      min-height: 40px;
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      flex-wrap: wrap;
     }
-
-    .status-indicator { display: flex; align-items: center; gap: 8px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+    .status-indicator { display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 5px var(--success); }
     
     main#app-viewport {
       flex: 1;
-      padding: 24px;
-      width: 100%;
-      max-width: 1200px;
+      padding: 12px;
+      overflow-y: auto;
+    }
+    .page, .emg-page {
+      max-width: 980px;
       margin: 0 auto;
-    }
-
-    .screen { 
-      opacity: 0; 
-      transform: translateY(10px); 
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      display: none;
-    }
-    .screen.active { 
-      display: block; 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
-
-    .glass-card {
       background: var(--panel-bg);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 24px;
+      border: 1px solid var(--border-color);
+      padding: 20px 12px 30px;
       position: relative;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
-
-    /* Corner Decorators */
-    .glass-card::before, .glass-card::after {
-      content: ''; position: absolute; width: 15px; height: 15px; pointer-events: none;
-    }
-    .glass-card::before {
-      top: 0; left: 0; border-top: 2px solid var(--accent-gold); border-left: 2px solid var(--accent-gold); border-radius: 4px 0 0 0;
-    }
-    .glass-card::after {
-      bottom: 0; right: 0; border-bottom: 2px solid var(--accent-gold); border-right: 2px solid var(--accent-gold); border-radius: 0 0 4px 0;
+    .page::before, .emg-page::before, .card::before, .select-card::before, .group::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid var(--accent-yellow);
+      border-left: 2px solid var(--accent-yellow);
+      pointer-events: none;
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin: 0 0 24px;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: 2rem;
       letter-spacing: 4px;
       text-transform: uppercase;
-      font-weight: 800;
-      color: var(--accent-gold);
-      text-shadow: 0 0 20px var(--gold-glow);
+      font-weight: 300;
+      color: var(--accent-yellow);
     }
-
-    .menu-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+    .intro {
+      max-width: 860px;
+      margin: 0 auto 24px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color);
+      padding: 14px 16px;
+      line-height: 1.4;
+      font-size: .98rem;
+      color: var(--text-dim);
     }
-    .full-row { grid-column: 1 / -1; }
-
-    .action-tile {
+    .stack {
+      max-width: 860px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 24px 15px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      color: var(--text-primary);
-      text-decoration: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      gap: 24px;
     }
-    .action-tile i {
-      font-size: 24px;
-      color: var(--accent-gold);
-      transition: all 0.3s ease;
-      filter: drop-shadow(0 0 5px var(--gold-glow));
-    }
-    .action-tile span {
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-size: 0.95rem;
-    }
-
-    .action-tile:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: var(--accent-gold);
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
-    }
-    .action-tile:hover i { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-gold)); }
-
-    .tile-red { border-bottom: 3px solid var(--danger); }
-    .tile-red i { color: var(--danger); filter: drop-shadow(0 0 5px rgba(235, 87, 87, 0.3)); }
-    .tile-red:hover { border-color: var(--danger); box-shadow: 0 10px 30px rgba(235, 87, 87, 0.15); }
-    
-    .tile-blue { border-bottom: 3px solid var(--accent-blue); }
-    .tile-blue i { color: var(--accent-blue); filter: drop-shadow(0 0 5px rgba(45, 156, 219, 0.3)); }
-    .tile-blue:hover { border-color: var(--accent-blue); box-shadow: 0 10px 30px rgba(45, 156, 219, 0.15); }
-
-    /* Tables & Content */
     .group {
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      margin-bottom: 24px;
-      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: rgba(255,255,255,0.02);
+      position: relative;
+      overflow-x: auto; /* Allow table horizontal scroll */
+      -webkit-overflow-scrolling: touch;
     }
     .group-title {
-      background: rgba(255,255,255,0.03);
-      padding: 12px;
-      font-size: 0.85rem;
       font-weight: 800;
-      color: var(--accent-gold);
-      border-bottom: 1px solid var(--border-subtle);
-      letter-spacing: 2px;
-    }
-    
-    table { width: 100%; border-collapse: collapse; }
-    td, th {
-      padding: 12px 16px;
-      border: 1px solid var(--border-subtle);
+      text-align: center;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-color);
       font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-yellow);
     }
-    th { background: rgba(0,0,0,0.4); text-align: left; color: var(--accent-blue); }
-
-    .quiz-input {
-      background: #000;
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      color: var(--accent-gold);
+    .title-red { color: var(--danger); }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    td, th {
+      border: 1px solid var(--border-color);
+      padding: 8px 10px;
+      vertical-align: middle;
+      font-size: .9rem;
+      color: var(--text-primary);
+    }
+    th { font-weight: 800; color: var(--accent-blue); }
+    
+    .center { text-align: center; }
+    .pink { background: var(--pink); }
+    .pink-strong { background: var(--pink-strong); }
+    .blue { background: var(--blue); }
+    .blue-strong { background: var(--blue-strong); }
+    .green { background: var(--green); }
+    .green-strong { background: var(--green-strong); }
+    .yellow { background: var(--yellow); }
+    .yellow-strong { background: var(--yellow-strong); }
+    .gray { background: var(--gray); }
+    .gray-strong { background: var(--gray-strong); }
+    
+    .quiz-input, .answer-short {
       width: 100%;
-      padding: 8px;
+      border: 1px solid transparent;
+      background: #000;
+      color: var(--accent-yellow);
       font-family: var(--font-mono);
       text-align: center;
-      transition: all 0.2s;
+      outline: none;
+      min-height: 30px;
+      padding: 4px;
+      transition: border-color 0.2s;
     }
     .quiz-input:focus {
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 10px var(--gold-glow);
-      outline: none;
+      border-color: var(--accent-yellow);
     }
 
-    /* Toolbar */
-    .emg-toolbar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-      background: rgba(0,0,0,0.3);
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
+    .range-answer { 
+      display: flex; 
+      align-items: center; 
+      gap: 5px; 
+      justify-content: center;
+      width: 100%;
     }
-    .nav-btn {
+    .range-answer.no-border input { border-color: transparent; }
+    .range-answer.no-border:focus-within input { border-color: var(--accent-yellow); }
+    .separator { 
+      font-size: 10px; 
+      color: var(--text-dim); 
+      flex-shrink: 0;
+      text-transform: lowercase;
+    }
+
+    button {
       background: transparent;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      padding: 10px 24px;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: bold;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
-    .nav-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--text-primary); }
+    button:hover {
+      background: var(--accent-yellow);
+      color: #000;
+    }
+    button:active { transform: translateY(1px); }
 
-    /* Date Picker Customization */
-    .date-input-wrapper {
-      background: #000;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      height: 50px;
-      margin-top: 8px;
-    }
-    .date-input-wrapper input {
-      background: transparent;
-      border: none !important;
-      color: var(--accent-gold);
+    .results-box {
+      max-width: 860px; margin: 0 auto 18px; background: rgba(0,0,0,0.4); border: 1px solid var(--accent-blue); padding: 12px 14px; font-weight: 700; color: var(--accent-blue);
       font-family: var(--font-mono);
-      flex: 1;
-      font-size: 1rem;
     }
-    .date-input-wrapper label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+
+    .toolbar, .emg-toolbar {
+      position: sticky; top: 0; z-index: 10; margin: 0 auto 12px; max-width: 980px;
+      display: flex; gap: 8px; justify-content: flex-end;
+      flex-wrap: wrap;
+      background: var(--bg-deep);
+      padding: 8px 4px; border-bottom: 1px solid var(--border-color);
+    }
+    .toolbar button, .emg-toolbar button {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px 12px;
+      font-size: 10px;
+    }
+    
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Menu Screens */
+    .menu-shell { min-height: calc(100vh - 120px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .menu-card { width: min(900px, 100%); background: var(--panel-bg); border: 1px solid var(--border-color); padding: 40px 16px; text-align: center; position: relative; }
+    .menu-card::before {
+      content: ''; position: absolute; top: -1px; left: -1px; width: 20px; height: 20px; border-top: 3px solid var(--accent-yellow); border-left: 3px solid var(--accent-yellow);
+    }
+    .menu-buttons { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 18px; max-width: 760px; margin: 0 auto; }
+    .menu-btn { 
+      min-height: 120px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); 
+      font-size: 1.1rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; letter-spacing: 2px;
+    }
+    .menu-btn.red { border-color: var(--danger); color: var(--danger); background: rgba(235, 87, 87, 0.08); }
+    .menu-btn.red:hover { background: var(--danger); color: #000; }
+    .menu-btn.blue { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(45, 156, 219, 0.08); }
+    .menu-btn.blue:hover { background: var(--accent-blue); color: #000; }
 
     /* Custom Confirmation Modal */
     #custom-confirm {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
       z-index: 10000; align-items: center; justify-content: center; padding: 20px;
-      backdrop-filter: blur(5px);
     }
     .modal-box {
-      background: #111; border: 2px solid var(--danger); padding: 40px;
-      max-width: 500px; width: 100%; text-align: center; border-radius: 16px;
-      box-shadow: 0 0 50px rgba(235, 87, 87, 0.2);
+      background: var(--panel-bg); border: 2px solid var(--danger); padding: 30px;
+      max-width: 500px; width: 100%; text-align: center; box-shadow: 0 0 30px rgba(235, 87, 87, 0.3);
+    }
+    .modal-box h2 { color: var(--danger); margin-bottom: 15px; font-size: 1.4rem; }
+    .modal-box p { margin-bottom: 25px; line-height: 1.5; color: var(--text-primary); }
+    .modal-actions { display: flex; gap: 15px; justify-content: center; }
+    .modal-btn { 
+      padding: 12px 24px; font-weight: 800; text-transform: uppercase; cursor: pointer; border: 1px solid var(--border-color); 
+      background: transparent; color: var(--text-primary); min-width: 120px;
+    }
+    .modal-btn.confirm { background: var(--danger); color: #000; border-color: var(--danger); }
+    .modal-btn:hover { opacity: 0.8; }
+
+    .emg-sheet { max-width: 860px; margin: 0 auto; border: 1px solid var(--border-color); background: #000; position: relative; }
+    .emg-sheet-title { 
+      text-align: center; font-weight: 800; padding: 12px; border-bottom: 1px solid var(--border-color); 
+      background: rgba(235, 87, 87, 0.1); color: var(--danger); font-size: 0.9rem; letter-spacing: 2px;
     }
     
-    .btn-primary {
-      background: var(--accent-gold);
-      color: #000;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-weight: 800;
+    .write-line { position: relative; min-height: 52px; padding: 0 12px; border-bottom: 1px solid var(--border-color); display: flex; align-items: flex-end; }
+    .write-line textarea { 
+      width: 100%; min-height: 40px; border: 0; resize: vertical; background: transparent; 
+      font-family: var(--font-mono); color: var(--accent-yellow); outline: none; padding: 8px 0 4px; line-height: 1.35; 
+    }
+
+    .select-card { max-width: 860px; margin: 0 auto; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); position: relative;}
+    .date-box label { font-size: 10px; text-transform: uppercase; color: var(--accent-yellow); letter-spacing: 1px; }
+    .date-box input { background: #000; border: 1px solid var(--border-color); color: var(--accent-yellow); padding: 10px 12px; font-family: var(--font-mono); }
+
+    .result-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 20px; position: relative; margin-bottom: 16px; }
+    .result-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 8px; height: 8px; border-top: 2px solid var(--accent-yellow); border-left: 2px solid var(--accent-yellow); }
+    .result-header { color: var(--accent-yellow); font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 10px; opacity: 0.8; }
+    .stats-card { background: rgba(45, 156, 219, 0.1); border: 1px solid var(--accent-blue); color: var(--text-primary); }
+
+    /* Custom Flatpickr Theme */
+    .flatpickr-calendar {
+      background: var(--panel-bg) !important;
+      border: 1px solid var(--border-color) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+      font-family: var(--font-mono) !important;
+    }
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.selected.nextMonthDay {
+      background: var(--accent-yellow) !important;
+      color: #000 !important;
+      border-color: var(--accent-yellow) !important;
+    }
+    .flatpickr-day:hover {
+      background: rgba(242, 201, 76, 0.2) !important;
+    }
+    .flatpickr-months .flatpickr-month, .flatpickr-weekday {
+      color: var(--accent-yellow) !important;
+      fill: var(--accent-yellow) !important;
+    }
+    .flatpickr-current-month .flatpickr-monthDropdown-months {
+      background: var(--panel-bg) !important;
+    }
+    .flatpickr-day { color: var(--text-primary) !important; }
+    .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: var(--text-dim) !important; }
+
+    /* Date Box adjustments for Icon */
+    .date-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: #000;
+      border: 1px solid var(--border-color);
+    }
+    .date-input-wrapper input {
+      background: transparent !important;
+      border: none !important;
+      flex: 1;
+      padding-right: 40px !important;
+    }
+    .calendar-icon-btn {
+      position: absolute;
+      right: 12px;
+      color: var(--accent-yellow);
+      display: flex;
+      align-items: center;
       cursor: pointer;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
     }
-    .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+    .calendar-icon-btn:hover { opacity: 1; }
 
-    /* Mobile Adjustments */
-    @media (max-width: 768px) {
-      .menu-buttons { grid-template-columns: 1fr; gap: 8px; }
-      h1 { font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 8px; }
-      main#app-viewport { padding: 6px; }
-      .glass-card { padding: 12px 8px; margin: 4px auto !important; }
-      .action-tile { padding: 10px 8px; gap: 4px; border-radius: 8px; }
-      .action-tile i { font-size: 16px; }
-      .action-tile span { font-size: 0.75rem; }
-      header { height: 40px; padding: 0 10px; }
-      .logo-area { font-size: 0.75rem; gap: 6px; }
-      .logo-area i { width: 14px !important; }
-      .hero-logo { max-width: 90px; margin-bottom: 4px; }
-      .header-status { gap: 6px; font-size: 8px; }
-      footer { padding: 6px 12px; font-size: 7px; gap: 8px; }
-      .emg-toolbar { margin-bottom: 12px; padding: 8px; gap: 8px; }
-      .nav-btn { padding: 6px 12px; font-size: 9px; }
-      .btn-primary { padding: 10px 16px; font-size: 10px; }
-      .intro { font-size: 10px; margin-bottom: 10px; }
-      .date-box { margin-bottom: 16px !important; }
-      .glass-card > div[style*="padding: 24px"] { padding: 12px !important; }
+    @media (max-width: 760px) {
+      .menu-buttons { grid-template-columns: 1fr; gap: 12px; }
+      .menu-card { padding: 32px 16px; }
+      h1 { font-size: 1.3rem; letter-spacing: 2px; }
+      .menu-btn { min-height: 70px; font-size: 0.85rem; }
+      .header-status { text-align: left; width: 100%; margin-top: -5px; }
+      .logo-area { font-size: 0.8rem; }
+      table { min-width: 280px; }
+      td, th { padding: 5px 6px; font-size: 0.75rem; }
+      .quiz-input, .answer-short { font-size: 0.75rem; min-height: 28px; padding: 2px; }
+      .range-answer { gap: 2px; }
+      .separator { font-size: 9px; }
+      .toolbar, .emg-toolbar { padding: 4px; }
+      .toolbar button, .emg-toolbar button { padding: 6px 8px; min-width: 60px; font-size: 9px; }
     }
-
-    /* Main Logo Image */
-    .hero-logo {
-      width: 100%;
-      max-width: 160px;
-      margin: 0 auto 10px;
-      display: block;
-      filter: drop-shadow(0 0 20px var(--gold-glow));
+    @media (max-width: 480px) {
+      .logo-area { font-size: 0.7rem; gap: 4px; }
+      .logo-icon { width: 20px; height: 20px; font-size: 12px; }
+      .header-status { font-size: 8px; }
+      h1 { font-size: 1.1rem; }
+      .menu-btn { min-height: 60px; font-size: 0.75rem; letter-spacing: 1px; }
     }
 </style>
 </head>
@@ -368,18 +396,10 @@
 
 <header>
   <div class="logo-area">
-    <i data-lucide="shield" style="color: var(--accent-gold); width: 20px;"></i>
-    UH-60M BLACK HAWK
+    UH-60M
   </div>
   <div class="header-status">
-    <div class="status-indicator">
-      <div class="status-dot"></div>
-      LINK: <span style="color: var(--success)">OK</span>
-    </div>
-    <div class="status-indicator">
-      <i data-lucide="cpu" style="width: 14px; opacity: 0.6"></i>
-      SYS: <span style="color: var(--accent-gold)">NOMINAL</span>
-    </div>
+    SECURE DATA LINK: <span style="color: var(--success)">ESTABLISHED</span>
   </div>
 </header>
 
@@ -398,22 +418,14 @@
 
 <!-- MENU SCREEN -->
 <section id="menu-screen" class="screen active">
-  <div class="glass-card" style="max-width: 600px; margin: 10px auto; text-align: center;">
-    <img src="/logo-m.png" class="hero-logo" alt="Black Hawk Logo" referrerPolicy="no-referrer">
-    <h1>OPERATIONAL INTERFACE</h1>
-    <div class="menu-buttons">
-      <button class="action-tile tile-red" type="button" onclick="showScreen('emergenciaDia')">
-        <i data-lucide="zap"></i>
-        <span>Emergência do Dia</span>
-      </button>
-      <button class="action-tile" type="button" onclick="showScreen('conferirRespostas')">
-        <i data-lucide="database"></i>
-        <span>Conferir Respostas</span>
-      </button>
-      <button class="action-tile tile-blue full-row" type="button" onclick="showScreen('treinamentoLimitacoes')">
-        <i data-lucide="activity"></i>
-        <span>Teste de Limitações</span>
-      </button>
+  <div class="menu-shell">
+    <div class="menu-card">
+      <h1>UH-60M</h1>
+      <div class="menu-buttons">
+        <button class="menu-btn red" type="button" onclick="showScreen('emergenciaDia')">Emergência do Dia</button>
+        <button class="menu-btn" type="button" onclick="showScreen('conferirRespostas')">Conferir Respostas</button>
+        <button class="menu-btn blue full-row" type="button" onclick="showScreen('treinamentoLimitacoes')">Teste de Limitações</button>
+      </div>
     </div>
   </div>
 </section>
@@ -421,33 +433,25 @@
 <!-- EMERGENCIA DO DIA SELECTOR -->
 <section id="emergenciaDia-screen" class="screen">
   <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('menu')">
-      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
-    </button>
+    <button type="button" onclick="showScreen('menu')">Menu Inicial</button>
   </div>
-  <div class="glass-card" style="max-width: 860px; margin: 0 auto;">
-    <h1>OPERATIONAL DATA</h1>
-    <div class="group">
-      <div class="group-title">CONFIGURAR PARÂMETROS DE MISSÃO</div>
-      <div style="padding: 24px;">
-        <div class="date-box" style="margin-bottom: 32px">
-          <label for="globalDate">DATA DO TREINAMENTO</label>
+  <div class="emg-page">
+    <h1>EMERGÊNCIA DO DIA</h1>
+    <div class="select-card">
+      <div class="emg-sheet-title">Configurar Data</div>
+      <div class="select-body">
+        <div class="date-box">
+          <label for="globalDate">Data do Treinamento</label>
           <div class="date-input-wrapper">
             <input id="globalDate" type="text" placeholder="YYYY-MM-DD" readonly />
             <div class="calendar-icon-btn" onclick="document.getElementById('globalDate')._flatpickr.open()">
-              <i data-lucide="calendar" style="width: 20px;"></i>
+              <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
             </div>
           </div>
         </div>
-        <div class="menu-buttons">
-          <button class="action-tile tile-red" type="button" onclick="showScreen('emergencias')">
-            <i data-lucide="alert-triangle"></i>
-            <span>Responder Emergências</span>
-          </button>
-          <button class="action-tile tile-blue" type="button" onclick="showScreen('limitacoesEnvio')">
-            <i data-lucide="clipboard-list"></i>
-            <span>Responder Limitações</span>
-          </button>
+        <div class="menu-buttons" style="max-width:none;">
+          <button class="menu-btn red" type="button" onclick="showScreen('emergencias')">Responder Emergências</button>
+          <button class="menu-btn blue" type="button" onclick="showScreen('limitacoesEnvio')">Responder Limitações</button>
         </div>
       </div>
     </div>
@@ -457,25 +461,14 @@
 <!-- CONFERIR RESPOSTAS MENU -->
 <section id="conferirRespostas-screen" class="screen">
   <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('menu')">
-      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
-    </button>
+    <button type="button" onclick="showScreen('menu')">Menu Inicial</button>
   </div>
-  <div class="glass-card" style="max-width: 860px; margin: 0 auto;">
-    <h1>INTEL REVIEW</h1>
-    <div class="menu-buttons">
-      <button class="action-tile tile-red" type="button" onclick="showScreen('resultadosEmergencias')">
-        <i data-lucide="archive"></i>
-        <span>Emergências</span>
-      </button>
-      <button class="action-tile tile-blue" type="button" onclick="showScreen('resultadosLimitacoes')">
-        <i data-lucide="pie-chart"></i>
-        <span>Limitações</span>
-      </button>
-      <button class="action-tile tile-red full-row" type="button" onclick="window.handleGlobalReset(event)">
-        <i data-lucide="trash-2"></i>
-        <span>ZERAR TUDO</span>
-      </button>
+  <div class="emg-page">
+    <h1>CONFERIR RESPOSTAS</h1>
+    <div class="menu-buttons" style="max-width:860px;margin:0 auto;">
+      <button class="menu-btn red" type="button" onclick="showScreen('resultadosEmergencias')">Emergências</button>
+      <button class="menu-btn blue" type="button" onclick="showScreen('resultadosLimitacoes')">Limitações</button>
+      <button class="menu-btn red full-row" type="button" onclick="window.handleGlobalReset(event)">ZERAR TUDO</button>
     </div>
   </div>
 </section>
@@ -483,21 +476,18 @@
 <!-- RESULTADOS EMERGENCIAS -->
 <section id="resultadosEmergencias-screen" class="screen">
   <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('conferirRespostas')">
-      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
-    </button>
+    <button type="button" onclick="showScreen('conferirRespostas')">Voltar</button>
   </div>
-  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
-    <h1>DATA ARCHIVE - EMERGENCIES</h1>
-    <div class="group">
-      <div class="group-title">FILTRAGEM DE REGISTROS</div>
-      <div style="padding: 24px;">
-        <div class="date-box">
-          <label for="filterDateEMG">SELECIONAR DATA</label>
+  <div class="emg-page">
+    <h1>RESPOSTAS - EMERGÊNCIAS</h1>
+    <div class="select-card" style="margin-bottom:24px;">
+      <div class="select-body">
+         <div class="date-box">
+          <label for="filterDateEMG">Filtrar por Data</label>
           <div class="date-input-wrapper">
             <input id="filterDateEMG" type="text" placeholder="YYYY-MM-DD" readonly />
             <div class="calendar-icon-btn" onclick="document.getElementById('filterDateEMG')._flatpickr.open()">
-              <i data-lucide="calendar" style="width: 20px;"></i>
+              <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
             </div>
           </div>
         </div>
@@ -510,21 +500,18 @@
 <!-- RESULTADOS LIMITACOES -->
 <section id="resultadosLimitacoes-screen" class="screen">
   <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('conferirRespostas')">
-      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
-    </button>
+    <button type="button" onclick="showScreen('conferirRespostas')">Voltar</button>
   </div>
-  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
-    <h1>SYSTEM LOGS - LIMITATIONS</h1>
-    <div class="group">
-      <div class="group-title">FILTRAGEM POR DATA</div>
-      <div style="padding: 24px;">
-        <div class="date-box">
-          <label for="filterDateLIM">DATA DO REGISTRO</label>
+  <div class="emg-page">
+    <h1>RESPOSTAS - LIMITAÇÕES</h1>
+    <div class="select-card" style="margin-bottom:24px;">
+      <div class="select-body">
+         <div class="date-box">
+          <label for="filterDateLIM">Filtrar por Data</label>
           <div class="date-input-wrapper">
             <input id="filterDateLIM" type="text" placeholder="YYYY-MM-DD" readonly />
             <div class="calendar-icon-btn" onclick="document.getElementById('filterDateLIM')._flatpickr.open()">
-              <i data-lucide="calendar" style="width: 20px;"></i>
+              <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
             </div>
           </div>
         </div>
@@ -534,77 +521,56 @@
   </div>
 </section>
 
-<!-- RESPONDER EMERGENCIAS -->
+<!-- SCREEN: RESPONDER EMERGENCIAS -->
 <section id="emergencias-screen" class="screen">
   <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('emergenciaDia')">
-      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
-    </button>
-    <button class="btn-primary" type="button" onclick="saveEmergencyEntries()">
-      <i data-lucide="send" style="width:14px"></i> TRANSMITIR RESPOSTAS
-    </button>
+    <button type="button" onclick="showScreen('emergenciaDia')">Voltar</button>
+    <button type="button" onclick="saveEmergencyEntries()">Enviar</button>
   </div>
-  <div class="glass-card" style="max-width: 860px; margin: 0 auto; padding: 0;">
-    <h1 style="margin-top: 30px; margin-bottom: 10px;">PROCEDIMENTOS</h1>
-    <div class="group-title" style="background: rgba(235, 87, 87, 0.1); color: var(--danger); text-align: center;">
-      <i data-lucide="alert-octagon" style="width: 16px; margin-right: 8px;"></i>
-      OPERATIONAL EMERGENCY PROCEDURES
+  <div class="emg-page">
+    <h1 id="titleEMG">EMERGÊNCIAS</h1>
+    <div class="emg-sheet">
+      <div class="emg-sheet-title">Descreva os procedimentos</div>
+      <div id="emgLines"></div>
     </div>
-    <div id="emgLines" style="background: #000; min-height: 400px; padding-bottom: 20px;"></div>
   </div>
 </section>
 
 <!-- SCREEN: RESPONDER LIMITACOES (MODO ENVIO) -->
 <section id="limitacoesEnvio-screen" class="screen">
-  <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('emergenciaDia')">
-      <i data-lucide="chevron-left" style="width:14px"></i> VOLTAR
-    </button>
-    <button class="btn-primary" type="button" onclick="saveLimitationsEntries()">
-      <i data-lucide="send" style="width:14px"></i> TRANSMITIR DADOS
-    </button>
-  </div>
-  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
-    <h1>OPERATIONAL LIMITATIONS - REPORT</h1>
-    <div id="limitationsForm" class="stack"></div>
-  </div>
+<div class="toolbar">
+    <button onclick="showScreen('emergenciaDia')" type="button">Voltar</button>
+    <button onclick="saveLimitationsEntries()" type="button">Enviar</button>
+</div>
+<main class="page">
+<h1 id="titleLIM">LIMITAÇÕES</h1>
+<section id="limitationsForm" class="stack"></section>
+</main>
 </section>
 
 <!-- SCREEN: TREINAMENTO LIVRE (OPCIONAL) -->
 <section id="treinamentoLimitacoes-screen" class="screen">
-  <div class="emg-toolbar">
-    <button class="nav-btn" type="button" onclick="showScreen('menu')">
-      <i data-lucide="chevron-left" style="width:14px"></i> MENU INICIAL
-    </button>
-    <button class="btn-primary" type="button" onclick="checkTrainingAnswers()">
-      <i data-lucide="check-circle" style="width:14px"></i> VERIFICAR
-    </button>
-    <button class="nav-btn" type="button" id="answerKeyBtn" onclick="toggleAnswerKey()">
-      <i data-lucide="help-circle" style="width:14px"></i> GABARITO
-    </button>
-    <button class="nav-btn" type="button" onclick="clearTrainingForm()">
-      <i data-lucide="refresh-cw" style="width:14px"></i> LIMPAR
-    </button>
-  </div>
-  <div class="glass-card" style="max-width: 980px; margin: 0 auto;">
-    <h1>SIMULAÇÃO DE LIMITAÇÕES</h1>
-    <div class="intro">Simulação de alto desempenho. Preencha os parâmetros e execute a verificação.</div>
-    <div class="results-box" id="trainingResultsBox">AGUARDANDO INPUT...</div>
-    <div id="trainingForm" class="stack"></div>
-  </div>
+<div class="toolbar">
+    <button onclick="showScreen('menu')" type="button">Menu Inicial</button>
+    <button onclick="checkTrainingAnswers()" type="button">Conferir</button>
+    <button id="answerKeyBtn" onclick="toggleAnswerKey()" type="button">Gabarito</button>
+    <button onclick="clearTrainingForm()" type="button">Limpar</button>
+</div>
+<main class="page">
+<h1>TESTE DE LIMITAÇÕES</h1>
+<div class="intro">Treinamento livre sem registro. Preencha os campos e confira.</div>
+<div class="results-box" id="trainingResultsBox">Preencha as respostas e clique em “Conferir”.</div>
+<section id="trainingForm" class="stack"></section>
+</main>
 </section>
 
 <footer>
   <div class="status-indicator">
-    <div class="status-dot"></div>
-    ENGINEERING: NOMINAL
+    <div class="status-dot"></div> 
+    STORAGE ENGINE: LOCAL_STORAGE_EMULATOR
   </div>
-  <div style="flex: 1; text-align: center; opacity: 0.5; font-size: 8px;">
-    BLACK HAWK TRAINING SYSTEM &copy; 2026 - SECURE OPS
-  </div>
-  <div class="status-indicator">
-    VER: 4.2.0-BRAVO
-  </div>
+  <div>VRS: 4.2.0-BRAVO</div>
+  <div>COORDINATES: 23°32'51"S 46°38'10"W</div>
 </footer>
 
 <script>
@@ -930,19 +896,14 @@
       const target = document.getElementById(map[name]);
       if(target) target.classList.add('active');
 
-      // Re-trigger icon rendering
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-
       if(name === 'emergencias') {
         const date = document.getElementById('globalDate').value;
-        const mainH1 = document.querySelector('#emergencias-screen h1');
-        if(mainH1) mainH1.textContent = `PROCEDIMENTOS: ${window.getFormattedDate(date)}`;
+        document.getElementById('titleEMG').textContent = `EMERGÊNCIAS - ${window.getFormattedDate(date)}`;
         window.clearEmergencyInputs();
       }
       if(name === 'limitacoesEnvio') {
          const date = document.getElementById('globalDate').value;
-         const mainH1 = document.querySelector('#limitacoesEnvio-screen h1');
-         if(mainH1) mainH1.textContent = `RELATÓRIO: ${window.getFormattedDate(date)}`;
+         document.getElementById('titleLIM').textContent = `LIMITAÇÕES - ${window.getFormattedDate(date)}`;
          window.clearLimitationsInputs('limitationsForm');
       }
       if(name === 'resultadosEmergencias') window.loadEmergenciesResults();
