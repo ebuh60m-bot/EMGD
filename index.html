@@ -1275,7 +1275,7 @@
 <!-- 17. PRESSÃO MÁX ABASTECIMENTO -->
 <div class="group">
 <div class="group-title yellow">PRESSÃO MÁX ABASTECIMENTO</div>
-<table><tr class="yellow"><td class="center">300 Galões por minuto a <input class="answer-short quiz-input" data-answer="55" placeholder="PSI"/> PSI</td></tr></table>
+<table><tr class="yellow"><td class="center"><div style="display:flex; align-items:center; justify-content:center; gap:8px;">300 Galões por minuto a <input class="quiz-input" data-answer="55" style="width: 35px; min-height: 25px;" placeholder="PSI"/> PSI</div></td></tr></table>
 </div>
 
 <!-- 18. LIMITAÇÕES DE POUSO -->
@@ -1283,40 +1283,77 @@
 <div class="group-title gray">LIMITAÇÕES DE POUSO</div>
 <table>
 <tr class="gray">
-  <td style="width:50%">Nariz para cima, esquerda ou direita</td>
-  <td>
-    <div class="range-answer" style="justify-content:flex-start;">
-      <input class="answer-short quiz-input" data-answer="15" placeholder="°"/> <span>° inclinação</span>
+  <td colspan="2" style="font-size: 0.8rem; padding: 8px 10px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px;">
+      <span style="text-align: left;">Nariz para cima, esquerda ou direita</span>
+      <div style="display: flex; align-items: center; white-space: nowrap; flex-shrink: 0;">
+        <input class="quiz-input" data-answer="15" style="width: 26px; min-height: 22px; margin: 0 4px 0 0;" placeholder="°"/>
+        <span>° inclinação</span>
+      </div>
     </div>
   </td>
 </tr>
 <tr class="gray">
-  <td colspan="2">
-    <div class="range-answer no-border" style="justify-content:center;">
+  <td colspan="2" style="font-size: 0.8rem; padding: 8px 10px;">
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; gap: 4px; white-space: nowrap;">
       <span>(reduzir</span>
-      <input class="answer-short quiz-input" data-answer="2" placeholder="°"/> <span>° para cada</span>
-      <input class="answer-short quiz-input" data-answer="5" placeholder="KT"/> <span>KT de vento)</span>
+      <input class="quiz-input" data-answer="2" style="width: 26px; min-height: 22px;" placeholder="°"/>
+      <span>° para cada</span>
+      <input class="quiz-input" data-answer="5" style="width: 30px; min-height: 22px;" placeholder="KT"/>
+      <span>KT de vento)</span>
     </div>
   </td>
 </tr>
 <tr class="gray">
-  <td>Nariz para baixo</td>
-  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="6" placeholder="°"/><span>° inclinação</span></div></td>
+  <td style="width: 55%; font-size: 0.85rem;">Nariz para baixo</td>
+  <td><div class="range-answer" style="justify-content:flex-start; width: auto;"><input class="quiz-input" data-answer="6" style="width: 35px; min-height:25px;" placeholder="°"/><span style="margin-left:5px">° inclinação</span></div></td>
+</tr>
+<tr class="gray" style="border-bottom: 4px double var(--border-color);">
+  <td style="padding-bottom: 25px; font-size: 0.85rem;">Vento de cauda máx (Nariz p/ baixo)</td>
+  <td style="padding-bottom: 25px;"><div class="range-answer" style="justify-content:flex-start; width: auto;"><input class="quiz-input" data-answer="15" style="width: 40px; min-height:25px;" placeholder="KT"/><span style="margin-left:5px">KT</span></div></td>
 </tr>
 <tr class="gray">
-  <td>Vento de cauda máx (Nariz p/ baixo)</td>
-  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="15" placeholder="KT"/><span>KT</span></div></td>
+  <td class="center" style="padding: 12px 10px;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap;">
+      Peso de até <input class="quiz-input" data-answer="16825" style="width: 55px; min-height: 25px;" placeholder="lb"/> libras
+    </div>
+  </td>
+  <td style="padding: 12px 10px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+      Nivelado — <input class="quiz-input" data-answer="540" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+    </div>
+  </td>
 </tr>
 <tr class="gray">
-  <td class="center" rowspan="2">Peso de até <input class="answer-short quiz-input" data-answer="16825" placeholder="lb"/> libras</td>
-  <td>Nivelado — <input class="answer-short quiz-input" data-answer="540" placeholder="ft/min"/> ft/min</td>
+  <td class="center" style="border-top: 1px solid var(--border-color); padding: 12px 10px;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap;">
+      Peso maior que <input class="quiz-input" data-answer="16825" style="width: 55px; min-height: 25px;" placeholder="lb"/> libras
+    </div>
+  </td>
+  <td style="border-top: 1px solid var(--border-color); padding: 12px 10px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+      Inclinado — <input class="quiz-input" data-answer="360" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+    </div>
+  </td>
 </tr>
-<tr class="gray"><td>Inclinado — <input class="answer-short quiz-input" data-answer="360" placeholder="ft/min"/> ft/min</td></tr>
 <tr class="gray">
-  <td class="center" rowspan="2">Peso maior que <input class="answer-short quiz-input" data-answer="16825" placeholder="lb"/> libras</td>
-  <td>Nivelado — <input class="answer-short quiz-input" data-answer="300" placeholder="ft/min"/> ft/min</td>
+  <td colspan="2" style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 5px;"></td>
 </tr>
-<tr class="gray"><td>Inclinado — <input class="answer-short quiz-input" data-answer="180" placeholder="ft/min"/> ft/min</td></tr>
+<tr class="gray">
+  <td rowspan="2"></td>
+  <td style="padding: 12px 10px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+      Nivelado — <input class="quiz-input" data-answer="300" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+    </div>
+  </td>
+</tr>
+<tr class="gray">
+  <td style="padding: 12px 10px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+      Inclinado — <input class="quiz-input" data-answer="180" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+    </div>
+  </td>
+</tr>
 </table>
 </div>
 
@@ -1325,11 +1362,10 @@
 <div class="group-title green">MANOBRAS PROIBIDAS</div>
 <table>
   <tr class="green">
-    <td class="center" style="padding: 15px 10px;">
+    <td class="center" style="padding: 20px 10px; line-height: 1.6;">
       Mudanças de proa no pairado maior que 
-      <input class="answer-short quiz-input" data-answer="30" placeholder="°"/> ° 
-      <input class="answer-short quiz-input" data-answer="30" placeholder="°"/> ° 
-      por segundo são proibidas
+      <input class="quiz-input" data-answer="30" style="width: 35px; min-height: 25px; display: inline-block; margin: 0 5px;" placeholder="°"/>
+      ° por segundo são proibidas
     </td>
   </tr>
 </table>
@@ -1354,9 +1390,9 @@
 <div class="group">
 <div class="group-title blue">GANCHO</div>
 <table>
-<tr class="blue"><td>Carga máxima</td><td><div class="answer-wrap"><input class="answer-short quiz-input" data-answer="9000" placeholder="lb"/><span>libras</span></div></td></tr>
-<tr class="blue"><td>Bank máximo</td><td><input class="answer quiz-input" data-answer="30" placeholder="°"/></td></tr>
-<tr class="blue"><td>Voo à retaguarda</td><td><div class="answer-wrap"><input class="answer-short quiz-input" data-answer="35" placeholder="KT"/><span>KT</span></div></td></tr>
+<tr class="blue"><td>Carga máxima</td><td><div style="display:flex; align-items:center; gap:8px; white-space:nowrap;"><input class="quiz-input" data-answer="9000" style="width: 60px; min-height: 25px;" placeholder="lb"/><span>libras</span></div></td></tr>
+<tr class="blue"><td>Bank máximo</td><td><div style="display:flex; align-items:center; gap:8px;"><input class="quiz-input" data-answer="30" style="width: 35px; min-height: 25px;" placeholder="°"/><span>° de bank</span></div></td></tr>
+<tr class="blue"><td>Voo à retaguarda</td><td><div style="display:flex; align-items:center; gap:8px; white-space:nowrap;"><input class="quiz-input" data-answer="35" style="width: 40px; min-height: 25px;" placeholder="KT"/><span>KT</span></div></td></tr>
 </table>
 </div>
 
