@@ -46,6 +46,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
     header {
       background-color: var(--panel-bg);
@@ -103,6 +104,7 @@
       flex: 1;
       padding: 12px;
       overflow-y: auto;
+      overflow-x: hidden;
     }
     .page, .emg-page {
       max-width: 980px;
@@ -168,12 +170,12 @@
       color: var(--accent-yellow);
     }
     .title-red { color: var(--danger); }
-    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    table { width: 100%; border-collapse: collapse; }
     td, th {
       border: 1px solid var(--border-color);
-      padding: 8px 10px;
+      padding: 6px 4px;
       vertical-align: middle;
-      font-size: .9rem;
+      font-size: .8rem;
       color: var(--text-primary);
     }
     th { font-weight: 800; color: var(--accent-blue); }
@@ -257,6 +259,11 @@
       padding: 8px 12px;
       font-size: 10px;
     }
+    
+/* Utility for inline table inputs */
+    .inline-wrap { display: flex; align-items: center; gap: 4px; white-space: nowrap; justify-content: flex-start; }
+    .inline-wrap input { width: 45px !important; min-height: 22px !important; flex-shrink: 0; }
+    .inline-wrap.wide input { width: 65px !important; }
     
     .screen { display: none; }
     .screen.active { display: block; }
@@ -383,11 +390,11 @@
       .menu-btn { min-height: 70px; font-size: 0.85rem; }
       .header-status { text-align: left; width: 100%; margin-top: -5px; }
       .logo-area { font-size: 0.8rem; }
-      table { min-width: 280px; }
-      td, th { padding: 5px 6px; font-size: 0.75rem; }
-      .quiz-input, .answer-short { font-size: 0.75rem; min-height: 28px; padding: 2px; }
-      .range-answer { gap: 2px; }
-      .separator { font-size: 9px; }
+      table { min-width: 100%; width: 100%; table-layout: auto; }
+      td, th { padding: 4px 2px; font-size: 0.7rem; }
+      .quiz-input, .answer-short { font-size: 0.7rem; min-height: 24px; padding: 2px; }
+      .range-answer { gap: 1px; }
+      .separator { font-size: 8px; }
       .toolbar, .emg-toolbar { padding: 4px; }
       .toolbar button, .emg-toolbar button { padding: 6px 8px; min-width: 60px; font-size: 9px; }
     }
@@ -1586,10 +1593,10 @@
 <div class="group-title gray">LIMITAÇÕES DE POUSO</div>
 <table>
 <tr class="gray">
-  <td colspan="2" style="font-size: 0.8rem; padding: 8px 10px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px;">
-      <span style="text-align: left;">Nariz para cima, esquerda ou direita</span>
-      <div style="display: flex; align-items: center; white-space: nowrap; flex-shrink: 0;">
+  <td colspan="2" style="font-size: 0.75rem; padding: 10px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+      <span>Nariz p/ cima, esquerda ou direita</span>
+      <div style="display: flex; align-items: center; white-space: nowrap;">
         <input class="quiz-input" data-answer="15" style="width: 26px; min-height: 22px; margin: 0 4px 0 0;" placeholder="°"/>
         <span>° inclinação</span>
       </div>
@@ -1597,63 +1604,75 @@
   </td>
 </tr>
 <tr class="gray">
-  <td colspan="2" style="font-size: 0.8rem; padding: 8px 10px;">
-    <div style="display: flex; align-items: center; justify-content: center; width: 100%; gap: 4px; white-space: nowrap;">
+  <td colspan="2" style="font-size: 0.75rem; padding: 8px 10px;">
+    <div style="display: flex; align-items: center; justify-content: flex-start; gap: 4px; white-space: nowrap;">
       <span>(reduzir</span>
-      <input class="quiz-input" data-answer="2" style="width: 26px; min-height: 22px;" placeholder="°"/>
-      <span>° para cada</span>
-      <input class="quiz-input" data-answer="5" style="width: 30px; min-height: 22px;" placeholder="KT"/>
-      <span>KT de vento)</span>
+      <input class="quiz-input" data-answer="2" style="width: 22px; min-height: 22px;" placeholder="°"/>
+      <span>° p/ cada</span>
+      <input class="quiz-input" data-answer="5" style="width: 26px; min-height: 22px;" placeholder="KT"/>
+      <span>KT vento)</span>
     </div>
   </td>
 </tr>
 <tr class="gray">
-  <td style="width: 55%; font-size: 0.85rem;">Nariz para baixo</td>
-  <td><div class="range-answer" style="justify-content:flex-start; width: auto;"><input class="quiz-input" data-answer="6" style="width: 35px; min-height:25px;" placeholder="°"/><span style="margin-left:5px">° inclinação</span></div></td>
-</tr>
-<tr class="gray" style="border-bottom: 4px double var(--border-color);">
-  <td style="padding-bottom: 25px; font-size: 0.85rem;">Vento de cauda máx (Nariz p/ baixo)</td>
-  <td style="padding-bottom: 25px;"><div class="range-answer" style="justify-content:flex-start; width: auto;"><input class="quiz-input" data-answer="15" style="width: 40px; min-height:25px;" placeholder="KT"/><span style="margin-left:5px">KT</span></div></td>
-</tr>
-<tr class="gray">
-  <td class="center" style="padding: 12px 10px;">
-    <div style="display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap;">
-      Peso de até <input class="quiz-input" data-answer="16825" style="width: 55px; min-height: 25px;" placeholder="lb"/> libras
-    </div>
-  </td>
-  <td style="padding: 12px 10px;">
-    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
-      Nivelado — <input class="quiz-input" data-answer="540" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+  <td colspan="2" style="font-size: 0.75rem; padding: 10px;">
+    <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px;">
+      <span>Nariz p/ baixo</span>
+      <div style="display: flex; align-items: center; white-space: nowrap;">
+        <input class="quiz-input" data-answer="6" style="width: 26px; min-height: 22px; margin: 0 4px 0 0;" placeholder="°"/>
+        <span>° inclinação</span>
+      </div>
     </div>
   </td>
 </tr>
-<tr class="gray">
-  <td class="center" style="border-top: 1px solid var(--border-color); padding: 12px 10px;">
-    <div style="display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap;">
-      Peso maior que <input class="quiz-input" data-answer="16825" style="width: 55px; min-height: 25px;" placeholder="lb"/> libras
-    </div>
-  </td>
-  <td style="border-top: 1px solid var(--border-color); padding: 12px 10px;">
-    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
-      Inclinado — <input class="quiz-input" data-answer="360" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+<tr class="gray" style="border-bottom: 3px solid var(--border-color);">
+  <td colspan="2" style="font-size: 0.75rem; padding: 10px;">
+    <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px;">
+      <span>Vento de cauda máx (nariz p/ baixo)</span>
+      <div style="display: flex; align-items: center; white-space: nowrap;">
+        <input class="quiz-input" data-answer="15" style="width: 35px; min-height: 22px; margin: 0 4px 0 0;" placeholder="KT"/>
+        <span>KT</span>
+      </div>
     </div>
   </td>
 </tr>
+
 <tr class="gray">
-  <td colspan="2" style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 5px;"></td>
-</tr>
-<tr class="gray">
-  <td rowspan="2"></td>
-  <td style="padding: 12px 10px;">
-    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
-      Nivelado — <input class="quiz-input" data-answer="300" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+  <td rowspan="2" style="width: 45%; vertical-align: middle; padding: 10px; border-right: 1px solid var(--border-color);">
+    <div style="display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 0.75rem;">
+      Até <input class="quiz-input" data-answer="16825" style="width: 45px; min-height: 22px;" placeholder="lb"/> lb
+    </div>
+  </td>
+  <td style="padding: 10px 8px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-size: 0.75rem;">
+      Nivelado — <input class="quiz-input" data-answer="540" style="width: 38px; min-height: 22px;" placeholder="ft/min"/> ft
     </div>
   </td>
 </tr>
 <tr class="gray">
-  <td style="padding: 12px 10px;">
-    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
-      Inclinado — <input class="quiz-input" data-answer="180" style="width: 45px; min-height: 25px;" placeholder="ft/min"/> ft/min
+  <td style="padding: 10px 8px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-size: 0.75rem;">
+      Inclinado — <input class="quiz-input" data-answer="360" style="width: 38px; min-height: 22px;" placeholder="ft/min"/> ft
+    </div>
+  </td>
+</tr>
+
+<tr class="gray" style="border-top: 5px solid var(--bg-deep);">
+  <td rowspan="2" style="vertical-align: middle; padding: 10px; border-right: 1px solid var(--border-color);">
+    <div style="display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 0.75rem;">
+      > <input class="quiz-input" data-answer="16825" style="width: 45px; min-height: 22px;" placeholder="lb"/> lb
+    </div>
+  </td>
+  <td style="padding: 10px 8px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-size: 0.75rem;">
+      Nivelado — <input class="quiz-input" data-answer="300" style="width: 38px; min-height: 22px;" placeholder="ft/min"/> ft
+    </div>
+  </td>
+</tr>
+<tr class="gray">
+  <td style="padding: 10px 8px;">
+    <div style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-size: 0.75rem;">
+      Inclinado — <input class="quiz-input" data-answer="180" style="width: 38px; min-height: 22px;" placeholder="ft/min"/> ft
     </div>
   </td>
 </tr>
@@ -1721,38 +1740,38 @@
 <div class="group">
 <div class="group-title blue">Flight Director — BASIC MODES</div>
 <table>
-<tr class="pink"><td>IAS Hold</td><td> Entre <input class="answer-short quiz-input" data-answer="50" placeholder="KIAS"/> e 150 KIAS</td></tr>
-<tr class="green-strong"><td>RALT Hold</td><td> de 0 a <input class="answer-short quiz-input" data-answer="1500" placeholder="ft"/> ft AGL</td></tr>
-<tr class="pink"><td>VS Hold</td><td> Máx ± <input class="answer-short quiz-input" data-answer="2000" placeholder="FPM"/> FPM</td></tr>
-<tr class="gray-strong"><td>GA (Go Around)</td><td> Razão de <input class="answer-short quiz-input" data-answer="750" placeholder="fpm"/> fpm</td></tr>
+<tr class="pink"><td>IAS Hold</td><td><div class="inline-wrap">Entre <input class="answer-short quiz-input" data-answer="50" placeholder="KIAS"/> e 150 KIAS</div></td></tr>
+<tr class="green-strong"><td>RALT Hold</td><td><div class="inline-wrap">de 0 a <input class="answer-short quiz-input" data-answer="1500" placeholder="ft"/> ft AGL</div></td></tr>
+<tr class="pink"><td>VS Hold</td><td><div class="inline-wrap">Máx ± <input class="answer-short quiz-input" data-answer="2000" placeholder="FPM"/> FPM</div></td></tr>
+<tr class="gray-strong"><td>GA (Go Around)</td><td><div class="inline-wrap">Razão de <input class="answer-short quiz-input" data-answer="750" placeholder="fpm"/> fpm</div></td></tr>
 </table>
 </div>
 
 <div class="group">
 <div class="group-title blue">HOVER MODES</div>
 <table>
-<tr class="pink"><td>HVR DECL Engajamento</td><td> Abaixo de <input class="answer-short quiz-input" data-answer="60" placeholder="KIAS"/> KIAS</td></tr>
-<tr class="pink"><td>Desaceleração fixa</td><td> <input class="answer-short quiz-input" data-answer="2.5" placeholder="kts/sec"/> kts/sec</td></tr>
-<tr class="gray"><td>HVR VEL (Frente)</td><td> Mantém até <input class="answer-short quiz-input" data-answer="60" placeholder="kts"/> kts</td></tr>
-<tr class="gray"><td>HVR VEL (Trás/Lat)</td><td> Mantém até <input class="answer-short quiz-input" data-answer="20" placeholder="kts"/> kts</td></tr>
+<tr class="pink"><td>HVR DECL Engajamento</td><td><div class="inline-wrap">Abaixo de <input class="answer-short quiz-input" data-answer="60" placeholder="KIAS"/> KIAS</div></td></tr>
+<tr class="pink"><td>Desaceleração fixa</td><td><div class="inline-wrap wide"><input class="answer-short quiz-input" data-answer="2.5" placeholder="kts/sec"/> kts/sec</div></td></tr>
+<tr class="gray"><td>HVR VEL (Frente)</td><td><div class="inline-wrap">Mantém até <input class="answer-short quiz-input" data-answer="60" placeholder="kts"/> kts</div></td></tr>
+<tr class="gray"><td>HVR VEL (Trás/Lat)</td><td><div class="inline-wrap">Mantém até <input class="answer-short quiz-input" data-answer="20" placeholder="kts"/> kts</div></td></tr>
 </table>
 </div>
 
 <div class="group">
 <div class="group-title blue">Z-Axis Plunge</div>
 <table>
-<tr class="pink"><td>Abaixo de 60 KIAS</td><td>HVR <input class="answer quiz-input" data-answer="DECL" placeholder="modo"/></td></tr>
-<tr class="yellow"><td>Entre 60 e 80 KIAS</td><td>Mantém IAS de <input class="answer-short quiz-input" data-answer="80" placeholder="KIAS"/> KIAS</td></tr>
-<tr class="gray"><td>Entre 80 e 120 KIAS</td><td>Mantém a IAS <input class="answer quiz-input" data-answer="ATUAL" placeholder="modo"/></td></tr>
-<tr class="green-strong"><td>Acima de 120 KIAS</td><td>Mantém IAS de <input class="answer-short quiz-input" data-answer="120" placeholder="KIAS"/> KIAS</td></tr>
+<tr class="pink"><td>Abaixo de 60 KIAS</td><td><div class="inline-wrap">HVR <input class="answer quiz-input" data-answer="DECL" placeholder="modo"/></div></td></tr>
+<tr class="yellow"><td>Entre 60 e 80 KIAS</td><td><div class="inline-wrap">Mantém IAS de <input class="answer-short quiz-input" data-answer="80" placeholder="KIAS"/> KIAS</div></td></tr>
+<tr class="gray"><td>Entre 80 e 120 KIAS</td><td><div class="inline-wrap">Mantém a IAS <input class="answer quiz-input" data-answer="ATUAL" placeholder="modo"/></div></td></tr>
+<tr class="green-strong"><td>Acima de 120 KIAS</td><td><div class="inline-wrap">Mantém IAS de <input class="answer-short quiz-input" data-answer="120" placeholder="KIAS"/> KIAS</div></td></tr>
 </table>
 </div>
 
 <div class="group">
 <div class="group-title blue">POSN</div>
 <table>
-<tr class="yellow"><td>Beep trim < 1 seg.</td><td>Desloc. de <input class="answer-short quiz-input" data-answer="2" placeholder="ft"/> ft</td></tr>
-<tr class="yellow"><td>Beep trim > 1 seg.</td><td>Muda para o modo <input class="answer quiz-input" data-answer="VEL" placeholder="modo"/></td></tr>
+<tr class="yellow"><td>Beep trim < 1 seg.</td><td><div class="inline-wrap">Desloc. de <input class="answer-short quiz-input" data-answer="2" placeholder="ft"/> ft</div></td></tr>
+<tr class="yellow"><td>Beep trim > 1 seg.</td><td><div class="inline-wrap">Muda para o modo <input class="answer quiz-input" data-answer="VEL" placeholder="modo"/></div></td></tr>
 </table>
 </div>
 
