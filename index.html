@@ -772,8 +772,23 @@
       const qList = [];
       const groups = temp.querySelectorAll('.group');
       
+      const forceGrouped = ["BACKUP HYD PUMP", "LIMITAÇÕES DE POUSO", "STARTER"];
+
       groups.forEach(group => {
         const category = group.querySelector('.group-title').textContent.trim();
+        
+        if (forceGrouped.includes(category)) {
+           const inputs = group.querySelectorAll('.quiz-input');
+           const table = group.querySelector('table');
+           qList.push({
+             category: category,
+             label: `Preencha todas as limitações de: ${category}`,
+             rowHtml: `<div class="group" style="border:none; background:transparent; width:100%; margin:0;"><table style="width:100%; border-collapse:collapse; border:1px solid var(--border-color);">${table.innerHTML}</table></div>`,
+             answers: Array.from(inputs).map(i => i.dataset.answer)
+           });
+           return;
+        }
+
         const rows = group.querySelectorAll('tr');
         
         let activeRowspan = "";
