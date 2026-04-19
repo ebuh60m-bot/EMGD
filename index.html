@@ -135,6 +135,9 @@
       font-weight: 300;
       color: var(--accent-yellow);
     }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; letter-spacing: 2px; }
+    }
     .intro {
       max-width: 860px;
       margin: 0 auto 24px;
@@ -1460,11 +1463,14 @@
             background-color: #3d0000;
             background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.03) 10px, rgba(255, 255, 255, 0.03) 20px);
             border: 2px dashed #ff0000;
-            padding: 20px;
+            padding: 15px;
             margin: 15px 0;
             display: flex;
             flex-direction: column;
             gap: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: hidden;
           }
           .emg-hachurado .emg-input-line {
              border-bottom-color: rgba(255,255,255,0.4);
@@ -1602,7 +1608,7 @@
                 <input class="emg-training-input emg-input-line" data-answer="EXTINGUISHER SWITCH" placeholder="..." style="flex: 2;" />
                 <span style="flex-shrink: 0;">-</span>
                 <input class="emg-training-input emg-input-line" data-answer="MAIN OU AUX" placeholder="..." style="flex: 1;" />
-                <span style="color: #fff; font-size: 0.8rem; white-space: nowrap;">(como apropriado)</span>
+                <span style="color: #fff; font-size: 0.8rem;">(como apropriado)</span>
               </div>
               <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
                 <span style="flex-shrink: 0;">-</span>
@@ -1769,7 +1775,7 @@
                 <input class="emg-training-input emg-input-line" data-answer="PCL (MOTOR AFETADO) OU COLETIVO" placeholder="..." style="flex: 2;" />
                 <span style="flex-shrink: 0;">-</span>
                 <input class="emg-training-input emg-input-line" data-answer="AJUSTAR" placeholder="..." style="flex: 1;" />
-                <span style="color: #fff; font-size: 0.8rem; white-space: nowrap;">(conforme necessário para controlar NP e NR)</span>
+                <span style="color: #fff; font-size: 0.8rem;">(conforme necessário para controlar NP e NR)</span>
               </div>
             </div>
             
@@ -1836,7 +1842,7 @@
                 <input class="emg-training-input emg-input-line" data-answer="COLETIVO" placeholder="..." style="flex: 1;" />
                 <span style="flex-shrink: 0;">-</span>
                 <input class="emg-training-input emg-input-line" data-answer="AUMENTAR" placeholder="..." style="flex: 2;" />
-                <span style="color: #fff; font-size: 0.8rem; white-space: nowrap;">(a NR irá diminuir)</span>
+                <span style="color: #fff; font-size: 0.8rem;">(a NR irá diminuir)</span>
               </div>
               <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
                 <span style="flex-shrink: 0;">-</span>
@@ -1908,20 +1914,42 @@
           .emg-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            padding: 30px;
+            padding: 20px;
             margin-bottom: 25px;
             border-radius: 4px;
             max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto 25px;
           }
           .emg-card-title {
             font-weight: 900;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 25px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-primary);
+            line-height: 1.3;
+          }
+          .emg-line-with-bullet {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+          }
+          @media (max-width: 600px) {
+            .emg-card { padding: 12px; }
+            .emg-hachurado { padding: 10px; }
+            .emg-card-title { font-size: 1rem; }
+            .emg-training-input { font-size: 0.85rem !important; }
+            .emg-line-with-bullet span:last-child { 
+              white-space: normal !important; 
+              width: 100%; 
+              margin-top: 5px;
+              opacity: 0.8;
+            }
           }
           .emg-sub-title {
             font-weight: 800;
