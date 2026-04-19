@@ -776,26 +776,47 @@
         const category = group.querySelector('.group-title').textContent.trim();
         const rows = group.querySelectorAll('tr');
         
+        let activeRowspan = "";
+        let rowspanLeft = 0;
+
         rows.forEach(row => {
-          const cells = row.querySelectorAll('td');
+          const cells = Array.from(row.querySelectorAll('td'));
           if (cells.length < 1) return;
+
+          let currentPrefix = "";
+          
+          // Check for a cell with rowspan= attribute
+          const rowspanCell = cells.find(c => c.hasAttribute('rowspan'));
+          if (rowspanCell) {
+             activeRowspan = rowspanCell.innerText.trim();
+             rowspanLeft = parseInt(rowspanCell.getAttribute('rowspan'));
+          }
+
+          if (rowspanLeft > 0) {
+             currentPrefix = activeRowspan;
+             rowspanLeft--;
+          }
           
           const inputs = row.querySelectorAll('.quiz-input');
           if (inputs.length === 0) return;
           
           // Question text extraction (it varies by row type)
           let rawText = "";
-          if (cells.length === 2) {
-             const firstHasInput = cells[0].querySelector('.quiz-input');
-             rawText = firstHasInput ? cells[1].innerText.trim() : cells[0].innerText.trim();
-          } else if (cells.length === 1) {
-             // Clone to remove input text before getting outer text
-             const cloned = cells[0].cloneNode(true);
+          const contentCells = cells.filter(c => !c.hasAttribute('rowspan'));
+          
+          if (contentCells.length === 2) {
+             const firstHasInput = contentCells[0].querySelector('.quiz-input');
+             rawText = firstHasInput ? contentCells[1].innerText.trim() : contentCells[0].innerText.trim();
+          } else if (contentCells.length === 1) {
+             const cloned = contentCells[0].cloneNode(true);
              cloned.querySelectorAll('.quiz-input').forEach(i => i.remove());
              rawText = cloned.innerText.trim();
-          } else if (cells.length === 3) {
-             rawText = cells[0].innerText.trim() + " - " + cells[2].innerText.trim();
+          } else if (contentCells.length === 3) {
+             // Fallback for cases where rowspan might not be detected or multiple cells
+             rawText = contentCells[0].innerText.trim() + " - " + contentCells[2].innerText.trim();
           }
+
+          if (currentPrefix) rawText = currentPrefix + " - " + rawText;
 
           // Special logic for Transients (Inferior vs Superior) in NP/NR
           let suffix = "";
