@@ -693,14 +693,12 @@
 <section id="treinamentoEmergencias-screen" class="screen">
 <div class="toolbar">
     <button onclick="showScreen('menu')" type="button">Menu Inicial</button>
-    <button onclick="checkEmergenciesAnswers()" type="button">Conferir</button>
-    <button id="emgAnswerKeyBtn" onclick="toggleEmgAnswerKey()" type="button">Gabarito</button>
+    <button id="emgAnswerKeyBtn" onclick="toggleEmgAnswerKey()" type="button">Mostrar Respostas</button>
     <button onclick="clearEmgTrainingForm()" type="button">Limpar</button>
 </div>
 <main class="page">
 <h1>TREINAMENTO - EMERGÊNCIAS</h1>
-<div class="intro">Treinamento livre sem registro. Escreva as ações de memória e confira.</div>
-<div class="results-box" id="emgTrainingResultsBox">Preencha as respostas e clique em “Conferir”.</div>
+<div class="intro">Treinamento livre sem registro. Escreva as ações de memória e compare com o gabarito.</div>
 <section id="emgTrainingForm" class="stack"></section>
 </main>
 </section>
@@ -1413,36 +1411,12 @@
     }
 
     // --- EMERGENCY TRAINING ---
-    function checkEmergenciesAnswers() {
-      const inputs = document.querySelectorAll('#emgTrainingForm .emg-training-input');
-      let correct = 0, wrong = 0;
-
-      inputs.forEach(input => {
-        const val = input.value.trim();
-        if(!val) return;
-        const user = window.simplify(val);
-        const answers = (input.dataset.answer || '').split('||').map(a => window.simplify(a));
-        
-        let ok = false;
-        // For emergencies, we might want to check if the user included key keywords
-        // But for simplicity in this trainer, we'll try exact match with simplify
-        ok = answers.some(a => user.includes(a) || a.includes(user));
-
-        input.style.backgroundColor = ok ? 'rgba(39, 174, 96, 0.2)' : 'rgba(235, 87, 87, 0.2)';
-        input.style.borderColor = ok ? '#27AE60' : '#EB5757';
-        if(ok) correct++; else wrong++;
-      });
-
-      document.getElementById('emgTrainingResultsBox').textContent = `Resultados: ${correct} acertos, ${wrong} erros.`;
-    }
-
     function clearEmgTrainingForm() {
       document.querySelectorAll('#emgTrainingForm .emg-training-input').forEach(i => {
         i.value = '';
         i.style.backgroundColor = '';
         i.style.borderColor = '';
       });
-      document.getElementById('emgTrainingResultsBox').textContent = 'Preencha as respostas e clique em “Conferir”.';
     }
 
     let emgAnswerKeyVisible = false;
@@ -1450,8 +1424,28 @@
       emgAnswerKeyVisible = !emgAnswerKeyVisible;
       const inputs = document.querySelectorAll('#emgTrainingForm .emg-training-input');
       inputs.forEach(input => {
-        input.placeholder = emgAnswerKeyVisible ? (input.dataset.answer || '').split('||')[0] : '...';
-        input.style.fontStyle = emgAnswerKeyVisible ? 'italic' : 'normal';
+        let answerEl = input.parentNode.querySelector(`.emg-answer-hint[data-for="${input.dataset.answer}"]`);
+        
+        // If not found by data-answer (which might not be unique enough), try next sibling
+        // Actually, let's create a unique ID or just use a specific class and check next sibling properly
+        if (!answerEl) {
+           answerEl = document.createElement('div');
+           answerEl.className = 'emg-answer-hint';
+           answerEl.dataset.for = input.dataset.answer;
+           answerEl.style.fontSize = '0.75rem';
+           answerEl.style.color = '#F2C94C';
+           answerEl.style.marginTop = '2px';
+           answerEl.style.marginBottom = '8px';
+           answerEl.style.width = '100%';
+           answerEl.style.fontWeight = '800';
+           answerEl.style.textTransform = 'uppercase';
+           answerEl.textContent = 'GABARITO: ' + (input.dataset.answer || '');
+           
+           // Insert after the input
+           input.parentNode.insertBefore(answerEl, input.nextSibling);
+        }
+        
+        answerEl.style.display = emgAnswerKeyVisible ? 'block' : 'none';
       });
       document.getElementById('emgAnswerKeyBtn').textContent = emgAnswerKeyVisible ? 'Ocultar Respostas' : 'Mostrar Respostas';
     }
