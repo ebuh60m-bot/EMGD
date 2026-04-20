@@ -387,14 +387,15 @@
     .calendar-icon-btn:hover { opacity: 1; }
 
     @media (max-width: 760px) {
+      .page, .emg-page { padding: 15px 8px 25px; }
       .menu-buttons { grid-template-columns: 1fr; gap: 12px; }
       .menu-card { padding: 32px 16px; }
       h1 { font-size: 1.3rem; letter-spacing: 2px; }
       .menu-btn { min-height: 70px; font-size: 0.85rem; }
       .header-status { text-align: left; width: 100%; margin-top: -5px; }
       .logo-area { font-size: 0.8rem; }
-      table { min-width: 100%; width: 100%; table-layout: auto; }
-      td, th { padding: 4px 2px; font-size: 0.7rem; }
+      table { min-width: 100%; width: 100%; table-layout: fixed; }
+      td, th { padding: 4px 2px; font-size: 0.7rem; overflow-wrap: break-word; }
       .quiz-input, .answer-short { font-size: 0.7rem; min-height: 24px; padding: 2px; }
       .range-answer { gap: 1px; }
       .separator { font-size: 8px; }
@@ -1424,10 +1425,9 @@
       emgAnswerKeyVisible = !emgAnswerKeyVisible;
       const inputs = document.querySelectorAll('#emgTrainingForm .emg-training-input');
       inputs.forEach(input => {
-        let answerEl = input.parentNode.querySelector(`.emg-answer-hint[data-for="${input.dataset.answer}"]`);
+        const container = input.closest('.emg-line-with-bullet') || input.parentNode;
+        let answerEl = container.querySelector(`.emg-answer-hint[data-for="${CSS.escape(input.dataset.answer || '')}"]`);
         
-        // If not found by data-answer (which might not be unique enough), try next sibling
-        // Actually, let's create a unique ID or just use a specific class and check next sibling properly
         if (!answerEl) {
            answerEl = document.createElement('div');
            answerEl.className = 'emg-answer-hint';
@@ -1436,13 +1436,12 @@
            answerEl.style.color = '#F2C94C';
            answerEl.style.marginTop = '2px';
            answerEl.style.marginBottom = '8px';
-           answerEl.style.width = '100%';
            answerEl.style.fontWeight = '800';
            answerEl.style.textTransform = 'uppercase';
            answerEl.textContent = 'GABARITO: ' + (input.dataset.answer || '');
            
-           // Insert after the input
-           input.parentNode.insertBefore(answerEl, input.nextSibling);
+           // Append directly to the line container so it appears below the row content
+           container.appendChild(answerEl);
         }
         
         answerEl.style.display = emgAnswerKeyVisible ? 'block' : 'none';
@@ -1465,9 +1464,11 @@
             width: 100%;
             box-sizing: border-box;
             overflow-x: hidden;
+            word-wrap: break-word;
           }
           .emg-hachurado .emg-input-line {
              border-bottom-color: rgba(255,255,255,0.4);
+             min-width: 0; /* Permite que o input encolha em telas pequenas */
           }
           .emg-hachurado .emg-input-line:focus {
              border-bottom-color: #fff;
@@ -1482,12 +1483,38 @@
           }
           .emg-line-with-bullet {
             display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+          }
+          .emg-row-content {
+            display: flex;
             align-items: center;
             gap: 10px;
+            width: 100%;
           }
           .emg-line-with-bullet span {
             font-weight: 900;
             color: #fff;
+            flex-shrink: 0;
+          }
+          .emg-answer-hint {
+            margin-left: 20px; /* Alinha com o início do input após o bullet */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            max-width: 100%;
+            box-sizing: border-box;
+            line-height: 1.4;
+          }
+          @media (max-width: 600px) {
+            .emg-card { padding: 12px; }
+            .emg-hachurado { padding: 10px; }
+            .emg-answer-hint { margin-left: 15px; font-size: 0.7rem; }
+            .emg-card-title { font-size: 1rem; }
           }
         </style>
 
@@ -1514,8 +1541,10 @@
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
               <div class="emg-line-with-bullet">
-                <span>-</span>
-                <input class="emg-training-input emg-input-line" data-answer="AUTORROTAÇÃO" placeholder="..." />
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="AUTORROTAÇÃO" placeholder="..." />
+                </div>
               </div>
             </div>
           </div>
@@ -1553,12 +1582,16 @@
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
               <div class="emg-line-with-bullet">
-                <span>-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Atingir uma velocidade segura monomotor (Se possível)" placeholder="..." />
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Atingir uma velocidade segura monomotor (Se possível)" placeholder="..." />
+                </div>
               </div>
               <div class="emg-line-with-bullet">
-                <span>-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Cargas externas e provisões - Alijar (se necessário)" placeholder="..." />
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Cargas externas e provisões - Alijar (se necessário)" placeholder="..." />
+                </div>
               </div>
             </div>
           </div>
@@ -1581,43 +1614,48 @@
             <div class="emg-hachurado" style="gap: 12px;">
               <div style="font-size: 0.9rem; color: #fff; margin-bottom: 5px;">Se uma T-handle do motor ou da APU acender em voo:</div>
               <div class="emg-line-with-bullet">
-                <span>-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Ajuste a velocidade para 80 KIAS ou menos" placeholder="..." />
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Ajuste a velocidade para 80 KIAS ou menos" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavanca ENG POWER CONT" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 1;" />
+              
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavanca ENG POWER CONT — OFF" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="T-handle do motor ou da APU" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="PUXAR" placeholder="..." style="flex: 1;" />
-                <span style="color: #fff; font-size: 0.8rem;">(como apropriado)</span>
+
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="T-handle do motor ou da APU — PUXAR (como apropriado)" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptor FIRE EXTGH" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="MAIN / RESERVE" placeholder="..." style="flex: 1;" />
-                <span style="color: #fff; font-size: 0.8rem;">como requerido</span>
+
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptor FIRE EXTGH — MAIN / RESERVE (como requerido)" placeholder="..." />
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; margin: 10px 0 5px;">se houver fogo elétrico:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="BATERIAS e GERADORES" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="BATERIAS e GERADORES — OFF" placeholder="..." />
+                </div>
               </div>
             </div>
 
             <div class="emg-section-label" style="margin-top: 15px;">Urgência para pouso</div>
             <div class="emg-line-with-bullet" style="margin-top: 8px;">
-              <span>-</span>
-              <input class="emg-training-input emg-input-line" data-answer="POUSAR ASSIM QUE POSSÍVEL" placeholder="..." />
+              <div class="emg-row-content">
+                <span>-</span>
+                <input class="emg-training-input emg-input-line" data-answer="POUSAR ASSIM QUE POSSÍVEL" placeholder="..." />
+              </div>
             </div>
           </div>
         </div>
@@ -1632,26 +1670,32 @@
           <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado" style="gap: 15px;">
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptor RMT SBY" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Pressionar para desacoplar os modos do Flight Director" placeholder="..." style="flex: 2;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptor RMT SBY — Pressionar para desacoplar os modos do Flight Director" placeholder="..." />
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; margin-top: 5px; font-style: italic;">Se o Flight Director acoplado não desacoplar:</div>
               <div class="emg-line-with-bullet" style="margin-left: 10px;">
-                <span style="color: #fff; font-size: 0.95rem;">– Interruptor CPLD — Pressionar para desacoplar o FD</span>
+                <div class="emg-row-content">
+                  <span style="color: #fff; font-size: 0.95rem;">– Interruptor CPLD — Pressionar para desacoplar o FD</span>
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; margin-top: 5px; font-style: italic;">Se o Flight Director acoplado ainda não desacoplar:</div>
               <div class="emg-line-with-bullet" style="margin-left: 10px;">
-                <span style="color: #fff; font-size: 0.95rem;">– Interruptores FPS e TRIM — OFF</span>
+                <div class="emg-row-content">
+                  <span style="color: #fff; font-size: 0.95rem;">– Interruptores FPS e TRIM — OFF</span>
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; margin-top: 5px; font-style: italic;">Após o desacoplamento do FD:</div>
               <div class="emg-line-with-bullet" style="margin-left: 10px;">
-                <span style="color: #fff; font-size: 0.95rem;">– Interruptores FPS e TRIM — ON</span>
+                <div class="emg-row-content">
+                  <span style="color: #fff; font-size: 0.95rem;">– Interruptores FPS e TRIM — ON</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1676,13 +1720,13 @@
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
               <div style="font-size: 0.9rem; color: #fff; margin-bottom: 8px; font-style: italic;">Se a NR continuar diminuindo e o voo com um único motor não for possível:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavanca ENG POWER CONT (motor com baixo Q/TGT)" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="LOCKOUT" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                   <span>-</span>
+                   <input class="emg-training-input emg-input-line" data-answer="Alavanca ENG POWER CONT (motor com baixo Q/TGT) — LOCKOUT" placeholder="..." />
+                </div>
+                <div style="font-size: 0.85rem; color: #fff; margin-left: 20px;">(Manter Q aproximadamente 10% abaixo do outro motor)</div>
               </div>
-              <div style="font-size: 0.85rem; color: #fff; margin-top: 5px;">(Manter Q aproximadamente 10% abaixo do outro motor)</div>
             </div>
           </div>
         </div>
@@ -1697,13 +1741,13 @@
           <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptor slew-up do estabilizador no cíclico" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Ajustar" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptor slew-up do estabilizador no cíclico — Ajustar" placeholder="..." />
+                </div>
+                <div style="font-size: 0.85rem; color: #fff; margin-left: 20px;">(conforme necessário para interromper a taxa de inclinação do nariz para baixo).</div>
               </div>
-              <div style="font-size: 0.85rem; color: #fff; margin-top: 5px;">(conforme necessário para interromper a taxa de inclinação do nariz para baixo).</div>
             </div>
           </div>
         </div>
@@ -1725,23 +1769,23 @@
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado" style="gap: 12px;">
               <div style="font-size: 0.9rem; color: #fff; font-style: italic;">Se o mau funcionamento ocorrer no solo ou imediatamente após o pouso:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — OFF" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Seletores ENG FUEL SYS" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Seletores ENG FUEL SYS — OFF" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptores FUEL BOOST PUMP" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptores FUEL BOOST PUMP — OFF" placeholder="..." />
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; margin-top: 10px;">– Ver Urgência para Pousar</div>
@@ -1764,19 +1808,20 @@
           <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Ajustar" placeholder="..." style="flex: 1;" />
-                <span style="color: #fff; font-size: 0.8rem;">(conforme necessário para controlar NP e NR)</span>
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — Ajustar (conforme necessário para controlar NP e NR)" placeholder="..." />
+                </div>
               </div>
             </div>
             
             <div class="emg-section-label" style="margin-top: 15px;">Urgência para pouso</div>
-            <div class="emg-line-with-bullet" style="margin-top: 8px;">
-              <span>-</span>
-              <input class="emg-training-input emg-input-line" data-answer="POUSAR ASSIM QUE POSSÍVEL" placeholder="..." />
+            <div class="emg-line-with-bullet">
+              <div class="emg-row-content">
+                <span>-</span>
+                <input class="emg-training-input emg-input-line" data-answer="POUSAR ASSIM QUE POSSÍVEL" placeholder="..." />
+              </div>
             </div>
           </div>
         </div>
@@ -1789,69 +1834,61 @@
             <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-primary); line-height: 1.4;">
               <li>– O nariz do helicóptero irá girar para a esquerda/direita independentemente da velocidade.</li>
               <li>– Em velocidades mais altas, uma guinada para a direita pode se desenvolver mais lentamente, mas pode continuar a aumentar.</li>
-              <li>– Em configurações de alta potência, uma guinada para a esquerda pode se desenvolver mais lentamente, mas pode se tornar mais significativa se a potência for reduzida.</li>
-              <li>– Se os componentes do rotor de cauda forem perdidos, o nariz irá mover-se para baixo. O voo nivelado contínuo pode não ser possível após esse tipo de falha.</li>
-            </ul>
-          </div>
-          <div>
+              <li>– Em configurações de alta potência, uma guinada para a esquerda pode se desenvolver mais lentamente, mas pode se tornar m          <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado" style="gap: 12px;">
               <div style="font-size: 0.9rem; color: #fff; font-style: italic;">Se durante o voo de cruzeiro uma guinada para a direita se tornar incontrolável:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="AUTORROTAÇÃO" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Manter velocidade igual ou superior a 80 KIAS" placeholder="..." style="flex: 2;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="AUTORROTAÇÃO — Manter velocidade igual ou superior a 80 KIAS" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 2;" />
-                <span style="color: #fff; font-size: 0.75rem; width: 100%; font-style: italic;">(durante a desaceleração, quando o ponto de pouso pretendido estiver assegurado)</span>
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — OFF (durante a desaceleração)" placeholder="..." />
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; font-style: italic; margin-top: 5px;">Se em baixa velocidade ou em pairado uma guinada para a direita se tornar incontrolável:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Coletivo" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Reduzir" placeholder="..." style="flex: 2;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Coletivo — Reduzir" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 2;" />
-                <span style="color: #fff; font-size: 0.75rem; width: 100%; font-style: italic;">(a 5 a 10 pés acima do toque no solo)</span>
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — OFF (a 5 a 10 pés acima do toque no solo)" placeholder="..." />
+                </div>
               </div>
               
               <div style="font-size: 0.9rem; color: #fff; font-style: italic; margin-top: 5px;">Se uma guinada incontrolável para a esquerda ocorrer em baixa velocidade ou em pairado:</div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Retardar" placeholder="..." style="flex: 2;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — Retardar" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Coletivo" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Aumentar" placeholder="..." style="flex: 2;" />
-                <span style="color: #fff; font-size: 0.8rem;">(a NR irá diminuir)</span>
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Coletivo — Aumentar (a NR irá diminuir)" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="OFF" placeholder="..." style="flex: 2;" />
-                <span style="color: #fff; font-size: 0.75rem; width: 100%; font-style: italic;">(a 5 a 10 pés acima do toque no solo)</span>
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Alavancas ENG POWER CONT — OFF (a 5 a 10 pés acima do toque no solo)" placeholder="..." />
+                </div>
               </div>
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Coletivo" placeholder="..." style="flex: 1;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="Ajustar para o pouso" placeholder="..." style="flex: 2;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Coletivo — Ajustar para o pouso" placeholder="..." />
+                </div>
               </div>
             </div>
           </div>
@@ -1874,11 +1911,11 @@
           <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptor BACK-UP HYD PUMP" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="ON" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptor BACK-UP HYD PUMP — ON" placeholder="..." />
+                </div>
               </div>
             </div>
           </div>
@@ -1896,11 +1933,11 @@
           <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado">
-              <div class="emg-line-with-bullet" style="display: flex; gap: 10px;">
-                <span style="flex-shrink: 0;">-</span>
-                <input class="emg-training-input emg-input-line" data-answer="Interruptor TAIL SERVO" placeholder="..." style="flex: 2;" />
-                <span style="flex-shrink: 0;">—</span>
-                <input class="emg-training-input emg-input-line" data-answer="BACK-UP" placeholder="..." style="flex: 1;" />
+              <div class="emg-line-with-bullet">
+                <div class="emg-row-content">
+                  <span>-</span>
+                  <input class="emg-training-input emg-input-line" data-answer="Interruptor TAIL SERVO — BACK-UP" placeholder="..." />
+                </div>
               </div>
             </div>
           </div>
