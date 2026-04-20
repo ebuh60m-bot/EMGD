@@ -411,6 +411,48 @@
       h1 { font-size: 1.1rem; }
       .menu-btn { min-height: 60px; font-size: 0.75rem; letter-spacing: 1px; }
     }
+
+    /* VER EMG D - Sorteio Styles */
+    .ver-emg-main { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 20px; }
+    .ver-emg-primary-panel { display: flex; flex-direction: column; gap: 20px; }
+    .status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .metric { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
+    .metric .label { display: block; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 6px; text-transform: uppercase; }
+    .metric .value { font-size: 1.6rem; font-weight: 800; color: var(--accent-yellow); }
+    .result-box-daily { background: rgba(45, 156, 219, 0.05); border: 1px solid rgba(45, 156, 219, 0.2); border-radius: 12px; padding: 24px; min-height: 200px; position: relative; }
+    .result-box-daily::before { content: ''; position: absolute; top: -1px; left: -1px; width: 15px; height: 15px; border-top: 2px solid var(--accent-yellow); border-left: 2px solid var(--accent-yellow); }
+    .day-title-daily { font-size: 1.8rem; font-weight: 900; color: var(--accent-yellow); margin-bottom: 12px; }
+    .emg-list-daily { padding-left: 20px; line-height: 1.6; color: var(--text-primary); }
+    .daily-history-list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px; }
+    .history-item-daily { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; }
+    .history-item-daily strong { display: block; color: var(--accent-yellow); margin-bottom: 4px; font-weight: 800; }
+    .history-item-daily small { color: var(--text-dim); font-size: 0.7rem; display: block; margin-bottom: 8px; font-family: var(--font-mono); }
+    .history-item-daily ul { margin: 0; padding-left: 18px; color: var(--text-primary); font-size: 0.85rem; }
+    
+    @media (max-width: 820px) {
+      .ver-emg-main { grid-template-columns: 1fr; }
+      .status-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .metric { padding: 10px; }
+      .metric .value { font-size: 1.2rem; }
+    }
+    
+    .btn-3d {
+      background: linear-gradient(135deg, var(--accent-yellow) 0%, #B8860B 100%) !important;
+      color: #000 !important;
+      border: none !important;
+      box-shadow: 0 6px 0 #8B6508, 0 12px 20px rgba(0,0,0,0.5);
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+      top: 0;
+      font-weight: 900 !important;
+      letter-spacing: 2px !important;
+    }
+    .btn-3d:active {
+      top: 4px;
+      box-shadow: 0 2px 0 #8B6508, 0 4px 10px rgba(0,0,0,0.5);
+    }
 </style>
 </head>
 <body>
@@ -429,7 +471,7 @@
     <h2 id="modal-title">CONFIRMAR?</h2>
     <p id="modal-text">Você tem certeza?</p>
     <div class="modal-actions">
-      <button class="modal-btn" onclick="document.getElementById('custom-confirm').style.display='none'">CANCELAR</button>
+      <button id="modal-cancel-btn" class="modal-btn" onclick="document.getElementById('custom-confirm').style.display='none'">CANCELAR</button>
       <button class="modal-btn confirm" id="modal-confirm-btn">CONFIRMAR RESET</button>
     </div>
   </div>
@@ -489,8 +531,12 @@
   </div>
   <div class="emg-page">
     <h1>EMERGÊNCIA DO DIA</h1>
+    
+    <div style="max-width: 500px; margin: 0 auto 30px; padding: 0 20px;">
+        <button class="menu-btn btn-3d" type="button" onclick="showScreen('verEmgD')">VER EMG D</button>
+    </div>
+
     <div class="select-card">
-      <div class="emg-sheet-title">Configurar Data</div>
       <div class="select-body">
         <div class="date-box">
           <label for="globalDate">Data do Treinamento</label>
@@ -505,6 +551,50 @@
           <button class="menu-btn red" type="button" onclick="showScreen('emergencias')">Responder Emergências</button>
           <button class="menu-btn blue" type="button" onclick="showScreen('limitacoesEnvio')">Responder Limitações</button>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN: VER EMERGENCIA DO DIA (SORTEIO) -->
+<section id="verEmgD-screen" class="screen">
+  <div class="emg-toolbar">
+    <button type="button" onclick="showScreen('emergenciaDia')">Voltar</button>
+  </div>
+  <div class="emg-page">
+    <h1>EMERGÊNCIA DO DIA</h1>
+    <div class="intro">
+      Sorteio automático entre os 31 dias de emergência, sem repetição até concluir todo o ciclo.
+    </div>
+
+    <div class="ver-emg-main">
+      <div class="ver-emg-primary-panel">
+        <div class="status-grid">
+          <div class="metric">
+            <span class="label">Restantes</span>
+            <span class="value" id="remainingCount">31</span>
+          </div>
+          <div class="metric">
+            <span class="label">Já aplicadas</span>
+            <span class="value" id="usedCount">0</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <button class="menu-btn red" style="min-height: 60px; flex: 1;" onclick="drawDailyEmergency()">Ver Emergência</button>
+          <button class="menu-btn white" style="min-height: 60px; flex: 0 0 100px; padding: 0;" onclick="resetDailyCycle()">Reset</button>
+        </div>
+
+        <div class="result-box-daily" id="dailyResultBox">
+          <div style="color: var(--text-dim); text-align: center; padding: 40px 20px; border: 1px dashed var(--border-color); border-radius: 8px;">
+            Clique em <strong>Ver Emergência</strong> para sortear.
+          </div>
+        </div>
+      </div>
+
+      <div class="ver-emg-side-panel">
+        <div class="menu-section-label">Histórico</div>
+        <div class="daily-history-list" id="dailyHistoryList"></div>
       </div>
     </div>
   </div>
@@ -1210,6 +1300,9 @@
       const modalTitle = document.getElementById('modal-title');
       const modalText = document.getElementById('modal-text');
       const confirmBtn = document.getElementById('modal-confirm-btn');
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      
+      if(cancelBtn) cancelBtn.style.display = 'block';
 
       modalTitle.textContent = "ALERTA DE SEGURANÇA";
       modalText.textContent = "Isso apagará TODOS os registros de emergências e limitações salvos na nuvem (de todos os usuários e de todos os dias). Esta ação é IRREVERSÍVEL. Confirmar limpeza total?";
@@ -1233,6 +1326,7 @@
           }
           
           localStorage.clear();
+          if(cancelBtn) cancelBtn.style.display = 'none';
           modalText.textContent = `SUCESSO! ${totalDeleted} registros foram excluídos permanentemente.`;
           confirmBtn.textContent = "CONCLUÍDO";
           confirmBtn.disabled = false;
@@ -1297,6 +1391,7 @@
         treinamentoEmergencias: 'treinamentoEmergencias-screen',
         resultadosEmergencias: 'resultadosEmergencias-screen',
         resultadosLimitacoes: 'resultadosLimitacoes-screen',
+        verEmgD: 'verEmgD-screen',
         quizSetup: 'quizSetup-screen',
         quizActive: 'quizActive-screen',
         quizResults: 'quizResults-screen'
@@ -1347,6 +1442,167 @@
 
 <script>
     // --- UI/TEMPLATING LOGIC (STAY IN GLOBAL SCOPE) ---
+    const DAILY_EMERGENCIES = [
+      { day: 1, items: ["Dual Eng Failure", "Single Eng Failue"] },
+      { day: 2, items: ["High Side", "Low Side"] },
+      { day: 3, items: ["Q Split (Diferenciar Q Split de Low Side – Olhar NR/NP)"] },
+      { day: 4, items: ["Oscilation"] },
+      { day: 5, items: ["High speed shaft failure"] },
+      { day: 6, items: ["Compressor Stall", "Aeronave atingida por raio"] },
+      { day: 7, items: ["Load Demand System"] },
+      { day: 8, items: ["Oil Bypass", "Chip Eng / Oil Press / Oil Hot"] },
+      { day: 9, items: ["Eng Fire", "APU Fire", "APU Oil Hot"] },
+      { day: 10, items: ["T/R Quad Fail"] },
+      { day: 11, items: ["T/R Servo 1 Fail sem backup OU T/R Servo 2 ON não entra"] },
+      { day: 12, items: ["Main XMSN Press ou Main Xmsn Oil Hot"] },
+      { day: 13, items: ["Chip L/R Input Mdl", "Chip Main Mdl Sump / Chip L Acc Mdl / Chip R Acc Mdl / Chip Tail Xmsn / Chip Int Xmsn / Tail Xmsn Oil Hot / Int Xmsn Oil Hot"] },
+      { day: 14, items: ["Main Xmsn Failure"] },
+      { day: 15, items: ["Fuel 1 E 2 Low"] },
+      { day: 16, items: ["Fuel 1 OU 2 Bypass", "Fuel 1 E 2 Bypass"] },
+      { day: 17, items: ["Fuel 1 OU 2 Press Low", "Fuel 1 E 2 Press Low"] },
+      { day: 18, items: ["Gen 1 E Gen 2 Fail", "Gen 1 OU Gen 2 Fail"] },
+      { day: 19, items: ["Con 1 E 2 Fail", "Conv 1 OU 2 Fail"] },
+      { day: 20, items: ["HYD Pump 1 Fail", "Hyd Pump 1 Fail SEM Backup"] },
+      { day: 21, items: ["Hyd Pump 2 Fail"] },
+      { day: 22, items: ["Hyd Pump 1 E 2 Fail"] },
+      { day: 23, items: ["PRI Servo Pilot Valve Jam (Perda de um estágio do servo primário)", "Hyd Pump 2 Fail SEM Backup"] },
+      { day: 24, items: ["Hyd Pump 1 LEAK (Vazamento na bomba 1)", "Pri Servo 1 Leak (Ação piloto)"] },
+      { day: 25, items: ["RSVR 2 LOW (Vazamento no Pilot Assist Module / Servo – Desligar SAS/BOOST e FPS)", "Hyd Pump 2 Leak (Vazamento na bomba 2)", "Pri Servo 2 Leak (Ação do piloto)"] },
+      { day: 26, items: ["AFCS FAIL", "SAS OFF", "SAS DEGRADED"] },
+      { day: 27, items: ["BOOST SERVO OFF", "TRIM FAIL (Roll ou Yaw)"] },
+      { day: 28, items: ["AVCS Inop", "ROTOR BRAKE ON", "EGI Failure", "FLT DIR FAIL e FD Couple Fail"] },
+      { day: 29, items: ["STAB Unlocked", "STAB MANUAL MODE (Auto Mode Failure)", "STAB DEGRADED"] },
+      { day: 30, items: ["APU FAIL (SEM PROCEDIMENTO)", "BATT LOW CHARGE (SEM PROCEDIMENTO)", "CHIP IBIT FAIL (SEM PROCEDIMENTO)", "DC ESS BUS 1 OU 2 OFF (SEM PROCEDIMENTO)", "GEN 1 ou 2 BRG FAIL (SEM PROCEDIMENTO)", "GUST LOCK ENGAGED (SEM PROCEDIMENTO)"] },
+      { day: 31, items: ["L/R PITOT HEAT FAIL (SEM PROCEDIMENTO)", "ICE DET", "M/R DE-ICE FAULT / FAIL / T/R"] }
+    ];
+
+    const DAILY_STORAGE_KEY = "emg-do-dia-state-v1";
+
+    function getInitialDailyState() {
+      return {
+        remainingDays: DAILY_EMERGENCIES.map(item => item.day),
+        history: [],
+        current: null
+      };
+    }
+
+    function loadDailyState() {
+      try {
+        const raw = localStorage.getItem(DAILY_STORAGE_KEY);
+        if (!raw) return getInitialDailyState();
+        const parsed = JSON.parse(raw);
+        return {
+          remainingDays: parsed.remainingDays || DAILY_EMERGENCIES.map(item => item.day),
+          history: parsed.history || [],
+          current: parsed.current || null
+        };
+      } catch {
+        return getInitialDailyState();
+      }
+    }
+
+    let dailyState = loadDailyState();
+
+    function saveDailyState() {
+      localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(dailyState));
+    }
+
+    function renderDailyAll() {
+      if(!document.getElementById("remainingCount")) return;
+      document.getElementById("remainingCount").textContent = dailyState.remainingDays.length;
+      document.getElementById("usedCount").textContent = dailyState.history.length;
+
+      const box = document.getElementById("dailyResultBox");
+      if (!dailyState.current) {
+        box.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 40px 20px; border: 1px dashed var(--border-color); border-radius: 8px;">Clique em <strong>Ver Emergência</strong> para sortear.</div>`;
+      } else {
+        const emg = DAILY_EMERGENCIES.find(e => e.day === dailyState.current.day);
+        const date = new Date(dailyState.current.drawnAt);
+        const fmtDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+        box.innerHTML = `
+          <div style="font-size: 0.75rem; color: var(--accent-blue); margin-bottom: 8px; font-family: var(--font-mono); opacity: 0.8;">SORTEADA EM: ${fmtDate}</div>
+          <div class="day-title-daily">DIA ${emg.day}</div>
+          <ul class="emg-list-daily">
+            ${emg.items.map(it => `<li>${window.escapeHTML(it)}</li>`).join('')}
+          </ul>
+        `;
+      }
+
+      const list = document.getElementById("dailyHistoryList");
+      if (!dailyState.history.length) {
+        list.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-dim); text-align: center; padding: 20px;">Sem histórico.</div>`;
+      } else {
+        list.innerHTML = dailyState.history.slice().reverse().map(entry => {
+          const emg = DAILY_EMERGENCIES.find(e => e.day === entry.day);
+          const date = new Date(entry.drawnAt);
+          const fmtDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+          return `
+            <div class="history-item-daily">
+              <strong>DIA ${entry.day}</strong>
+              <small>${fmtDate}</small>
+              <ul>${emg.items.map(it => `<li>${window.escapeHTML(it)}</li>`).join('')}</ul>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function drawDailyEmergency() {
+      if (dailyState.remainingDays.length === 0) {
+        dailyState.remainingDays = DAILY_EMERGENCIES.map(item => item.day);
+        dailyState.history = [];
+      }
+      const idx = Math.floor(Math.random() * dailyState.remainingDays.length);
+      const day = dailyState.remainingDays.splice(idx, 1)[0];
+      const record = { day, drawnAt: new Date().toISOString() };
+      dailyState.current = record;
+      dailyState.history.push(record);
+      saveDailyState();
+      renderDailyAll();
+      
+      if (dailyState.remainingDays.length === 0) {
+        const modal = document.getElementById('custom-confirm');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        const cancelBtn = document.getElementById('modal-cancel-btn');
+
+        modalTitle.textContent = "CICLO CONCLUÍDO!";
+        modalText.textContent = "Todas as 31 emergências foram sorteadas. O ciclo será reiniciado no próximo sorteio.";
+        confirmBtn.textContent = "ENTENDIDO";
+        
+        if(cancelBtn) cancelBtn.style.display = 'none';
+        modal.style.display = 'flex';
+        
+        confirmBtn.onclick = function() {
+          modal.style.display = 'none';
+          if(cancelBtn) cancelBtn.style.display = 'block';
+        };
+      }
+    }
+
+    function resetDailyCycle() {
+      const modal = document.getElementById('custom-confirm');
+      const modalTitle = document.getElementById('modal-title');
+      const modalText = document.getElementById('modal-text');
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      
+      if(cancelBtn) cancelBtn.style.display = 'block';
+
+      modalTitle.textContent = "RESETAR CICLO?";
+      modalText.textContent = "Isso apagará o progresso atual e o histórico do sorteio. Confirmar?";
+      confirmBtn.textContent = "CONFIRMAR RESET";
+      modal.style.display = 'flex';
+
+      confirmBtn.onclick = function() {
+        localStorage.removeItem(DAILY_STORAGE_KEY);
+        dailyState = getInitialDailyState();
+        renderDailyAll();
+        modal.style.display = 'none';
+      };
+    }
+
     function init() {
       const today = new Date().toISOString().split('T')[0];
       const gd = document.getElementById('globalDate');
@@ -1366,6 +1622,8 @@
       const emgContent = getEmergenciesTemplate();
       const ef = document.getElementById('emgTrainingForm');
       if(ef) ef.innerHTML = emgContent;
+
+      renderDailyAll();
     }
 
     function generateEmgLines() {
