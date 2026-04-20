@@ -294,6 +294,8 @@
     .menu-btn.red:hover { background: var(--danger); color: #000; }
     .menu-btn.blue { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(45, 156, 219, 0.08); }
     .menu-btn.blue:hover { background: var(--accent-blue); color: #000; }
+    .menu-btn.white { border-color: #FFFFFF; color: #FFFFFF; background: rgba(255, 255, 255, 0.08); }
+    .menu-btn.white:hover { background: #FFFFFF; color: #000; }
 
     /* Custom Confirmation Modal */
     #custom-confirm {
@@ -518,7 +520,10 @@
     <div class="menu-buttons" style="max-width:860px;margin:0 auto;">
       <button class="menu-btn red" type="button" onclick="showScreen('resultadosEmergencias')">Emergências</button>
       <button class="menu-btn blue" type="button" onclick="showScreen('resultadosLimitacoes')">Limitações</button>
-      <button class="menu-btn red full-row" type="button" onclick="window.handleGlobalReset(event)">ZERAR TUDO</button>
+      <button class="menu-btn white full-row" type="button" onclick="window.handleGlobalReset(event)">
+        <i data-lucide="trash-2" style="margin-right: 8px; width: 18px; height: 18px; vertical-align: middle;"></i>
+        ZERAR TUDO
+      </button>
     </div>
   </div>
 </section>
