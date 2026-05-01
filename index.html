@@ -457,22 +457,22 @@
       box-shadow: 0 2px 0 #8B6508, 0 4px 10px rgba(0,0,0,0.5);
     }
 
-    /* SHOW DO FALCÃO SCOPED STYLES */
-    #showDoFalcao-screen, #showDoFalcaoGame-screen {
-      --falcao-bg: #050806;
-      --falcao-panel: rgba(10, 16, 12, .94);
-      --falcao-panel2: rgba(255,255,255,.06);
-      --falcao-line: rgba(255,255,255,.14);
-      --falcao-text: #f6f7ef;
-      --falcao-muted: #b6c0b9;
-      --falcao-gold: #f5b51b;
-      --falcao-gold2: #ffe08a;
-      --falcao-cyan: #18d7ff;
-      --falcao-green: #b5ff24;
-      --falcao-red: #ff4d4d;
+    /* SHOW DO BLACKZÃO SCOPED STYLES */
+    #showDoBlackzao-screen, #showDoBlackzaoGame-screen {
+      --blackzao-bg: #050806;
+      --blackzao-panel: rgba(10, 16, 12, .94);
+      --blackzao-panel2: rgba(255,255,255,.06);
+      --blackzao-line: rgba(255,255,255,.14);
+      --blackzao-text: #f6f7ef;
+      --blackzao-muted: #b6c0b9;
+      --blackzao-gold: #f5b51b;
+      --blackzao-gold2: #ffe08a;
+      --blackzao-cyan: #18d7ff;
+      --blackzao-green: #b5ff24;
+      --blackzao-red: #ff4d4d;
       
-      background: var(--falcao-bg);
-      color: var(--falcao-text);
+      background: var(--blackzao-bg);
+      color: var(--blackzao-text);
       overflow-x: hidden;
       position: fixed;
       top: 0;
@@ -486,11 +486,11 @@
       font-family: 'Inter', sans-serif;
     }
     
-    #showDoFalcao-screen.active, #showDoFalcaoGame-screen.active {
+    #showDoBlackzao-screen.active, #showDoBlackzaoGame-screen.active {
       display: block;
     }
     
-    #showDoFalcao-screen .falcao-app, #showDoFalcaoGame-screen .falcao-app { 
+    #showDoBlackzao-screen .blackzao-app, #showDoBlackzaoGame-screen .blackzao-app { 
       position: relative; 
       z-index: 1; 
       max-width: 1100px; 
@@ -498,21 +498,21 @@
       padding: 20px;
       min-height: 100vh;
     }
-    #showDoFalcao-screen .topbar, #showDoFalcaoGame-screen .topbar {
+    #showDoBlackzao-screen .topbar, #showDoBlackzaoGame-screen .topbar {
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      min-height: 64px; padding: 12px 20px; border: 1px solid var(--falcao-line);
+      min-height: 64px; padding: 12px 20px; border: 1px solid var(--blackzao-line);
       border-radius: 20px; background: rgba(3, 8, 5, .86); backdrop-filter: blur(14px);
       margin-bottom: 25px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
-    #showDoFalcao-screen .brand h1, #showDoFalcaoGame-screen .brand h1 { margin: 0; font-size: 1.3rem; text-transform: uppercase; color: var(--falcao-gold); font-weight: 900; letter-spacing: 1px; }
-    #showDoFalcao-screen .brand small, #showDoFalcaoGame-screen .brand small { display: block; color: var(--falcao-muted); font-size: .75rem; font-weight: 700; opacity: 0.8; }
-    #showDoFalcao-screen .badge-falcao, #showDoFalcaoGame-screen .badge-falcao { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(245,181,27,.4); background: rgba(245,181,27,.12); color: var(--falcao-gold2); font-size: .85rem; font-weight: 900; }
+    #showDoBlackzao-screen .brand h1, #showDoBlackzaoGame-screen .brand h1 { margin: 0; font-size: 1.3rem; text-transform: uppercase; color: var(--blackzao-gold); font-weight: 900; letter-spacing: 1px; }
+    #showDoBlackzao-screen .brand small, #showDoBlackzaoGame-screen .brand small { display: block; color: var(--blackzao-muted); font-size: .75rem; font-weight: 700; opacity: 0.8; }
+    #showDoBlackzao-screen .badge-blackzao, #showDoBlackzaoGame-screen .badge-blackzao { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(245,181,27,.4); background: rgba(245,181,27,.12); color: var(--blackzao-gold2); font-size: .85rem; font-weight: 900; }
     
-    #showDoFalcao-screen .hero, #showDoFalcaoGame-screen .hero { display: grid; place-items: center; padding: 20px 0; }
-    #showDoFalcao-screen .card-falcao, #showDoFalcaoGame-screen .card-falcao { width: 100%; border: 1px solid var(--falcao-line); border-radius: 28px; background: linear-gradient(145deg, rgba(10,16,12,.98), rgba(13,32,22,.92)); padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-    #showDoFalcao-screen .homeCard { max-width: 600px; text-align: center; }
-    #showDoFalcao-screen .logoMark { 
+    #showDoBlackzao-screen .hero, #showDoBlackzaoGame-screen .hero { display: grid; place-items: center; padding: 20px 0; }
+    #showDoBlackzao-screen .card-blackzao, #showDoBlackzaoGame-screen .card-blackzao { width: 100%; border: 1px solid var(--blackzao-line); border-radius: 28px; background: linear-gradient(145deg, rgba(10,16,12,.98), rgba(13,32,22,.92)); padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+    #showDoBlackzao-screen .homeCard { max-width: 600px; text-align: center; }
+    #showDoBlackzao-screen .logoMark { 
       max-width: 280px; 
       width: 100%;
       height: auto; 
@@ -524,7 +524,7 @@
       background: none;
       box-shadow: none;
     }
-    #showDoFalcao-screen .logoMark img { 
+    #showDoBlackzao-screen .logoMark img { 
       max-width: 100%; 
       height: auto; 
       max-height: 300px;
@@ -532,7 +532,7 @@
       border-radius: 12px;
     }
     
-    #showDoFalcao-screen .title-falcao, #showDoFalcaoGame-screen .title-falcao { 
+    #showDoBlackzao-screen .title-blackzao, #showDoBlackzaoGame-screen .title-blackzao { 
       margin: 10px 0 15px; 
       font-size: 3rem; 
       line-height: .9; 
@@ -544,50 +544,50 @@
       filter: drop-shadow(0 0 12px rgba(245,181,27,0.2));
     }
     
-    #showDoFalcao-screen .systemGrid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 25px; }
-    #showDoFalcao-screen .systemCard { text-align: left; color: var(--falcao-text); border: 1px solid var(--falcao-line); border-radius: 20px; background: rgba(255,255,255,.04); padding: 14px 18px; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
-    #showDoFalcao-screen .systemCard:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,.08); }
-    #showDoFalcao-screen .systemCard.selected { border-color: var(--falcao-gold); background: rgba(245,181,27,.12); box-shadow: 0 0 15px rgba(245,181,27,0.1); }
-    #showDoFalcao-screen .systemCard b { display: block; color: var(--falcao-gold2); margin-bottom: 2px; font-weight: 900; }
+    #showDoBlackzao-screen .systemGrid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 25px; }
+    #showDoBlackzao-screen .systemCard { text-align: left; color: var(--blackzao-text); border: 1px solid var(--blackzao-line); border-radius: 20px; background: rgba(255,255,255,.04); padding: 14px 18px; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+    #showDoBlackzao-screen .systemCard:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,.08); }
+    #showDoBlackzao-screen .systemCard.selected { border-color: var(--blackzao-gold); background: rgba(245,181,27,.12); box-shadow: 0 0 15px rgba(245,181,27,0.1); }
+    #showDoBlackzao-screen .systemCard b { display: block; color: var(--blackzao-gold2); margin-bottom: 2px; font-weight: 900; }
     
-    #showDoFalcao-screen .btn-falcao, #showDoFalcaoGame-screen .btn-falcao { 
+    #showDoBlackzao-screen .btn-blackzao, #showDoBlackzaoGame-screen .btn-blackzao { 
       min-height: 54px; border: 0; border-radius: 18px; padding: 12px 24px; cursor: pointer; color: #000; 
       background: linear-gradient(180deg, #ffe08a, #f5b51b); font-weight: 900; text-transform: uppercase; font-size: 0.9rem; 
       box-shadow: 0 4px 0 #89600a, 0 8px 15px rgba(0,0,0,0.3); position: relative; top: 0; transition: all 0.1s;
     }
-    #showDoFalcao-screen .btn-falcao:active, #showDoFalcaoGame-screen .btn-falcao:active { top: 3px; box-shadow: 0 1px 0 #89600a; }
-    #showDoFalcao-screen .btn-falcao.secondary, #showDoFalcaoGame-screen .btn-falcao.secondary { 
-      color: #fff; background: rgba(255,255,255,0.08); border: 1px solid var(--falcao-line); box-shadow: none; 
+    #showDoBlackzao-screen .btn-blackzao:active, #showDoBlackzaoGame-screen .btn-blackzao:active { top: 3px; box-shadow: 0 1px 0 #89600a; }
+    #showDoBlackzao-screen .btn-blackzao.secondary, #showDoBlackzaoGame-screen .btn-blackzao.secondary { 
+      color: #fff; background: rgba(255,255,255,0.08); border: 1px solid var(--blackzao-line); box-shadow: none; 
     }
-    #showDoFalcao-screen .btn-falcao.secondary:active, #showDoFalcaoGame-screen .btn-falcao.secondary:active { top: 2px; background: rgba(255,255,255,0.12); }
+    #showDoBlackzao-screen .btn-blackzao.secondary:active, #showDoBlackzaoGame-screen .btn-blackzao.secondary:active { top: 2px; background: rgba(255,255,255,0.12); }
     
     /* ANSWERS STYLES */
-    #showDoFalcaoGame-screen .answer { 
+    #showDoBlackzaoGame-screen .answer { 
       min-height: 68px; width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; 
-      border: 1px solid var(--falcao-line); border-radius: 20px; padding: 14px 18px; 
+      border: 1px solid var(--blackzao-line); border-radius: 20px; padding: 14px 18px; 
       background: linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04)); 
-      color: var(--falcao-text); cursor: pointer; font-size: 1.05rem; font-weight: 700; line-height: 1.3; 
-      margin-bottom: 12px; transition: all 0.2s; border-right: 4px solid var(--falcao-line);
+      color: var(--blackzao-text); cursor: pointer; font-size: 1.05rem; font-weight: 700; line-height: 1.3; 
+      margin-bottom: 12px; transition: all 0.2s; border-right: 4px solid var(--blackzao-line);
     }
-    #showDoFalcaoGame-screen .answer:hover:not(:disabled) { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); transform: translateX(4px); }
-    #showDoFalcaoGame-screen .answer.correct { background: rgba(181,255,36,.12); border-color: var(--falcao-green); border-right-color: var(--falcao-green); color: var(--falcao-green); }
-    #showDoFalcaoGame-screen .answer.wrong { background: rgba(255,77,77,.12); border-color: var(--falcao-red); border-right-color: var(--falcao-red); color: var(--falcao-red); }
+    #showDoBlackzaoGame-screen .answer:hover:not(:disabled) { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); transform: translateX(4px); }
+    #showDoBlackzaoGame-screen .answer.correct { background: rgba(181,255,36,.12); border-color: var(--blackzao-green); border-right-color: var(--blackzao-green); color: var(--blackzao-green); }
+    #showDoBlackzaoGame-screen .answer.wrong { background: rgba(255,77,77,.12); border-color: var(--blackzao-red); border-right-color: var(--blackzao-red); color: var(--blackzao-red); }
     
-    #showDoFalcaoGame-screen .letter { 
+    #showDoBlackzaoGame-screen .letter { 
       flex: 0 0 auto; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; 
-      color: var(--falcao-gold2); background: rgba(245,181,27,.18); border: 1px solid rgba(245,181,27,.4); font-weight: 950; font-size: 1.1rem;
+      color: var(--blackzao-gold2); background: rgba(245,181,27,.18); border: 1px solid rgba(245,181,27,.4); font-weight: 950; font-size: 1.1rem;
     }
     
-    #showDoFalcaoGame-screen .pill-falcao { padding: 6px 12px; border-radius: 12px; border: 1px solid var(--falcao-line); background: rgba(255,255,255,0.06); font-size: 0.75rem; font-weight: 900; color: var(--falcao-gold2); text-transform: uppercase; letter-spacing: 0.5px; }
-    #showDoFalcaoGame-screen .pill-falcao.highlight-value { 
-      background: var(--falcao-gold); 
+    #showDoBlackzaoGame-screen .pill-blackzao { padding: 6px 12px; border-radius: 12px; border: 1px solid var(--blackzao-line); background: rgba(255,255,255,0.06); font-size: 0.75rem; font-weight: 900; color: var(--blackzao-gold2); text-transform: uppercase; letter-spacing: 0.5px; }
+    #showDoBlackzaoGame-screen .pill-blackzao.highlight-value { 
+      background: var(--blackzao-gold); 
       color: #000; 
       border-color: #fff;
       box-shadow: 0 0 15px rgba(245,181,27,0.4);
       font-size: 0.85rem;
       padding: 8px 16px;
     }
-    #showDoFalcaoGame-screen .question-box {
+    #showDoBlackzaoGame-screen .question-box {
       margin: 15px 0 25px;
       font-size: 1.4rem;
       font-weight: 900;
@@ -595,19 +595,19 @@
       color: #fff;
       filter: drop-shadow(0 0 8px rgba(255,255,255,0.1));
     }
-    #showDoFalcaoGame-screen .quizLayout { display: grid; gap: 24px; }
-    #showDoFalcaoGame-screen .progressText { color: var(--falcao-muted); font-size: 0.85rem; margin-top: 15px; line-height: 1.5; font-weight: 600; }
-    #showDoFalcaoGame-screen .lifelines { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
-    #showDoFalcaoGame-screen .life-btn { min-height: 48px; border-radius: 15px; border: 1px solid var(--falcao-line); background: rgba(255,255,255,.05); color: #fff; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
-    #showDoFalcaoGame-screen .life-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
-    #showDoFalcaoGame-screen .life-btn:disabled { opacity: 0.2; cursor: not-allowed; filter: grayscale(1); }
-    #showDoFalcaoGame-screen .barRow { display: grid; grid-template-columns: 24px 1fr 45px; gap: 12px; align-items: center; margin: 8px 0; font-size: 0.8rem; font-weight: 800; }
-    #showDoFalcaoGame-screen .bar { height: 12px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-    #showDoFalcaoGame-screen .bar span { display: block; height: 100%; background: linear-gradient(to right, var(--falcao-gold), #fff); box-shadow: 0 0 10px var(--falcao-gold); }
+    #showDoBlackzaoGame-screen .quizLayout { display: grid; gap: 24px; }
+    #showDoBlackzaoGame-screen .progressText { color: var(--blackzao-muted); font-size: 0.85rem; margin-top: 15px; line-height: 1.5; font-weight: 600; }
+    #showDoBlackzaoGame-screen .lifelines { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
+    #showDoBlackzaoGame-screen .life-btn { min-height: 48px; border-radius: 15px; border: 1px solid var(--blackzao-line); background: rgba(255,255,255,.05); color: #fff; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    #showDoBlackzaoGame-screen .life-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+    #showDoBlackzaoGame-screen .life-btn:disabled { opacity: 0.2; cursor: not-allowed; filter: grayscale(1); }
+    #showDoBlackzaoGame-screen .barRow { display: grid; grid-template-columns: 24px 1fr 45px; gap: 12px; align-items: center; margin: 8px 0; font-size: 0.8rem; font-weight: 800; }
+    #showDoBlackzaoGame-screen .bar { height: 12px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+    #showDoBlackzaoGame-screen .bar span { display: block; height: 100%; background: linear-gradient(to right, var(--blackzao-gold), #fff); box-shadow: 0 0 10px var(--blackzao-gold); }
     
     @media (min-width: 680px) {
-      #showDoFalcao-screen .systemGrid { grid-template-columns: 1fr 1fr; }
-      #showDoFalcao-screen .quizLayout { grid-template-columns: 1fr 280px; }
+      #showDoBlackzao-screen .systemGrid { grid-template-columns: 1fr 1fr; }
+      #showDoBlackzao-screen .quizLayout { grid-template-columns: 1fr 280px; }
     }
 </style>
 </head>
@@ -678,8 +678,8 @@
             <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoEmergencias')">Emergências</button>
             <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoLimitacoes')">Limitações</button>
             <button class="menu-btn blue" type="button" onclick="startQuizSetup()">Teste de Limitações</button>
-            <button class="menu-btn gold" type="button" onclick="showScreen('showDoFalcao')" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden;">
-              <img src="https://i.postimg.cc/xJ2WQB4f/file-000000009c98720e8226695b49439f7a.png" alt="Show do Falcão" style="width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;">
+            <button class="menu-btn gold" type="button" onclick="showScreen('showDoBlackzao')" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden;">
+              <img src="https://i.postimg.cc/567Vf3CB/Show-do-Blackzao.png" alt="Show do Blackzão" style="width: 100%; height: 100%; object-fit: cover;">
             </button>
           </div>
         </div>
@@ -964,35 +964,35 @@
 </main>
 </section>
 
-<!-- SCREEN: SHOW DO FALCÃO - SELEÇÃO -->
-<section id="showDoFalcao-screen" class="screen">
-  <div class="falcao-app">
+<!-- SCREEN: SHOW DO BLACKZÃO - SELEÇÃO -->
+<section id="showDoBlackzao-screen" class="screen">
+  <div class="blackzao-app">
     <header class="topbar">
       <div class="brand">
-        <h1>Show do Falcão</h1>
+        <h1>Show do Blackzão</h1>
         <small>UH-60M • Treinamento Mobile</small>
       </div>
-      <div class="badge-falcao" id="falcao-topScoreStart">GANHO ATÉ O MOMENTO: 0 lb</div>
+      <div class="badge-blackzao" id="blackzao-topScoreStart">GANHO ATÉ O MOMENTO: 0 lb</div>
     </header>
 
-    <main id="falcao-start" class="hero">
-      <section class="card-falcao homeCard">
+    <main id="blackzao-start" class="hero">
+      <section class="card-blackzao homeCard">
         <div class="logoMark">
-          <img src="https://i.postimg.cc/pms9zZRL/file-0000000008e071fbaba7bb8002d562ad.png" alt="Logo Show do Falcão" referrerPolicy="no-referrer">
+          <img src="https://i.postimg.cc/pms9zZRL/file-0000000008e071fbaba7bb8002d562ad.png" alt="Logo Show do Blackzão" referrerPolicy="no-referrer">
         </div>
-        <div class="title-falcao">Show do<br>Falcão</div>
+        <div class="title-blackzao">Show do<br>Blackzão</div>
         <p style="margin: 10px 0; font-size: 0.9rem; color: #cad4ce;">
           Escolha um sistema específico para treinar ou selecione <b>Todos</b>.
           O prêmio máximo é <b>2400 lb de QAv</b>.
         </p>
-        <div id="falcao-allOptionWrap"></div>
-        <div class="systemGrid" id="falcao-systemGrid"></div>
+        <div id="blackzao-allOptionWrap"></div>
+        <div class="systemGrid" id="blackzao-systemGrid"></div>
         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
-          <button class="btn-falcao" id="falcao-btnStart" type="button">Iniciar missão</button>
-          <button class="btn-falcao secondary" id="falcao-btnRules" type="button">Ver regras</button>
-          <button class="btn-falcao secondary" onclick="showScreen('menu')" type="button">FECHAR E VOLTAR AO MENU</button>
+          <button class="btn-blackzao" id="blackzao-btnStart" type="button">Iniciar missão</button>
+          <button class="btn-blackzao secondary" id="blackzao-btnRules" type="button">Ver regras</button>
+          <button class="btn-blackzao secondary" onclick="showScreen('menu')" type="button">FECHAR E VOLTAR AO MENU</button>
         </div>
-        <p id="falcao-rules" style="margin-top: 15px; font-size: 0.8rem; color: #fff; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;" hidden>
+        <p id="blackzao-rules" style="margin-top: 15px; font-size: 0.8rem; color: #fff; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;" hidden>
           Use uma vez cada ajuda: <b>Eliminar 2</b>, <b>Ajuda da tripulação</b> e <b>Pular</b>.
           Em qualquer modo, o prêmio máximo é 2400 lb de QAv.
         </p>
@@ -1001,57 +1001,57 @@
   </div>
 </section>
 
-<!-- SCREEN: SHOW DO FALCÃO - MISSÃO (JOGO) -->
-<section id="showDoFalcaoGame-screen" class="screen">
-  <div class="falcao-app">
+<!-- SCREEN: SHOW DO BLACKZÃO - MISSÃO (JOGO) -->
+<section id="showDoBlackzaoGame-screen" class="screen">
+  <div class="blackzao-app">
     <header class="topbar">
       <div class="brand">
         <h1>Em Missão</h1>
-        <small id="falcao-currentSystemName">Sistema selecionado</small>
+        <small id="blackzao-currentSystemName">Sistema selecionado</small>
       </div>
-      <div class="badge-falcao" id="falcao-topScore">GANHO ATÉ O MOMENTO: 0 lb</div>
+      <div class="badge-blackzao" id="blackzao-topScore">GANHO ATÉ O MOMENTO: 0 lb</div>
     </header>
 
-    <main id="falcao-quiz">
+    <main id="blackzao-quiz">
       <div class="quizLayout">
-        <section class="card-falcao">
+        <section class="card-blackzao">
           <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center;">
-            <span class="pill-falcao" id="falcao-systemPill">Sistema</span>
-            <span class="pill-falcao" id="falcao-levelPill">Nível</span>
-            <span class="pill-falcao" id="falcao-counterPill">Pergunta</span>
-            <span class="pill-falcao highlight-value" id="falcao-valuePill">Valor</span>
+            <span class="pill-blackzao" id="blackzao-systemPill">Sistema</span>
+            <span class="pill-blackzao" id="blackzao-levelPill">Nível</span>
+            <span class="pill-blackzao" id="blackzao-counterPill">Pergunta</span>
+            <span class="pill-blackzao highlight-value" id="blackzao-valuePill">Valor</span>
           </div>
-          <div class="question-box" id="falcao-questionText"></div>
-          <div id="falcao-answers"></div>
-          <div id="falcao-poll" style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;" hidden></div>
-          <div id="falcao-feedback" style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--falcao-line); border-radius: 10px;" hidden></div>
+          <div class="question-box" id="blackzao-questionText"></div>
+          <div id="blackzao-answers"></div>
+          <div id="blackzao-poll" style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;" hidden></div>
+          <div id="blackzao-feedback" style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--blackzao-line); border-radius: 10px;" hidden></div>
         </section>
 
-        <aside class="card-falcao" style="padding: 15px;">
+        <aside class="card-blackzao" style="padding: 15px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <div style="font-weight: 900; color: var(--falcao-gold2);" id="falcao-moduleTitle">Módulo</div>
-            <div class="badge-falcao" id="falcao-compactProgress" style="font-size: 0.7rem;">0/0</div>
+            <div style="font-weight: 900; color: var(--blackzao-gold2);" id="blackzao-moduleTitle">Módulo</div>
+            <div class="badge-blackzao" id="blackzao-compactProgress" style="font-size: 0.7rem;">0/0</div>
           </div>
-          <div class="progressText" id="falcao-progressText"></div>
+          <div class="progressText" id="blackzao-progressText"></div>
           <div class="lifelines">
-            <button class="life-btn" id="falcao-life5050" type="button">ELIMINAR 2</button>
-            <button class="life-btn" id="falcao-lifeCrew" type="button">AJUDA DA TRIPULAÇÃO</button>
-            <button class="life-btn" id="falcao-lifeSkip" type="button">Pular</button>
-            <button class="life-btn" id="falcao-lifeStopGame" style="background: rgba(245,181,27,0.15); border-color: var(--falcao-gold2); color: var(--falcao-gold2);" type="button">PARAR</button>
-            <button class="life-btn" style="grid-column: 1 / -1; background: rgba(255,77,77,0.1); border-color: rgba(255,77,77,0.3);" id="falcao-btnStop" type="button">VOLTAR PARA O INÍCIO</button>
+            <button class="life-btn" id="blackzao-life5050" type="button">ELIMINAR 2</button>
+            <button class="life-btn" id="blackzao-lifeCrew" type="button">AJUDA DA TRIPULAÇÃO</button>
+            <button class="life-btn" id="blackzao-lifeSkip" type="button">Pular</button>
+            <button class="life-btn" id="blackzao-lifeStopGame" style="background: rgba(245,181,27,0.15); border-color: var(--blackzao-gold2); color: var(--blackzao-gold2);" type="button">PARAR</button>
+            <button class="life-btn" style="grid-column: 1 / -1; background: rgba(255,77,77,0.1); border-color: rgba(255,77,77,0.3);" id="blackzao-btnStop" type="button">VOLTAR PARA O INÍCIO</button>
           </div>
         </aside>
       </div>
     </main>
 
-    <main id="falcao-end" class="hero" hidden>
-      <section class="card-falcao homeCard">
-        <div id="falcao-confetti" style="position:absolute; inset:0; pointer-events:none;" hidden></div>
-        <div style="font-size: 3rem; margin-bottom: 10px;" id="falcao-endIcon">🏆</div>
-        <h2 style="font-size: 2rem; color: var(--falcao-gold2); margin: 10px 0;" id="falcao-endTitle">Fim de jogo</h2>
-        <p style="margin-bottom: 20px; font-size: 0.9rem;" id="falcao-endText"></p>
+    <main id="blackzao-end" class="hero" hidden>
+      <section class="card-blackzao homeCard">
+        <div id="blackzao-confetti" style="position:absolute; inset:0; pointer-events:none;" hidden></div>
+        <div style="font-size: 3rem; margin-bottom: 10px;" id="blackzao-endIcon">🏆</div>
+        <h2 style="font-size: 2rem; color: var(--blackzao-gold2); margin: 10px 0;" id="blackzao-endTitle">Fim de jogo</h2>
+        <p style="margin-bottom: 20px; font-size: 0.9rem;" id="blackzao-endText"></p>
         <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
-          <button class="btn-falcao secondary" id="falcao-btnHome" type="button">VOLTAR PARA O INÍCIO</button>
+          <button class="btn-blackzao secondary" id="blackzao-btnHome" type="button">VOLTAR PARA O INÍCIO</button>
         </div>
       </section>
     </main>
@@ -1654,8 +1654,8 @@
         quizSetup: 'quizSetup-screen',
         quizActive: 'quizActive-screen',
         quizResults: 'quizResults-screen',
-        showDoFalcao: 'showDoFalcao-screen',
-        showDoFalcaoGame: 'showDoFalcaoGame-screen'
+        showDoBlackzao: 'showDoBlackzao-screen',
+        showDoBlackzaoGame: 'showDoBlackzaoGame-screen'
       };
       
       const target = document.getElementById(map[name]);
@@ -2701,7 +2701,7 @@
 </tr>
 <tr class="pink">
   <td>Intervalo entre ciclos de partida</td>
-  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="1" placeholder="nº"/><span class="separator">Hora</span></div></td>
+  <td><div class="range-answer" style="justify-content:flex-start;"><input class="answer-short quiz-input" data-answer="1||60" placeholder="min"/><span class="separator">minuto</span></div></td>
 </tr>
 </table>
 </div>
@@ -3003,7 +3003,7 @@
       `;
     }
 
-    // --- SHOW DO FALCÃO LOGIC ---
+    // --- SHOW DO BLACKZÃO LOGIC ---
     (function() {
       const SYSTEMS_DATA = [
         {"id": "afcs", "name": "AFCS", "full": "Automatic Flight Control System", "questions": [
@@ -3203,7 +3203,7 @@
       let selectedSystem = "all", activeQuestions = [], currentIndex = 0, currentPrize = 0, locked = false;
       let used5050 = false, usedCrew = false, usedSkip = false;
 
-      const get = id => document.getElementById('falcao-' + id);
+      const get = id => document.getElementById('blackzao-' + id);
       
       window.showFalcaoSubScreen = (name) => {
         const quiz = get("quiz"); const end = get("end");
@@ -3245,7 +3245,7 @@
         get("life5050").disabled = false; get("lifeCrew").disabled = false; get("lifeSkip").disabled = false;
         get("moduleTitle").textContent = selectedSystem === "all" ? "Todos os sistemas" : selectedSystem.toUpperCase();
         get("currentSystemName").textContent = selectedSystem === "all" ? "Módulo: Todos os Sistemas" : "Módulo: " + selectedSystem.toUpperCase();
-        showScreen("showDoFalcaoGame");
+        showScreen("showDoBlackzaoGame");
         showFalcaoSubScreen("quiz");
         renderQuestion();
       };
@@ -3314,9 +3314,9 @@
       };
 
       get("btnStart").onclick = startMission;
-      get("btnHome").onclick = () => showScreen("showDoFalcao");
+      get("btnHome").onclick = () => showScreen("showDoBlackzao");
       get("btnRules").onclick = () => get("rules").hidden = !get("rules").hidden;
-      get("btnStop").onclick = () => { if(confirm("Deseja interromper o treinamento e voltar ao início?")) showScreen("showDoFalcao"); };
+      get("btnStop").onclick = () => { if(confirm("Deseja interromper o treinamento e voltar ao início?")) showScreen("showDoBlackzao"); };
       
       get("lifeStopGame").onclick = () => {
         if (locked) return;
