@@ -215,9 +215,23 @@
     .range-answer { 
       display: flex; 
       align-items: center; 
-      gap: 5px; 
+      gap: 4px; 
       justify-content: center;
       width: 100%;
+    }
+    .negative-sign {
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: #fff;
+      margin-right: 1px;
+      line-height: 1;
+      display: inline-block;
+      min-width: 12px;
+      text-align: center;
+    }
+    .range-answer .answer-short {
+      flex: 1;
+      max-width: 60px; /* Reduced further to make room for minus sign */
     }
     .range-answer.no-border input { border-color: transparent; }
     .range-answer.no-border:focus-within input { border-color: var(--accent-yellow); }
@@ -2022,8 +2036,10 @@
           }
           .emg-line-with-bullet span {
             font-weight: 900;
+            font-size: 1.5rem;
             color: #fff;
             flex-shrink: 0;
+            line-height: 1;
           }
           .emg-answer-hint {
             margin-left: 20px; /* Alinha com o início do input após o bullet */
@@ -2640,7 +2656,7 @@
 <div class="group-title title-red pink">ENG OIL T</div>
 <table>
 <tr class="pink"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="135" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="150" placeholder="até"/></div></td><td class="center">30 min</td></tr>
-<tr class="pink"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="135" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="pink"><td><div class="range-answer"><span class="negative-sign">-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="135" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
 </table>
 </div>
 
@@ -2661,7 +2677,7 @@
 <div class="group-title blue">XMSN OIL T</div>
 <table>
 <tr class="blue"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="105" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="140" placeholder="até"/></div></td><td class="center">Precaução</td></tr>
-<tr class="blue"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="blue"><td><div class="range-answer"><span class="negative-sign">-</span><input class="answer-short quiz-input" data-answer="20" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="105" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
 </table>
 </div>
 
@@ -2669,7 +2685,7 @@
 <div class="group">
 <div class="group-title green">BACKUP HYD PUMP</div>
 <table>
-<tr class="green"><td><div class="range-answer"><span>-</span><input class="answer-short quiz-input" data-answer="54" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="32" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
+<tr class="green"><td><div class="range-answer"><span class="negative-sign">-</span><input class="answer-short quiz-input" data-answer="54" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="32" placeholder="até"/></div></td><td class="center">Contínuo</td></tr>
 <tr class="green"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="33" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="38" placeholder="até"/></div></td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="24" placeholder="min"/><span class="separator">/</span><input class="answer-short quiz-input" data-answer="72" placeholder="min"/></div></td></tr>
 <tr class="green"><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="39" placeholder="de"/><span class="separator">a</span><input class="answer-short quiz-input" data-answer="52" placeholder="até"/></div></td><td><div class="range-answer"><input class="answer-short quiz-input" data-answer="16" placeholder="min"/><span class="separator">/</span><input class="answer-short quiz-input" data-answer="48" placeholder="min"/></div></td></tr>
 </table>
