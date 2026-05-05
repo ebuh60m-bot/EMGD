@@ -45,6 +45,7 @@
       color: var(--text-primary);
       font-family: var(--font-sans);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
@@ -104,6 +105,7 @@
     main#app-viewport {
       flex: 1;
       padding: 12px;
+      padding-bottom: 80px; /* Extra padding for mobile navigation bars */
       overflow-y: auto;
       overflow-x: hidden;
     }
@@ -287,7 +289,15 @@
     .screen.active { display: block; }
 
     /* Menu Screens */
-    .menu-shell { min-height: calc(100vh - 120px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .menu-shell { 
+      min-height: calc(100vh - 120px); 
+      min-height: calc(100dvh - 120px);
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 16px; 
+      padding-bottom: 100px; /* Extra safe room on bottom */
+    }
     .menu-card { width: min(900px, 100%); background: var(--panel-bg); border: 1px solid var(--border-color); padding: 40px 16px; text-align: center; position: relative; }
     .menu-card::before {
       content: ''; position: absolute; top: -1px; left: -1px; width: 20px; height: 20px; border-top: 3px solid var(--accent-yellow); border-left: 3px solid var(--accent-yellow);
@@ -406,7 +416,8 @@
     .calendar-icon-btn:hover { opacity: 1; }
 
     @media (max-width: 760px) {
-      .page, .emg-page { padding: 15px 8px 25px; }
+      .page, .emg-page { padding: 15px 8px 100px; } /* Increased bottom padding */
+      #showDoBlackzao-screen .blackzao-app, #showDoBlackzaoGame-screen .blackzao-app { padding: 12px 10px 100px; }
       .menu-buttons { grid-template-columns: 1fr; gap: 12px; }
       .menu-card { padding: 32px 16px; }
       h1 { font-size: 1.3rem; letter-spacing: 2px; }
@@ -510,7 +521,9 @@
       max-width: 1100px; 
       margin: 0 auto; 
       padding: 20px;
+      padding-bottom: 80px; /* Safe space for mobile nav */
       min-height: 100vh;
+      min-height: 100dvh;
     }
     #showDoBlackzao-screen .topbar, #showDoBlackzaoGame-screen .topbar {
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -523,7 +536,7 @@
     #showDoBlackzao-screen .brand small, #showDoBlackzaoGame-screen .brand small { display: block; color: var(--blackzao-muted); font-size: .75rem; font-weight: 700; opacity: 0.8; }
     #showDoBlackzao-screen .badge-blackzao, #showDoBlackzaoGame-screen .badge-blackzao { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(245,181,27,.4); background: rgba(245,181,27,.12); color: var(--blackzao-gold2); font-size: .85rem; font-weight: 900; }
     
-    #showDoBlackzao-screen .hero, #showDoBlackzaoGame-screen .hero { display: grid; place-items: center; padding: 20px 0; }
+    #showDoBlackzao-screen .hero, #showDoBlackzaoGame-screen .hero { display: grid; place-items: center; padding: 20px 0 80px; }
     #showDoBlackzao-screen .card-blackzao, #showDoBlackzaoGame-screen .card-blackzao { width: 100%; border: 1px solid var(--blackzao-line); border-radius: 28px; background: linear-gradient(145deg, rgba(10,16,12,.98), rgba(13,32,22,.92)); padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
     #showDoBlackzao-screen .homeCard { max-width: 600px; text-align: center; }
     #showDoBlackzao-screen .logoMark { 
