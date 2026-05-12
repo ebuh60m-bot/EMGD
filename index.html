@@ -415,6 +415,50 @@
     }
     .calendar-icon-btn:hover { opacity: 1; }
 
+    .nav-q-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-dim);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 60px;
+      transition: all 0.2s;
+    }
+    .nav-q-btn.active {
+      background: rgba(242, 201, 76, 0.1);
+      border-color: var(--accent-yellow);
+      color: var(--accent-yellow);
+    }
+    .emg-q-container { display: none; }
+    .emg-q-container.active { display: block; }
+
+    /* Results Grouping Style */
+    .result-group-title {
+      background: rgba(242, 201, 76, 0.1);
+      color: var(--accent-yellow);
+      padding: 10px 15px;
+      font-weight: 900;
+      font-size: 1rem;
+      border-left: 4px solid var(--accent-yellow);
+      margin: 30px 0 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .result-item-entry {
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 12px;
+      font-size: 0.9rem;
+    }
+    .result-item-user {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
     @media (max-width: 760px) {
       .page, .emg-page { padding: 15px 8px 100px; } /* Increased bottom padding */
       #showDoBlackzao-screen .blackzao-app, #showDoBlackzaoGame-screen .blackzao-app { padding: 12px 10px 100px; }
@@ -866,12 +910,24 @@
   </div>
   <div class="emg-page">
     <h1 id="titleEMG">EMERGÊNCIAS</h1>
+    
+    <!-- Question Navigation Buttons -->
+    <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 20px;">
+      <button class="nav-q-btn active" onclick="setActiveEmgQuestion(1)">P 1</button>
+      <button class="nav-q-btn" onclick="setActiveEmgQuestion(2)">P 2</button>
+      <button class="nav-q-btn" onclick="setActiveEmgQuestion(3)">P 3</button>
+      <button class="nav-q-btn" onclick="setActiveEmgQuestion(4)">P 4</button>
+    </div>
+
     <div class="emg-sheet">
       <div class="emg-sheet-title" style="display: flex; flex-direction: column; gap: 4px;">
-        <div style="font-size: 1.1rem; color: var(--accent-yellow);">Identifique a EMG</div>
-        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: none; letter-spacing: 0;">Escreva o procedimento de memória, se houver</div>
+        <div id="emgQuestionLabel" style="font-size: 1.1rem; color: var(--accent-yellow);">Pergunta 1</div>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: none; letter-spacing: 0;">Escreva o procedimento de memória ou informações da EMG</div>
       </div>
-      <div id="emgLines"></div>
+      <div id="emgLinesQ1" class="emg-q-container active"></div>
+      <div id="emgLinesQ2" class="emg-q-container"></div>
+      <div id="emgLinesQ3" class="emg-q-container"></div>
+      <div id="emgLinesQ4" class="emg-q-container"></div>
     </div>
   </div>
 </section>
@@ -1456,21 +1512,30 @@
       const date = document.getElementById('globalDate').value;
       if(!date) return alert('Selecione uma data.');
 
-      const texts = Array.from(document.querySelectorAll('#emergencias-screen textarea'))
-                         .map(t => t.value.trim())
-                         .filter(t => t.length > 0);
+      const answers = {};
+      let hasData = false;
 
-      if(texts.length === 0) return alert('Preencha as linhas antes de salvar.');
+      for(let q=1; q<=4; q++) {
+        const texts = Array.from(document.querySelectorAll(`#emgLinesQ${q} textarea`))
+                           .map(t => t.value.trim())
+                           .filter(t => t.length > 0);
+        if(texts.length > 0) {
+          answers[`q${q}`] = texts.join('\n');
+          hasData = true;
+        } else {
+          answers[`q${q}`] = '';
+        }
+      }
 
-      const content = texts.join('\n');
-      
+      if(!hasData) return alert('Preencha ao menos uma linha antes de salvar.');
+
       try {
         await addDoc(collection(db, 'emergencies'), {
           date: date,
-          content: content,
+          answers: answers, // New structured format
           createdAt: serverTimestamp()
         });
-        alert('Emergência salva no banco de dados!');
+        alert('Emergências salvas com sucesso!');
         window.showScreen('emergenciaDia');
       } catch (error) {
         await handleFirestoreError(error, 'create', 'emergencies');
@@ -1528,17 +1593,65 @@
           return;
         }
 
-        let i = 0;
+        const questionsData = { q1: [], q2: [], q3: [], q4: [] };
+        const legacyEntries = [];
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          const card = document.createElement('div');
-          card.className = 'result-card';
-          card.innerHTML = `
-            <div class="result-header">USUÁRIO ANÔNIMO #${++i} | ID: ${doc.id.substring(0,6)}</div>
-            <div class="result-content">${window.escapeHTML(data.content)}</div>
-          `;
-          list.appendChild(card);
+          const userId = doc.id.substring(0, 6);
+          const timestamp = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleTimeString([], {hour: '2bit', minute:'2bit'}) : '--:--';
+          
+          if(data.answers) {
+            for(let key in questionsData) {
+              if(data.answers[key]) {
+                questionsData[key].push({ text: data.answers[key], user: userId, time: timestamp });
+              }
+            }
+          } else if(data.content) {
+            // Handle legacy data
+            legacyEntries.push({ text: data.content, user: userId, time: timestamp });
+          }
         });
+
+        // Render Questions Grouped
+        for(let key in questionsData) {
+          const num = key.replace('q', '');
+          if(questionsData[key].length > 0) {
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'result-group-title';
+            groupHeader.textContent = `Pergunta ${num}`;
+            list.appendChild(groupHeader);
+
+            questionsData[key].forEach(entry => {
+              const item = document.createElement('div');
+              item.className = 'result-item-entry';
+              item.innerHTML = `
+                <div style="white-space: pre-wrap;">${window.escapeHTML(entry.text)}</div>
+                <div class="result-item-user">Usuário #${entry.user} às ${entry.time}</div>
+              `;
+              list.appendChild(item);
+            });
+          }
+        }
+
+        // Render Legacy if any
+        if(legacyEntries.length > 0) {
+          const groupHeader = document.createElement('div');
+          groupHeader.className = 'result-group-title';
+          groupHeader.textContent = `Dados Antigos (Sem Grupo)`;
+          list.appendChild(groupHeader);
+          
+          legacyEntries.forEach(entry => {
+            const item = document.createElement('div');
+            item.className = 'result-item-entry';
+            item.innerHTML = `
+              <div style="white-space: pre-wrap;">${window.escapeHTML(entry.text)}</div>
+              <div class="result-item-user">Usuário #${entry.user} às ${entry.time}</div>
+            `;
+            list.appendChild(item);
+          });
+        }
+
       } catch (error) {
         list.innerHTML = '<div class="stats-card" style="color:var(--danger)">Erro ao carregar dados do banco.</div>';
         handleFirestoreError(error, 'list', 'emergencies');
@@ -1915,15 +2028,32 @@
     }
 
     function generateEmgLines() {
-      const container = document.getElementById('emgLines');
-      if(!container) return;
-      container.innerHTML = '';
-      for(let i=0; i<20; i++) {
-        const div = document.createElement('div');
-        div.className = 'write-line';
-        div.innerHTML = '<textarea aria-label="Linha para resposta"></textarea>';
-        container.appendChild(div);
+      for(let q=1; q<=4; q++) {
+        const container = document.getElementById(`emgLinesQ${q}`);
+        if(!container) continue;
+        container.innerHTML = '';
+        for(let i=0; i<10; i++) {
+          const div = document.createElement('div');
+          div.className = 'write-line';
+          div.innerHTML = `<textarea aria-label="Linha para resposta Pergunta ${q}"></textarea>`;
+          container.appendChild(div);
+        }
       }
+    }
+
+    function setActiveEmgQuestion(num) {
+      // Toggle buttons
+      document.querySelectorAll('.nav-q-btn').forEach((btn, idx) => {
+        if (idx + 1 === num) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      // Toggle containers
+      document.querySelectorAll('.emg-q-container').forEach((cont, idx) => {
+        if (idx + 1 === num) cont.classList.add('active');
+        else cont.classList.remove('active');
+      });
+      // Update label
+      document.getElementById('emgQuestionLabel').textContent = `Pergunta ${num}`;
     }
 
     // --- TRAINING MODE (LOCAL ONLY) ---
