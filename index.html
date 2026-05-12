@@ -685,7 +685,7 @@
 <body>
 
 <header>
-  <div class="logo-area" onclick="showScreen('menu')" style="cursor:pointer; display: flex; align-items: center;">
+  <div class="logo-area" onclick="window.showScreen('menu')" style="cursor:pointer; display: flex; align-items: center;">
     <img src="https://i.ibb.co/zT2Rr3w7/image.png" alt="UH-60M" style="height: 35px; filter: drop-shadow(0 0 5px var(--accent-yellow));" 
          onerror="this.style.display='none'; document.getElementById('logo-svg-fallback').style.display='block';">
     <svg id="logo-svg-fallback" width="70" height="30" viewBox="0 0 120 40" fill="var(--accent-yellow)" style="display:none; filter: drop-shadow(0 0 5px var(--accent-yellow));">
@@ -734,8 +734,8 @@
         <div class="menu-section">
           <div class="menu-section-label"></div>
           <div class="menu-buttons" style="max-width: none; width: 100%;">
-            <button class="menu-btn red" type="button" onclick="showScreen('emergenciaDia')">Emergência do Dia</button>
-            <button class="menu-btn" type="button" onclick="showScreen('conferirRespostas')">Conferir Respostas</button>
+            <button class="menu-btn red" type="button" onclick="window.showScreen('emergenciaDia')">Emergência do Dia</button>
+            <button class="menu-btn" type="button" onclick="window.showScreen('conferirRespostas')">Conferir Respostas</button>
           </div>
         </div>
 
@@ -746,10 +746,10 @@
         <div class="menu-section">
           <div class="menu-section-label">Treinamento</div>
           <div class="menu-buttons" style="max-width: none; width: 100%;">
-            <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoEmergencias')">Emergências</button>
-            <button class="menu-btn blue" type="button" onclick="showScreen('treinamentoLimitacoes')">Limitações</button>
+            <button class="menu-btn blue" type="button" onclick="window.showScreen('treinamentoEmergencias')">Emergências</button>
+            <button class="menu-btn blue" type="button" onclick="window.showScreen('treinamentoLimitacoes')">Limitações</button>
             <button class="menu-btn blue" type="button" onclick="startQuizSetup()">Teste de Limitações</button>
-            <button class="menu-btn gold" type="button" onclick="showScreen('showDoBlackzao')" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden;">
+            <button class="menu-btn gold" type="button" onclick="window.showScreen('showDoBlackzao')" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden;">
               <img src="https://i.postimg.cc/567Vf3CB/Show-do-Blackzao.png" alt="Show do Blackzão" style="width: 100%; height: 100%; object-fit: cover;">
             </button>
           </div>
@@ -763,13 +763,13 @@
 <!-- EMERGENCIA DO DIA SELECTOR -->
 <section id="emergenciaDia-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('menu')">Menu Inicial</button>
+    <button type="button" onclick="window.showScreen('menu')">Menu Inicial</button>
   </div>
   <div class="emg-page">
     <h1>EMERGÊNCIA DO DIA</h1>
     
     <div style="max-width: 500px; margin: 0 auto 30px; padding: 0 20px;">
-        <button class="menu-btn btn-3d" type="button" onclick="showScreen('verEmgD')">VER EMG D</button>
+        <button class="menu-btn btn-3d" type="button" onclick="window.showScreen('verEmgD')">VER EMG D</button>
     </div>
 
     <div class="select-card">
@@ -784,8 +784,8 @@
           </div>
         </div>
         <div class="menu-buttons" style="max-width:none;">
-          <button class="menu-btn red" type="button" onclick="showScreen('emergencias')">Responder Emergências</button>
-          <button class="menu-btn blue" type="button" onclick="showScreen('limitacoesEnvio')">Responder Limitações</button>
+          <button class="menu-btn red" type="button" onclick="window.showScreen('emergencias')">Responder Emergências</button>
+          <button class="menu-btn blue" type="button" onclick="window.showScreen('limitacoesEnvio')">Responder Limitações</button>
         </div>
       </div>
     </div>
@@ -795,7 +795,7 @@
 <!-- SCREEN: VER EMERGENCIA DO DIA (SORTEIO) -->
 <section id="verEmgD-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('emergenciaDia')">Voltar</button>
+    <button type="button" onclick="window.showScreen('emergenciaDia')">Voltar</button>
   </div>
   <div class="emg-page">
     <h1>EMERGÊNCIA DO DIA</h1>
@@ -839,13 +839,13 @@
 <!-- CONFERIR RESPOSTAS MENU -->
 <section id="conferirRespostas-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('menu')">Menu Inicial</button>
+    <button type="button" onclick="window.showScreen('menu')">Menu Inicial</button>
   </div>
   <div class="emg-page">
     <h1>CONFERIR RESPOSTAS</h1>
     <div class="menu-buttons" style="max-width:860px;margin:0 auto;">
-      <button class="menu-btn red" type="button" onclick="showScreen('resultadosEmergencias')">Emergências</button>
-      <button class="menu-btn blue" type="button" onclick="showScreen('resultadosLimitacoes')">Limitações</button>
+      <button class="menu-btn red" type="button" onclick="window.showScreen('resultadosEmergencias')">Emergências</button>
+      <button class="menu-btn blue" type="button" onclick="window.showScreen('resultadosLimitacoes')">Limitações</button>
       <button class="menu-btn white full-row" type="button" onclick="window.handleGlobalReset(event)">
         <i data-lucide="trash-2" style="margin-right: 8px; width: 18px; height: 18px; vertical-align: middle;"></i>
         ZERAR TUDO
@@ -857,7 +857,7 @@
 <!-- RESULTADOS EMERGENCIAS -->
 <section id="resultadosEmergencias-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('conferirRespostas')">Voltar</button>
+    <button type="button" onclick="window.showScreen('conferirRespostas')">Voltar</button>
   </div>
   <div class="emg-page">
     <h1>RESPOSTAS - EMERGÊNCIAS</h1>
@@ -881,7 +881,7 @@
 <!-- RESULTADOS LIMITACOES -->
 <section id="resultadosLimitacoes-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('conferirRespostas')">Voltar</button>
+    <button type="button" onclick="window.showScreen('conferirRespostas')">Voltar</button>
   </div>
   <div class="emg-page">
     <h1>RESPOSTAS - LIMITAÇÕES</h1>
@@ -905,7 +905,7 @@
 <!-- SCREEN: RESPONDER EMERGENCIAS -->
 <section id="emergencias-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('emergenciaDia')">Voltar</button>
+    <button type="button" onclick="window.showScreen('emergenciaDia')">Voltar</button>
     <button type="button" onclick="saveEmergencyEntries()">Enviar</button>
   </div>
   <div class="emg-page">
@@ -913,10 +913,10 @@
     
     <!-- Question Navigation Buttons -->
     <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 20px;">
-      <button class="nav-q-btn active" onclick="setActiveEmgQuestion(1)">P 1</button>
-      <button class="nav-q-btn" onclick="setActiveEmgQuestion(2)">P 2</button>
-      <button class="nav-q-btn" onclick="setActiveEmgQuestion(3)">P 3</button>
-      <button class="nav-q-btn" onclick="setActiveEmgQuestion(4)">P 4</button>
+      <button class="nav-q-btn active" onclick="window.setActiveEmgQuestion(1)">P 1</button>
+      <button class="nav-q-btn" onclick="window.setActiveEmgQuestion(2)">P 2</button>
+      <button class="nav-q-btn" onclick="window.setActiveEmgQuestion(3)">P 3</button>
+      <button class="nav-q-btn" onclick="window.setActiveEmgQuestion(4)">P 4</button>
     </div>
 
     <div class="emg-sheet">
@@ -935,7 +935,7 @@
 <!-- SCREEN: QUIZ SETUP -->
 <section id="quizSetup-screen" class="screen">
   <div class="emg-toolbar">
-    <button type="button" onclick="showScreen('menu')">Voltar</button>
+    <button type="button" onclick="window.showScreen('menu')">Voltar</button>
   </div>
   <div class="emg-page">
     <h1>TESTE DE LIMITAÇÕES</h1>
@@ -997,8 +997,8 @@
         <div style="font-family: var(--font-mono); color: var(--text-dim); margin-bottom: 40px;" id="finalScorePercent">0% de aproveitamento</div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-           <button class="menu-btn" style="min-height: 60px;" onclick="showScreen('menu')">Sair</button>
-           <button class="menu-btn blue" style="min-height: 60px;" onclick="showScreen('quizSetup')">Refazer</button>
+           <button class="menu-btn" style="min-height: 60px;" onclick="window.showScreen('menu')">Sair</button>
+           <button class="menu-btn blue" style="min-height: 60px;" onclick="window.showScreen('quizSetup')">Refazer</button>
         </div>
       </div>
     </div>
@@ -1008,7 +1008,7 @@
 <!-- SCREEN: RESPONDER LIMITACOES (MODO ENVIO) -->
 <section id="limitacoesEnvio-screen" class="screen">
 <div class="toolbar">
-    <button onclick="showScreen('emergenciaDia')" type="button">Voltar</button>
+    <button onclick="window.showScreen('emergenciaDia')" type="button">Voltar</button>
     <button onclick="saveLimitationsEntries()" type="button">Enviar</button>
 </div>
 <main class="page">
@@ -1020,7 +1020,7 @@
 <!-- SCREEN: TREINAMENTO LIMITACOES -->
 <section id="treinamentoLimitacoes-screen" class="screen">
 <div class="toolbar">
-    <button onclick="showScreen('menu')" type="button">Menu Inicial</button>
+    <button onclick="window.showScreen('menu')" type="button">Menu Inicial</button>
     <button onclick="checkTrainingAnswers()" type="button">Conferir</button>
     <button id="answerKeyBtn" onclick="toggleAnswerKey()" type="button">Gabarito</button>
     <button onclick="clearTrainingForm()" type="button">Limpar</button>
@@ -1036,7 +1036,7 @@
 <!-- SCREEN: TREINAMENTO EMERGENCIAS -->
 <section id="treinamentoEmergencias-screen" class="screen">
 <div class="toolbar">
-    <button onclick="showScreen('menu')" type="button">Menu Inicial</button>
+    <button onclick="window.showScreen('menu')" type="button">Menu Inicial</button>
     <button id="emgAnswerKeyBtn" onclick="toggleEmgAnswerKey()" type="button">Mostrar Respostas</button>
     <button onclick="clearEmgTrainingForm()" type="button">Limpar</button>
 </div>
@@ -1073,7 +1073,7 @@
         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
           <button class="btn-blackzao" id="blackzao-btnStart" type="button">Iniciar missão</button>
           <button class="btn-blackzao secondary" id="blackzao-btnRules" type="button">Ver regras</button>
-          <button class="btn-blackzao secondary" onclick="showScreen('menu')" type="button">FECHAR E VOLTAR AO MENU</button>
+          <button class="btn-blackzao secondary" onclick="window.showScreen('menu')" type="button">FECHAR E VOLTAR AO MENU</button>
         </div>
         <p id="blackzao-rules" style="margin-top: 15px; font-size: 0.8rem; color: #fff; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;" hidden>
           Use uma vez cada ajuda: <b>Eliminar 2</b>, <b>Ajuda da tripulação</b> e <b>Pular</b>.
@@ -1198,7 +1198,7 @@
     };
 
     window.startQuizSetup = function() {
-      showScreen('quizSetup');
+      window.showScreen('quizSetup');
     };
 
     window.runQuiz = function() {
@@ -1216,7 +1216,7 @@
       quizState.score = 0;
       quizState.answered = false;
       
-      showScreen('quizActive');
+      window.showScreen('quizActive');
       renderCurrentQuizQuestion();
     };
 
@@ -1421,7 +1421,7 @@
     };
 
     function finishQuiz() {
-      showScreen('quizResults');
+      window.showScreen('quizResults');
       const total = quizState.questions.length;
       const score = quizState.score;
       const percent = Math.round((score / total) * 100);
@@ -1584,11 +1584,21 @@
       if(!date) return;
 
       try {
-        const q = query(collection(db, 'emergencies'), where('date', '==', date), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, 'emergencies'), where('date', '==', date));
         const querySnapshot = await getDocs(q);
         
+        let docs = [];
+        querySnapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
+        
+        // Manual sort by createdAt descending
+        docs.sort((a,b) => {
+          const ta = a.createdAt?.toMillis() || 0;
+          const tb = b.createdAt?.toMillis() || 0;
+          return tb - ta;
+        });
+        
         list.innerHTML = '';
-        if(querySnapshot.empty) {
+        if(docs.length === 0) {
           list.innerHTML = '<div class="stats-card">Nenhuma resposta encontrada para esta data.</div>';
           return;
         }
@@ -1596,10 +1606,9 @@
         const questionsData = { q1: [], q2: [], q3: [], q4: [] };
         const legacyEntries = [];
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const userId = doc.id.substring(0, 6);
-          const timestamp = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleTimeString([], {hour: '2bit', minute:'2bit'}) : '--:--';
+        docs.forEach((data) => {
+          const userId = data.id.substring(0, 6);
+          const timestamp = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
           
           if(data.answers) {
             for(let key in questionsData) {
@@ -2041,7 +2050,7 @@
       }
     }
 
-    function setActiveEmgQuestion(num) {
+    window.setActiveEmgQuestion = function(num) {
       // Toggle buttons
       document.querySelectorAll('.nav-q-btn').forEach((btn, idx) => {
         if (idx + 1 === num) btn.classList.add('active');
@@ -3402,7 +3411,7 @@
         get("life5050").disabled = false; get("lifeCrew").disabled = false; get("lifeSkip").disabled = false;
         get("moduleTitle").textContent = selectedSystem === "all" ? "Todos os sistemas" : selectedSystem.toUpperCase();
         get("currentSystemName").textContent = selectedSystem === "all" ? "Módulo: Todos os Sistemas" : "Módulo: " + selectedSystem.toUpperCase();
-        showScreen("showDoBlackzaoGame");
+        window.showScreen("showDoBlackzaoGame");
         showFalcaoSubScreen("quiz");
         renderQuestion();
       };
@@ -3471,9 +3480,9 @@
       };
 
       get("btnStart").onclick = startMission;
-      get("btnHome").onclick = () => showScreen("showDoBlackzao");
+      get("btnHome").onclick = () => window.showScreen("showDoBlackzao");
       get("btnRules").onclick = () => get("rules").hidden = !get("rules").hidden;
-      get("btnStop").onclick = () => { if(confirm("Deseja interromper o treinamento e voltar ao início?")) showScreen("showDoBlackzao"); };
+      get("btnStop").onclick = () => { if(confirm("Deseja interromper o treinamento e voltar ao início?")) window.showScreen("showDoBlackzao"); };
       
       get("lifeStopGame").onclick = () => {
         if (locked) return;

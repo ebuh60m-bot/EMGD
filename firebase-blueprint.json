@@ -2,16 +2,22 @@
   "entities": {
     "EmergencyEntry": {
       "title": "Emergency Training Entry",
-      "description": "A user's submission for emergency procedures on a specific date.",
+      "description": "A user's submission for emergency procedures on a specific date, grouped by questions.",
       "type": "object",
       "properties": {
         "date": {
           "type": "string",
           "description": "The date of the training in YYYY-MM-DD format."
         },
-        "content": {
-          "type": "string",
-          "description": "The procedures described by the user."
+        "answers": {
+          "type": "object",
+          "properties": {
+            "q1": { "type": "string" },
+            "q2": { "type": "string" },
+            "q3": { "type": "string" },
+            "q4": { "type": "string" }
+          },
+          "description": "Answers for each of the 4 emergency questions."
         },
         "createdAt": {
           "type": "string",
@@ -19,7 +25,7 @@
           "description": "Server timestamp of creation."
         }
       },
-      "required": ["date", "content", "createdAt"]
+      "required": ["date", "answers", "createdAt"]
     },
     "LimitationEntry": {
       "title": "Limitations Training Entry",
