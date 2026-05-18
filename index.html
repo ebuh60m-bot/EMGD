@@ -769,7 +769,7 @@
     <h1>EMERGÊNCIA DO DIA</h1>
     
     <div style="max-width: 500px; margin: 0 auto 30px; padding: 0 20px;">
-        <button class="menu-btn btn-3d" type="button" onclick="window.showScreen('verEmgD')">VER EMG D</button>
+        <button class="menu-btn btn-3d" type="button" onclick="window.checkEmgPassword()">VER EMG D</button>
     </div>
 
     <div class="select-card">
@@ -1824,6 +1824,15 @@
       if(name === 'resultadosLimitacoes') window.loadLimitationsResults();
       
       window.scrollTo({top:0, behavior:'auto'});
+    };
+
+    window.checkEmgPassword = function() {
+      const pw = prompt("Digite a senha para acessar:");
+      if (pw === "uh60mike") {
+        window.showScreen('verEmgD');
+      } else if (pw !== null) {
+        alert("Senha incorreta!");
+      }
     };
 
     window.getFormattedDate = function(dateStr) {
