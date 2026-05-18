@@ -55,6 +55,15 @@
         }
       },
       "required": ["date", "filled", "correct", "wrong", "createdAt"]
+    },
+    "ConfigEntry": {
+      "title": "Application Configuration",
+      "description": "System-wide settings.",
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" }
+      },
+      "required": ["value"]
     }
   },
   "firestore": {
@@ -65,6 +74,10 @@
     "/limitations/{id}": {
       "schema": "LimitationEntry",
       "description": "Collection of anonymous limitations test results."
+    },
+    "/config/{id}": {
+      "schema": "ConfigEntry",
+      "description": "General application configuration."
     }
   }
 }

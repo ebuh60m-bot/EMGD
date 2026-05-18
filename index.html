@@ -796,6 +796,7 @@
 <section id="verEmgD-screen" class="screen">
   <div class="emg-toolbar">
     <button type="button" onclick="window.showScreen('emergenciaDia')">Voltar</button>
+    <button type="button" onclick="window.changeEmgPassword()">Trocar Senha</button>
   </div>
   <div class="emg-page">
     <h1>EMERGÊNCIA DO DIA</h1>
@@ -1170,7 +1171,7 @@
 <script type="module">
     import { initializeApp } from 'firebase/app';
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
-    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, getDocFromServer, doc, deleteDoc, orderBy } from 'firebase/firestore';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, getDocFromServer, doc, setDoc, getDoc, deleteDoc, orderBy } from 'firebase/firestore';
 
     const firebaseConfig = {
       projectId: "gen-lang-client-0381452939",
@@ -1826,12 +1827,51 @@
       window.scrollTo({top:0, behavior:'auto'});
     };
 
-    window.checkEmgPassword = function() {
+    let currentEmgPassword = "uh60mike";
+    async function loadEmgPassword() {
+      try {
+        const snap = await getDoc(doc(db, 'config', 'verEmgPassword'));
+        if (snap.exists()) {
+          currentEmgPassword = snap.data().value;
+        }
+      } catch (e) {
+        console.warn("Usando senha padrão devido a erro ou inexistência no banco.");
+      }
+    }
+
+    window.checkEmgPassword = async function() {
+      await loadEmgPassword();
       const pw = prompt("Digite a senha para acessar:");
-      if (pw === "uh60mike") {
+      if (pw === currentEmgPassword) {
         window.showScreen('verEmgD');
       } else if (pw !== null) {
         alert("Senha incorreta!");
+      }
+    };
+
+    window.changeEmgPassword = async function() {
+      const oldPw = prompt("Digite a senha atual:");
+      if (oldPw === null) return;
+      
+      await loadEmgPassword();
+      if (oldPw !== currentEmgPassword) {
+        return alert("Senha atual incorreta!");
+      }
+
+      const newPw = prompt("Digite a nova senha:");
+      if (newPw === null || newPw.trim() === "") return;
+      
+      const confirmPw = prompt("Confirme a nova senha:");
+      if (newPw !== confirmPw) {
+        return alert("As senhas não coincidem!");
+      }
+
+      try {
+        await setDoc(doc(db, 'config', 'verEmgPassword'), { value: newPw });
+        currentEmgPassword = newPw;
+        alert("Senha alterada com sucesso!");
+      } catch (e) {
+        alert("Erro ao salvar nova senha no banco de dados.");
       }
     };
 

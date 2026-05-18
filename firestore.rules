@@ -36,6 +36,11 @@ service cloud.firestore {
       allow delete: if true;
     }
 
+    match /config/{id} {
+      // For simplicity, allow anyone to read/write the config (password)
+      allow read, write: if true;
+    }
+
     function isValidEmergencyEntry(data) {
       return data.keys().hasAll(['date', 'answers', 'createdAt'])
         && data.keys().size() == 3
