@@ -1251,9 +1251,11 @@
     window.saveDailyStateToFirebase = async function(state) {
       try {
         await setDoc(doc(db, 'config', 'dailyEmergencyState'), {
-          remainingDays: state.remainingDays,
-          history: state.history,
-          current: state.current
+          remainingDays: state.remainingDays || [],
+          history: state.history || [],
+          current: state.current || null,
+          lastUpdatedAt: state.lastUpdatedAt || "",
+          resetAt: state.resetAt || ""
         });
       } catch (e) {
         console.error("Erro ao sincronizar estado com o Firestore:", e);
@@ -1262,9 +1264,43 @@
 
     onSnapshot(doc(db, 'config', 'dailyEmergencyState'), (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.data();
-        if (typeof window.updateDailyState === 'function') {
-          window.updateDailyState(data);
+        const onlineData = snapshot.data();
+        
+        const local = window.dailyState || { lastUpdatedAt: "", resetAt: "", history: [] };
+        const localTime = new Date(local.lastUpdatedAt || 0).getTime();
+        const localReset = new Date(local.resetAt || 0).getTime();
+        const localHistoryLen = Array.isArray(local.history) ? local.history.length : 0;
+        
+        const onlineTime = new Date(onlineData.lastUpdatedAt || 0).getTime();
+        const onlineReset = new Date(onlineData.resetAt || 0).getTime();
+        const onlineHistoryLen = Array.isArray(onlineData.history) ? onlineData.history.length : 0;
+        
+        const isOnlineNewer = (onlineTime > localTime) || (onlineReset > localReset) || (onlineHistoryLen > localHistoryLen && localHistoryLen === 0);
+        const isLocalNewer = (localTime > onlineTime) || (localReset > onlineReset) || (localHistoryLen > onlineHistoryLen && onlineHistoryLen === 0);
+        
+        if (isOnlineNewer) {
+          console.log("Recebido estado mais recente do Firestore, atualizando local.");
+          if (typeof window.updateDailyState === 'function') {
+            window.updateDailyState(onlineData);
+          }
+        } else if (isLocalNewer) {
+          console.log("Estado local é mais recente, enviando para o Firestore.");
+          if (typeof window.saveDailyStateToFirebase === 'function') {
+            window.saveDailyStateToFirebase(local);
+          }
+        } else {
+          // fallback comparison if both are undefined or equal, but mismatch in history count
+          if (localHistoryLen !== onlineHistoryLen) {
+            if (onlineHistoryLen > localHistoryLen) {
+              if (typeof window.updateDailyState === 'function') {
+                window.updateDailyState(onlineData);
+              }
+            } else {
+              if (typeof window.saveDailyStateToFirebase === 'function') {
+                window.saveDailyStateToFirebase(local);
+              }
+            }
+          }
         }
       } else {
         if (typeof window.saveDailyStateToFirebase === 'function' && window.dailyState) {
@@ -2082,7 +2118,9 @@
       return {
         remainingDays: DAILY_EMERGENCIES.map(item => item.day),
         history: [],
-        current: null
+        current: null,
+        lastUpdatedAt: "",
+        resetAt: ""
       };
     }
 
@@ -2100,7 +2138,9 @@
         return {
           remainingDays: remDays,
           history: Array.isArray(parsed.history) ? parsed.history : [],
-          current: parsed.current || null
+          current: parsed.current || null,
+          lastUpdatedAt: parsed.lastUpdatedAt || "",
+          resetAt: parsed.resetAt || ""
         };
       } catch {
         return getInitialDailyState();
@@ -2115,7 +2155,9 @@
       Object.assign(dailyState, {
         remainingDays: newData.remainingDays || [],
         history: newData.history || [],
-        current: newData.current || null
+        current: newData.current || null,
+        lastUpdatedAt: newData.lastUpdatedAt || "",
+        resetAt: newData.resetAt || ""
       });
       localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(dailyState));
       renderDailyAll();
@@ -2177,6 +2219,7 @@
       const record = { day, drawnAt: new Date().toISOString(), manual: false };
       dailyState.current = record;
       dailyState.history.push(record);
+      dailyState.lastUpdatedAt = new Date().toISOString();
       saveDailyState();
       renderDailyAll();
       
@@ -2275,6 +2318,7 @@
       const record = { day, drawnAt: new Date().toISOString(), manual: true };
       dailyState.current = record;
       dailyState.history.push(record);
+      dailyState.lastUpdatedAt = new Date().toISOString();
       saveDailyState();
       renderDailyAll();
       
@@ -2297,6 +2341,8 @@
 
       confirmBtn.onclick = function() {
         dailyState = getInitialDailyState();
+        dailyState.resetAt = new Date().toISOString();
+        dailyState.lastUpdatedAt = new Date().toISOString();
         saveDailyState();
         renderDailyAll();
         modal.style.display = 'none';
