@@ -710,6 +710,62 @@
   </div>
 </div>
 
+<!-- PASSWORD INPUT MODAL -->
+<div id="password-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10001; align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal-box" style="border-color: var(--accent-yellow); box-shadow: 0 0 30px rgba(242, 201, 76, 0.2);">
+    <h2 style="color: var(--accent-yellow); margin-bottom: 10px;">ACESSO PROTEGIDO</h2>
+    <p style="color: var(--text-dim); margin-bottom: 20px;">Digite a senha para acessar o painel:</p>
+    <div style="margin-bottom: 25px;">
+      <input type="password" id="password-input-field" style="width: 100%; max-width: 320px; background: #000; border: 1px solid var(--border-color); color: #fff; padding: 12px; font-family: var(--font-mono); font-size: 1.1rem; text-align: center; border-radius: 4px;" placeholder="Senha" />
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="window.closePasswordModal()">CANCELAR</button>
+      <button class="modal-btn confirm" style="background: var(--accent-yellow); border-color: var(--accent-yellow); color: #000;" onclick="window.submitPasswordModal()">ENTRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="change-password-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10001; align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal-box" style="border-color: var(--accent-blue); box-shadow: 0 0 30px rgba(45, 156, 219, 0.2); max-width: 420px;">
+    <h2 style="color: var(--accent-blue); margin-bottom: 15px;">ALTERAR SENHA</h2>
+    <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; text-align: left;">
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; display: block;">Senha Atual</label>
+        <input type="password" id="change-pw-current" style="width: 100%; background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px; font-family: var(--font-mono); border-radius: 4px;" />
+      </div>
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; display: block;">Nova Senha</label>
+        <input type="password" id="change-pw-new" style="width: 100%; background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px; font-family: var(--font-mono); border-radius: 4px;" />
+      </div>
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; display: block;">Confirmar Nova Senha</label>
+        <input type="password" id="change-pw-confirm" style="width: 100%; background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px; font-family: var(--font-mono); border-radius: 4px;" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="window.closeChangePasswordModal()">CANCELAR</button>
+      <button class="modal-btn confirm" style="background: var(--accent-blue); border-color: var(--accent-blue); color: #000;" onclick="window.submitChangePasswordModal()">ALTERAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- SELECT EMERGENCY MANUALLY MODAL -->
+<div id="manual-select-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10001; align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal-box" style="border-color: var(--accent-blue); box-shadow: 0 0 30px rgba(45, 156, 219, 0.2); max-width: 600px; max-height: 90vh; display: flex; flex-direction: column;">
+    <h2 style="color: var(--accent-blue); margin-bottom: 10px;">ESCOLHER MANUALMENTE</h2>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">Selecione uma emergência para aplicar. Ficará salva no histórico como se tivesse sido sorteada.</p>
+    
+    <div id="manual-days-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 25px; overflow-y: auto; flex: 1; min-height: 200px; padding: 10px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); border-radius: 4px;">
+      <!-- JavaScript will inject buttons here -->
+    </div>
+    
+    <div class="modal-actions" style="margin-top: 15px; flex-shrink: 0;">
+      <button class="modal-btn" onclick="window.closeManualSelectModal()">FECHAR</button>
+    </div>
+  </div>
+</div>
+
 <main id="app-viewport">
 
 <!-- MENU SCREEN -->
@@ -734,8 +790,7 @@
         <div class="menu-section">
           <div class="menu-section-label"></div>
           <div class="menu-buttons" style="max-width: none; width: 100%;">
-            <button class="menu-btn red" type="button" onclick="window.showScreen('emergenciaDia')">Emergência do Dia</button>
-            <button class="menu-btn" type="button" onclick="window.showScreen('conferirRespostas')">Conferir Respostas</button>
+            <button class="menu-btn red" type="button" style="width: 100%;" onclick="window.showScreen('emergenciaDia')">Emergência do Dia</button>
           </div>
         </div>
 
@@ -783,9 +838,10 @@
             </div>
           </div>
         </div>
-        <div class="menu-buttons" style="max-width:none;">
-          <button class="menu-btn red" type="button" onclick="window.showScreen('emergencias')">Responder Emergências</button>
-          <button class="menu-btn blue" type="button" onclick="window.showScreen('limitacoesEnvio')">Responder Limitações</button>
+        <div class="menu-buttons" style="max-width:none; display: flex; flex-direction: column; gap: 12px;">
+          <button class="menu-btn red" type="button" onclick="window.showScreen('emergencias')" style="width: 100%;">Responder Emergências</button>
+          <button class="menu-btn blue" type="button" onclick="window.showScreen('limitacoesEnvio')" style="width: 100%;">Responder Limitações</button>
+          <button class="menu-btn white" type="button" onclick="window.showScreen('conferirRespostas')" style="width: 100%;">Conferir Respostas</button>
         </div>
       </div>
     </div>
@@ -799,7 +855,7 @@
     <button type="button" onclick="window.changeEmgPassword()">Trocar Senha</button>
   </div>
   <div class="emg-page">
-    <h1>EMERGÊNCIA DO DIA</h1>
+    <h1>SORTEAR EMERGÊNCIA</h1>
     <div class="intro">
       Sorteio automático entre os 31 dias de emergência, sem repetição até concluir todo o ciclo.
     </div>
@@ -817,14 +873,17 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-          <button class="menu-btn red" style="min-height: 60px; flex: 1;" onclick="drawDailyEmergency()">Ver Emergência</button>
-          <button class="menu-btn white" style="min-height: 60px; flex: 0 0 100px; padding: 0;" onclick="resetDailyCycle()">Reset</button>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+          <div style="display: flex; gap: 10px;">
+            <button class="menu-btn red" style="min-height: 60px; flex: 1;" onclick="drawDailyEmergency()">Sortear Emergência</button>
+            <button class="menu-btn blue" style="min-height: 60px; flex: 1;" onclick="window.openManualSelectModal()">Escolher Manualmente</button>
+          </div>
+          <button class="menu-btn white" style="min-height: 40px; width: 100%;" onclick="resetDailyCycle()">Reset</button>
         </div>
 
         <div class="result-box-daily" id="dailyResultBox">
           <div style="color: var(--text-dim); text-align: center; padding: 40px 20px; border: 1px dashed var(--border-color); border-radius: 8px;">
-            Clique em <strong>Ver Emergência</strong> para sortear.
+            Clique em <strong>Sortear Emergência</strong> ou selecione uma manualmente.
           </div>
         </div>
       </div>
@@ -1841,37 +1900,91 @@
 
     window.checkEmgPassword = async function() {
       await loadEmgPassword();
-      const pw = prompt("Digite a senha para acessar:");
-      if (pw === currentEmgPassword) {
-        window.showScreen('verEmgD');
-      } else if (pw !== null) {
-        alert("Senha incorreta!");
+      const modal = document.getElementById('password-modal');
+      const input = document.getElementById('password-input-field');
+      if (modal && input) {
+        input.value = '';
+        modal.style.display = 'flex';
+        input.focus();
+        input.onkeydown = function(e) {
+          if (e.key === 'Enter') {
+            window.submitPasswordModal();
+          }
+        };
+      }
+    };
+
+    window.closePasswordModal = function() {
+      const modal = document.getElementById('password-modal');
+      if (modal) modal.style.display = 'none';
+    };
+
+    window.submitPasswordModal = function() {
+      const input = document.getElementById('password-input-field');
+      const modal = document.getElementById('password-modal');
+      if (input && modal) {
+        const pw = input.value;
+        if (pw === currentEmgPassword) {
+          modal.style.display = 'none';
+          window.showScreen('verEmgD');
+        } else {
+          alert("Senha incorreta!");
+        }
       }
     };
 
     window.changeEmgPassword = async function() {
-      const oldPw = prompt("Digite a senha atual:");
-      if (oldPw === null) return;
-      
       await loadEmgPassword();
-      if (oldPw !== currentEmgPassword) {
-        return alert("Senha atual incorreta!");
-      }
-
-      const newPw = prompt("Digite a nova senha:");
-      if (newPw === null || newPw.trim() === "") return;
+      const modal = document.getElementById('change-password-modal');
+      const currInput = document.getElementById('change-pw-current');
+      const newInput = document.getElementById('change-pw-new');
+      const confInput = document.getElementById('change-pw-confirm');
       
-      const confirmPw = prompt("Confirme a nova senha:");
-      if (newPw !== confirmPw) {
-        return alert("As senhas não coincidem!");
+      if (modal && currInput && newInput && confInput) {
+        currInput.value = '';
+        newInput.value = '';
+        confInput.value = '';
+        modal.style.display = 'flex';
+        currInput.focus();
       }
+    };
 
-      try {
-        await setDoc(doc(db, 'config', 'verEmgPassword'), { value: newPw });
-        currentEmgPassword = newPw;
-        alert("Senha alterada com sucesso!");
-      } catch (e) {
-        alert("Erro ao salvar nova senha no banco de dados.");
+    window.closeChangePasswordModal = function() {
+      const modal = document.getElementById('change-password-modal');
+      if (modal) modal.style.display = 'none';
+    };
+
+    window.submitChangePasswordModal = async function() {
+      const currInput = document.getElementById('change-pw-current');
+      const newInput = document.getElementById('change-pw-new');
+      const confInput = document.getElementById('change-pw-confirm');
+      const modal = document.getElementById('change-password-modal');
+
+      if (currInput && newInput && confInput && modal) {
+        const currentInputVal = currInput.value;
+        const newInputVal = newInput.value;
+        const confirmInputVal = confInput.value;
+
+        if (currentInputVal !== currentEmgPassword) {
+          return alert("Senha atual incorreta!");
+        }
+
+        if (newInputVal.trim() === "") {
+          return alert("A nova senha não pode ser vazia!");
+        }
+
+        if (newInputVal !== confirmInputVal) {
+          return alert("As senhas não coincidem!");
+        }
+
+        try {
+          await setDoc(doc(db, 'config', 'verEmgPassword'), { value: newInputVal });
+          currentEmgPassword = newInputVal;
+          modal.style.display = 'none';
+          alert("Senha alterada com sucesso!");
+        } catch (e) {
+          alert("Erro ao salvar nova senha no banco de dados.");
+        }
       }
     };
 
@@ -1950,9 +2063,15 @@
         const raw = localStorage.getItem(DAILY_STORAGE_KEY);
         if (!raw) return getInitialDailyState();
         const parsed = JSON.parse(raw);
+        
+        let remDays = parsed.remainingDays;
+        if (!remDays || !Array.isArray(remDays)) {
+          remDays = DAILY_EMERGENCIES.map(item => item.day);
+        }
+        
         return {
-          remainingDays: parsed.remainingDays || DAILY_EMERGENCIES.map(item => item.day),
-          history: parsed.history || [],
+          remainingDays: remDays,
+          history: Array.isArray(parsed.history) ? parsed.history : [],
           current: parsed.current || null
         };
       } catch {
@@ -1973,7 +2092,7 @@
 
       const box = document.getElementById("dailyResultBox");
       if (!dailyState.current) {
-        box.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 40px 20px; border: 1px dashed var(--border-color); border-radius: 8px;">Clique em <strong>Ver Emergência</strong> para sortear.</div>`;
+        box.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 40px 20px; border: 1px dashed var(--border-color); border-radius: 8px;">Clique em <strong>Sortear Emergência</strong> ou selecione uma manualmente.</div>`;
       } else {
         const emg = DAILY_EMERGENCIES.find(e => e.day === dailyState.current.day);
         const date = new Date(dailyState.current.drawnAt);
@@ -1997,7 +2116,7 @@
           const fmtDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
           return `
             <div class="history-item-daily">
-              <strong>DIA ${entry.day}</strong>
+              <strong>DIA ${entry.day}</strong> ${entry.manual ? '<span style="font-size:0.65rem; color:var(--accent-blue); border:1px solid var(--accent-blue); padding:1px 4px; border-radius:2px; margin-left:6px; font-family:var(--font-mono);">MANUAL</span>' : ''}
               <small>${fmtDate}</small>
               <ul>${emg.items.map(it => `<li>${window.escapeHTML(it)}</li>`).join('')}</ul>
             </div>
@@ -2009,11 +2128,10 @@
     function drawDailyEmergency() {
       if (dailyState.remainingDays.length === 0) {
         dailyState.remainingDays = DAILY_EMERGENCIES.map(item => item.day);
-        dailyState.history = [];
       }
       const idx = Math.floor(Math.random() * dailyState.remainingDays.length);
       const day = dailyState.remainingDays.splice(idx, 1)[0];
-      const record = { day, drawnAt: new Date().toISOString() };
+      const record = { day, drawnAt: new Date().toISOString(), manual: false };
       dailyState.current = record;
       dailyState.history.push(record);
       saveDailyState();
@@ -2026,19 +2144,99 @@
         const confirmBtn = document.getElementById('modal-confirm-btn');
         const cancelBtn = document.getElementById('modal-cancel-btn');
 
-        modalTitle.textContent = "CICLO CONCLUÍDO!";
-        modalText.textContent = "Todas as 31 emergências foram sorteadas. O ciclo será reiniciado no próximo sorteio.";
-        confirmBtn.textContent = "ENTENDIDO";
-        
-        if(cancelBtn) cancelBtn.style.display = 'none';
-        modal.style.display = 'flex';
-        
-        confirmBtn.onclick = function() {
-          modal.style.display = 'none';
-          if(cancelBtn) cancelBtn.style.display = 'block';
-        };
+        if (modal && modalTitle && modalText && confirmBtn) {
+          modalTitle.textContent = "CICLO CONCLUÍDO!";
+          modalText.textContent = "Todas as 31 emergências foram sorteadas. O ciclo será reiniciado no próximo sorteio.";
+          confirmBtn.textContent = "ENTENDIDO";
+          
+          if(cancelBtn) cancelBtn.style.display = 'none';
+          modal.style.display = 'flex';
+          
+          confirmBtn.onclick = function() {
+            modal.style.display = 'none';
+            if(cancelBtn) cancelBtn.style.display = 'block';
+          };
+        }
       }
     }
+
+    window.openManualSelectModal = function() {
+      const container = document.getElementById('manual-days-grid');
+      const modal = document.getElementById('manual-select-modal');
+      if(!container || !modal) return;
+      
+      container.innerHTML = '';
+      
+      DAILY_EMERGENCIES.forEach(emg => {
+        const btn = document.createElement('button');
+        const isRemaining = dailyState.remainingDays.includes(emg.day);
+        
+        btn.className = 'menu-btn';
+        btn.style.width = '100%';
+        btn.style.textAlign = 'center';
+        btn.style.minHeight = '64px';
+        btn.style.padding = '8px';
+        btn.style.fontSize = '0.9rem';
+        btn.style.display = 'flex';
+        btn.style.flexDirection = 'column';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
+        
+        if (!isRemaining) {
+          btn.style.borderColor = 'rgba(235, 87, 87, 0.4)';
+          btn.style.color = 'var(--text-dim)';
+          btn.style.background = 'rgba(235, 87, 87, 0.05)';
+        } else {
+          btn.style.borderColor = 'var(--accent-blue)';
+          btn.style.color = '#fff';
+          btn.style.background = 'rgba(45, 156, 219, 0.05)';
+        }
+        
+        btn.innerHTML = `
+          <strong>DIA ${emg.day}</strong>
+          <span style="font-size:0.65rem; color:var(--text-dim); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:100%; margin-top:2px; display:block;">
+            ${emg.items[0]}
+          </span>
+        `;
+        
+        btn.onclick = function() {
+          window.applyManualEmergency(emg.day);
+        };
+        
+        container.appendChild(btn);
+      });
+      
+      modal.style.display = 'flex';
+    };
+
+    window.closeManualSelectModal = function() {
+      const modal = document.getElementById('manual-select-modal');
+      if (modal) modal.style.display = 'none';
+    };
+
+    window.applyManualEmergency = function(day) {
+      const modal = document.getElementById('manual-select-modal');
+      if (modal) modal.style.display = 'none';
+      
+      // Remove from remainingDays if it exists there
+      const idx = dailyState.remainingDays.indexOf(day);
+      if (idx !== -1) {
+        dailyState.remainingDays.splice(idx, 1);
+      }
+      
+      // Auto recycle remainingDays if it hits 0, but preserve historical list
+      if (dailyState.remainingDays.length === 0) {
+        dailyState.remainingDays = DAILY_EMERGENCIES.map(item => item.day);
+      }
+
+      const record = { day, drawnAt: new Date().toISOString(), manual: true };
+      dailyState.current = record;
+      dailyState.history.push(record);
+      saveDailyState();
+      renderDailyAll();
+      
+      alert(`Emergência do DIA ${day} aplicada no histórico!`);
+    };
 
     function resetDailyCycle() {
       const modal = document.getElementById('custom-confirm');
