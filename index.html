@@ -1230,7 +1230,7 @@
 <script type="module">
     import { initializeApp } from 'firebase/app';
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
-    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, getDocFromServer, doc, setDoc, getDoc, deleteDoc, orderBy } from 'firebase/firestore';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, getDocFromServer, doc, setDoc, getDoc, deleteDoc, orderBy, onSnapshot } from 'firebase/firestore';
 
     const firebaseConfig = {
       projectId: "gen-lang-client-0381452939",
@@ -1246,6 +1246,34 @@
     const provider = new GoogleAuthProvider();
 
     let currentUser = null;
+
+    // --- DAILY EMERGENCY REAL-TIME SYNCHRONIZATION ---
+    window.saveDailyStateToFirebase = async function(state) {
+      try {
+        await setDoc(doc(db, 'config', 'dailyEmergencyState'), {
+          remainingDays: state.remainingDays,
+          history: state.history,
+          current: state.current
+        });
+      } catch (e) {
+        console.error("Erro ao sincronizar estado com o Firestore:", e);
+      }
+    };
+
+    onSnapshot(doc(db, 'config', 'dailyEmergencyState'), (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        if (typeof window.updateDailyState === 'function') {
+          window.updateDailyState(data);
+        }
+      } else {
+        if (typeof window.saveDailyStateToFirebase === 'function' && window.dailyState) {
+          window.saveDailyStateToFirebase(window.dailyState);
+        }
+      }
+    }, (error) => {
+      console.error("Erro no listener em tempo real do daily state:", error);
+    });
 
     // --- ERROR HANDLING ---
     // --- QUIZ LOGIC (RANDOMIZED TEST) ---
@@ -2080,9 +2108,24 @@
     }
 
     let dailyState = loadDailyState();
+    window.dailyState = dailyState;
+
+    window.updateDailyState = function(newData) {
+      if (!newData) return;
+      Object.assign(dailyState, {
+        remainingDays: newData.remainingDays || [],
+        history: newData.history || [],
+        current: newData.current || null
+      });
+      localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(dailyState));
+      renderDailyAll();
+    };
 
     function saveDailyState() {
       localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(dailyState));
+      if (typeof window.saveDailyStateToFirebase === 'function') {
+        window.saveDailyStateToFirebase(dailyState);
+      }
     }
 
     function renderDailyAll() {
@@ -2253,8 +2296,8 @@
       modal.style.display = 'flex';
 
       confirmBtn.onclick = function() {
-        localStorage.removeItem(DAILY_STORAGE_KEY);
         dailyState = getInitialDailyState();
+        saveDailyState();
         renderDailyAll();
         modal.style.display = 'none';
       };
