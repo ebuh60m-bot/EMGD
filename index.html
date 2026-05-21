@@ -2078,6 +2078,13 @@
 
 <script>
     // --- UI/TEMPLATING LOGIC (STAY IN GLOBAL SCOPE) ---
+    window.escapeHTML = function(str) {
+      if (!str) return '';
+      const p = document.createElement('p');
+      p.textContent = str;
+      return p.innerHTML;
+    };
+
     const DAILY_EMERGENCIES = [
       { day: 1, items: ["Dual Eng Failure", "Single Eng Failue"] },
       { day: 2, items: ["High Side", "Low Side"] },
@@ -2200,13 +2207,19 @@
           const date = new Date(entry.drawnAt);
           const fmtDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
           return `
-            <div class="history-item-daily">
+            <div class="history-item-daily" style="position: relative; padding-right: 42px;">
+              <button type="button" class="delete-emg-btn" onclick="window.removeDailyHistoryRecord('${entry.drawnAt}')" title="Remover do histórico" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--danger); opacity: 0.6; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.opacity='1'; this.style.background='rgba(235, 87, 87, 0.1)'" onmouseout="this.style.opacity='0.6'; this.style.background='none'">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+              </button>
               <strong>DIA ${entry.day}</strong> ${entry.manual ? '<span style="font-size:0.65rem; color:var(--accent-blue); border:1px solid var(--accent-blue); padding:1px 4px; border-radius:2px; margin-left:6px; font-family:var(--font-mono);">MANUAL</span>' : ''}
               <small>${fmtDate}</small>
               <ul>${emg.items.map(it => `<li>${window.escapeHTML(it)}</li>`).join('')}</ul>
             </div>
           `;
         }).join('');
+      }
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
       }
     }
 
@@ -2323,6 +2336,55 @@
       renderDailyAll();
       
       alert(`Emergência do DIA ${day} aplicada no histórico!`);
+    };
+
+    window.removeDailyHistoryRecord = function(drawnAt) {
+      const idx = dailyState.history.findIndex(h => h.drawnAt === drawnAt);
+      if (idx === -1) return;
+
+      const removedItem = dailyState.history[idx];
+      
+      const modal = document.getElementById('custom-confirm');
+      const modalTitle = document.getElementById('modal-title');
+      const modalText = document.getElementById('modal-text');
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      
+      if (modal && modalTitle && modalText && confirmBtn) {
+        if(cancelBtn) cancelBtn.style.display = 'block';
+        
+        modalTitle.textContent = "REMOVER DO HISTÓRICO?";
+        modalText.textContent = `Deseja apagar o registro do DIA ${removedItem.day} do histórico?`;
+        confirmBtn.textContent = "REMOVER";
+        modal.style.display = 'flex';
+        
+        confirmBtn.onclick = function() {
+          // Remove from history
+          dailyState.history.splice(idx, 1);
+
+          // If that day is not in remainingDays, add it back to allow drawing it again
+          if (!dailyState.remainingDays.includes(removedItem.day)) {
+            dailyState.remainingDays.push(removedItem.day);
+            // Sort remainingDays to keep order
+            dailyState.remainingDays.sort((a, b) => a - b);
+          }
+
+          // If the removed item was the current active selection
+          if (dailyState.current && dailyState.current.drawnAt === drawnAt) {
+            if (dailyState.history.length > 0) {
+              dailyState.current = dailyState.history[dailyState.history.length - 1];
+            } else {
+              dailyState.current = null;
+            }
+          }
+
+          dailyState.lastUpdatedAt = new Date().toISOString();
+          saveDailyState();
+          renderDailyAll();
+          
+          modal.style.display = 'none';
+        };
+      }
     };
 
     function resetDailyCycle() {
