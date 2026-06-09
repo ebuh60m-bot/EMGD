@@ -1309,6 +1309,21 @@
         <div class="select-body" style="padding: 20px;">
           <h3 style="color: var(--accent-yellow); font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase;">Painel de Avaliação de Provas</h3>
           <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+            <div id="corrector-select-wrap">
+              <label for="provaCorrectorNameSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--accent-yellow); margin-bottom: 6px;">Selecione o Corretor da Prova:</label>
+              <select id="provaCorrectorNameSelect" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+                <option value="">-- SELECIONE O CORRETOR --</option>
+                <option value="Maj Costa Mendes">Maj Costa Mendes</option>
+                <option value="Maj Guilherme">Maj Guilherme</option>
+                <option value="Cap Rodrigo">Cap Rodrigo</option>
+                <option value="Cap Castilho">Cap Castilho</option>
+                <option value="TC Jeferson">TC Jeferson</option>
+                <option value="Maj Vigato">Maj Vigato</option>
+                <option value="Maj Franco Ferreira">Maj Franco Ferreira</option>
+                <option value="Cap João Pedro">Cap João Pedro</option>
+              </select>
+            </div>
+
             <div>
               <label for="provaCorrecaoStudentSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 6px;">Selecione o Militar que realizou a prova:</label>
               <select id="provaCorrecaoStudentSelect" onchange="window.selectMilitarToView()" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
@@ -1322,21 +1337,6 @@
               <div id="militar-history-list" style="display: flex; flex-direction: column; gap: 8px;">
                 <!-- Loaded dynamically -->
               </div>
-            </div>
-            
-            <div id="corrector-select-wrap" style="display: none;">
-              <label for="provaCorrectorNameSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--accent-yellow); margin-bottom: 6px;">Selecione o Avaliador (Corretor da Prova):</label>
-              <select id="provaCorrectorNameSelect" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
-                <option value="">-- SELECIONE O AVALIADOR --</option>
-                <option value="Maj Costa Mendes">Maj Costa Mendes</option>
-                <option value="Maj Guilherme">Maj Guilherme</option>
-                <option value="Cap Rodrigo">Cap Rodrigo</option>
-                <option value="Cap Castilho">Cap Castilho</option>
-                <option value="TC Jeferson">TC Jeferson</option>
-                <option value="Maj Vigato">Maj Vigato</option>
-                <option value="Maj Franco Ferreira">Maj Franco Ferreira</option>
-                <option value="Cap João Pedro">Cap João Pedro</option>
-              </select>
             </div>
           </div>
         </div>
@@ -1374,8 +1374,8 @@
 
         <!-- Correction tabs toggling -->
         <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-          <button class="menu-btn" id="tab-eval-lim" onclick="window.toggleReviewTab('lim')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">📊 LIMITAÇÕES AUTO</button>
-          <button class="menu-btn" id="tab-eval-emg" onclick="window.toggleReviewTab('emg')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">🗒️ EMERGÊNCIAS MANUAL</button>
+          <button class="menu-btn" id="tab-eval-lim" onclick="window.toggleReviewTab('lim')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">📊 PROVA DE LIMITAÇÕES</button>
+          <button class="menu-btn" id="tab-eval-emg" onclick="window.toggleReviewTab('emg')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">🗒️ PROVA DE EMERGÊNCIAS</button>
         </div>
 
         <!-- Auto-results box for limitations inside corrector panel -->
@@ -2696,12 +2696,21 @@
         }
 
         itemRow.innerHTML = `
-          <div style="text-align: left;">
+          <div style="text-align: left; flex: 1; padding-right: 12px;">
             <div style="font-weight: 800; color: #fff; font-size: 0.9rem;">Prova de ${roleLabel}</div>
             <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 3px;">Data de envio: ${formattedDate}</div>
           </div>
-          <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
             ${statusBadge}
+            <button 
+              onclick="event.stopPropagation(); window.removerProvaPorId('${exam.id}', '${exam.studentName}', '${formattedDate}')" 
+              style="background: rgba(235, 87, 87, 0.15); border: 1px solid rgba(235, 87, 87, 0.3); color: #EB5757; border-radius: 4px; padding: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.25s, border-color 0.25s;" 
+              title="Excluir Prova"
+              onmouseover="this.style.background='rgba(235, 87, 87, 0.3)'; this.style.borderColor='#EB5757';"
+              onmouseout="this.style.background='rgba(235, 87, 87, 0.15)'; this.style.borderColor='rgba(235, 87, 87, 0.3)';"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+            </button>
           </div>
         `;
 
@@ -2849,6 +2858,7 @@
     window.toggleReviewTab = function(tab) {
       const btnLim = document.getElementById('tab-eval-lim');
       const btnEmg = document.getElementById('tab-eval-emg');
+      const resBox = document.getElementById('evalLimitationsResultsBox');
       
       if (tab === 'lim') {
         btnLim.classList.add('blue');
@@ -2858,6 +2868,7 @@
         
         document.getElementById('prova-eval-lim-sheet').style.display = 'block';
         document.getElementById('prova-eval-emg-sheet').style.display = 'none';
+        if (resBox) resBox.style.display = 'block';
       } else {
         btnEmg.classList.add('blue');
         btnEmg.classList.remove('white');
@@ -2866,6 +2877,7 @@
         
         document.getElementById('prova-eval-emg-sheet').style.display = 'block';
         document.getElementById('prova-eval-lim-sheet').style.display = 'none';
+        if (resBox) resBox.style.display = 'none';
       }
     };
 
@@ -2955,6 +2967,28 @@
         // Clear active exam selection
         selectedExamToCorrect = null;
         document.getElementById('prova-review-container').style.display = 'none';
+        
+        // Reload list which refreshes dropdown and filters automatically
+        window.loadExamsForCorrector();
+      } catch (error) {
+        await handleFirestoreError(error, 'delete', 'exams');
+      }
+    };
+
+    window.removerProvaPorId = async function(examId, studentName, formattedDate) {
+      if (!examId) return;
+      const confirmDelete = confirm(`Deseja mesmo EXCLUIR DEFINITIVAMENTE a prova de ${studentName} enviada em ${formattedDate}?\nEssa ação é irreversível.`);
+      if (!confirmDelete) return;
+
+      try {
+        await deleteDoc(doc(db, 'exams', examId));
+        alert("Prova excluída com sucesso do banco oficial!");
+        
+        // If the deleted exam was currently selected for review, clear it
+        if (selectedExamToCorrect && selectedExamToCorrect.id === examId) {
+          selectedExamToCorrect = null;
+          document.getElementById('prova-review-container').style.display = 'none';
+        }
         
         // Reload list which refreshes dropdown and filters automatically
         window.loadExamsForCorrector();
