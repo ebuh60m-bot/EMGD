@@ -1394,8 +1394,9 @@
         </div>
 
         <!-- Corrector Submit Bar -->
-        <div id="corrector-action-bar" style="text-align: center; margin: 40px auto 20px; max-width: 400px; display: none;">
+        <div id="corrector-action-bar" style="display: none; flex-direction: column; gap: 15px; text-align: center; margin: 40px auto 20px; max-width: 400px;">
           <button class="menu-btn green" onclick="window.finalizarCorrecaoManual()" style="width:100%; font-size: 1.2rem; font-weight: 900; padding: 15px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);">SALVAR AVALIAÇÃO FINAL</button>
+          <button class="menu-btn red" onclick="window.removerProvaSelecionada()" style="width:100%; font-size: 1rem; font-weight: 800; padding: 12px; box-shadow: 0 4px 15px rgba(235, 87, 87, 0.3); background: linear-gradient(135deg, #a72828 0%, #eb5757 100%); border-color: rgba(255,255,255,0.2); color: #ffffff !important;">EXCLUIR ESTA PROVA DEFINITIVAMENTE</button>
         </div>
       </div>
     </div>
@@ -2648,7 +2649,15 @@
         
         let statusBadge = '';
         if (exam.status === 'corrected') {
-          statusBadge = `<span style="color:#27AE60; font-weight:800; background:rgba(39,174,96,0.15); padding: 4px 8px; border-radius:4px; font-size:0.75rem;">✓ CORRIGIDO</span>`;
+          const correctorDisplay = exam.correctorName 
+            ? `<div style="font-size:0.75rem; color: var(--text-dim); margin-top: 4px; font-weight: 500;">Corr: <strong style="color:var(--accent-yellow); font-weight: 700;">${exam.correctorName}</strong></div>` 
+            : '';
+          statusBadge = `
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+              <span style="color:#27AE60; font-weight:800; background:rgba(39,174,96,0.15); padding: 4px 8px; border-radius:4px; font-size:0.75rem;">✓ CORRIGIDO</span>
+              ${correctorDisplay}
+            </div>
+          `;
         } else {
           statusBadge = `<span style="color:var(--accent-yellow); font-weight:800; background:rgba(245,181,27,0.15); padding: 4px 8px; border-radius:4px; font-size:0.75rem;">⏳ PENDENTE</span>`;
         }
@@ -2833,7 +2842,7 @@
         }
       }
 
-      document.getElementById('corrector-action-bar').style.display = 'block';
+      document.getElementById('corrector-action-bar').style.display = 'flex';
       window.toggleReviewTab('lim');
     };
 
@@ -2930,6 +2939,27 @@
         window.loadExamsForCorrector();
       } catch (error) {
         await handleFirestoreError(error, 'update', 'exams');
+      }
+    };
+
+    window.removerProvaSelecionada = async function() {
+      if (!selectedExamToCorrect) return alert("Nenhuma prova ativa selecionada.");
+
+      const confirmDelete = confirm(`Deseja mesmo EXCLUIR DEFINITIVAMENTE a prova de ${selectedExamToCorrect.studentName} enviada em ${selectedExamToCorrect.createdAt ? new Date(selectedExamToCorrect.createdAt.seconds * 1000).toLocaleString('pt-BR') : 'data indefinida'}?\nEssa ação é irreversível.`);
+      if (!confirmDelete) return;
+
+      try {
+        await deleteDoc(doc(db, 'exams', selectedExamToCorrect.id));
+        alert("Prova excluída com sucesso do banco oficial!");
+        
+        // Clear active exam selection
+        selectedExamToCorrect = null;
+        document.getElementById('prova-review-container').style.display = 'none';
+        
+        // Reload list which refreshes dropdown and filters automatically
+        window.loadExamsForCorrector();
+      } catch (error) {
+        await handleFirestoreError(error, 'delete', 'exams');
       }
     };
 
