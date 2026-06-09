@@ -469,7 +469,7 @@
       .header-status { text-align: left; width: 100%; margin-top: -5px; }
       .logo-area { font-size: 0.8rem; }
        table { min-width: 100%; width: 100%; table-layout: fixed; }
-      .group table { min-width: 620px !important; width: auto !important; table-layout: auto !important; }
+      .group table { min-width: 100% !important; width: 100% !important; table-layout: auto !important; }
       #prova-main-selectors { grid-template-columns: 1fr !important; gap: 10px !important; }
       #tab-student-lim, #tab-student-emg, #tab-eval-lim, #tab-eval-emg { min-height: 48px !important; font-size: 0.75rem !important; padding: 8px !important; }
       td, th { padding: 4px 2px; font-size: 0.7rem; overflow-wrap: break-word; }
@@ -1273,6 +1273,11 @@
         <button class="menu-btn" id="tab-student-emg" onclick="window.toggleStudentTab('emg')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">🗒️ PROVA DE EMERGÊNCIAS</button>
       </div>
 
+      <!-- Results Box for Prova student -->
+      <div id="provaStudentResultsBox" style="display: none; max-width: 860px; margin: 0 auto 25px; background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.3); color: #fff; padding: 20px; border-radius: 6px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.15);">
+        <!-- Hydrated dynamically -->
+      </div>
+
       <!-- Limitations Sheet container -->
       <div id="prova-student-lim-sheet" class="stack" style="margin-bottom: 30px;">
         <!-- Hydrated automatically via window.getLimitationsTemplate() -->
@@ -1285,7 +1290,7 @@
 
       <!-- Botão de Enviar Prova -->
       <div style="text-align: center; margin: 40px auto 20px; max-width: 400px;">
-        <button class="menu-btn red" onclick="window.enviarProvaOficial()" style="width:100%; font-size: 1.2rem; font-weight: 900; letter-spacing: 0.05em; padding: 15px; box-shadow: 0 4px 15px rgba(235, 87, 87, 0.4);">ENVIAR PROVA OFICIAL</button>
+        <button class="menu-btn red" id="btn-enviar-prova-oficial" onclick="window.enviarProvaOficial()" style="width:100%; font-size: 1.2rem; font-weight: 900; letter-spacing: 0.05em; padding: 15px; box-shadow: 0 4px 15px rgba(235, 87, 87, 0.4);">ENVIAR PROVA OFICIAL</button>
       </div>
     </div>
 
@@ -2434,6 +2439,27 @@
       }
     };
 
+    window.resetAndExitAfterExam = function() {
+      const resBox = document.getElementById('provaStudentResultsBox');
+      if (resBox) {
+        resBox.style.display = 'none';
+        resBox.innerHTML = '';
+      }
+      
+      const sendBtn = document.getElementById('btn-enviar-prova-oficial');
+      if (sendBtn) {
+        sendBtn.textContent = "ENVIAR PROVA OFICIAL";
+        sendBtn.className = "menu-btn red";
+        sendBtn.style.boxShadow = "0 4px 15px rgba(235, 87, 87, 0.4)";
+        sendBtn.onclick = function() {
+          window.enviarProvaOficial();
+        };
+      }
+      
+      window.resetProvaScreen();
+      window.backFromProva();
+    };
+
     window.enviarProvaOficial = async function() {
       let studentName = "";
       if (currentExamRole === 'piloto') {
@@ -2545,7 +2571,79 @@
         });
 
         alert("Prova enviada com absoluto sucesso ao banco oficial!");
-        window.resetProvaScreen();
+        
+        // Dynamic correction output exactly like training mode
+        let limCorrect = 0, limWrong = 0, limEmpty = 0, limTotal = limInputs.length;
+        limInputs.forEach((input) => {
+          const userVal = input.value.trim();
+          if (!userVal) {
+            limEmpty++;
+            input.style.backgroundColor = 'rgba(235, 87, 87, 0.2)';
+            input.style.borderColor = '#EB5757';
+          } else {
+            const userSimp = window.simplify(userVal);
+            const answers = (input.dataset.answer || '').split('||').map(a => window.simplify(a));
+            const isCorrect = answers.includes(userSimp);
+            
+            if (isCorrect) {
+              limCorrect++;
+              input.style.backgroundColor = 'rgba(39, 174, 96, 0.2)';
+              input.style.borderColor = '#27AE60';
+            } else {
+              limWrong++;
+              input.style.backgroundColor = 'rgba(235, 87, 87, 0.2)';
+              input.style.borderColor = '#EB5757';
+            }
+          }
+          input.disabled = true;
+        });
+
+        // Freeze emergencies inputs too
+        const emgInputsForDisabling = document.querySelectorAll('#prova-student-emg-sheet .emg-training-input');
+        emgInputsForDisabling.forEach(input => {
+          input.disabled = true;
+        });
+
+        const gradePercent = limTotal > 0 ? ((limCorrect / limTotal) * 10).toFixed(1) : '0';
+
+        // Display results box
+        const resBox = document.getElementById('provaStudentResultsBox');
+        if (resBox) {
+          resBox.innerHTML = `
+            <div style="text-align: center; margin-bottom: 15px;">
+              <strong style="color: #27AE60; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 1px;">✓ Prova Enviada com Sucesso!</strong>
+              <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 5px;">Sua prova foi registrada no banco oficial militar de correções.</p>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; text-align: left; max-width: 500px; margin: 0 auto;">
+              <strong style="color: var(--accent-yellow); font-size: 1rem; text-transform: uppercase; display: block; margin-bottom: 10px;">Resultado do Teste de Limitações:</strong>
+              • Acertos: <span style="color:#27AE60; font-weight:900;">${limCorrect}</span><br>
+              • Erros/Branco: <span style="color:#EB5757; font-weight:900;">${limWrong + limEmpty}</span><br>
+              <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.1rem; text-align: center;">
+                • NOTA DE LIMITAÇÕES OBTIDA: <span style="color:var(--accent-yellow); font-weight:900; font-size: 1.3rem;">${gradePercent} / 10</span>
+              </div>
+            </div>
+            <p style="color: var(--text-dim); font-size: 0.8rem; text-align: center; margin-top: 15px; font-style: italic;">
+              As respostas corretas e erradas foram coloridas para sua conferência direta.<br>
+              A folha de emergências exige avaliação manual pelo oficial corretor da prova.
+            </p>
+          `;
+          resBox.style.display = 'block';
+        }
+
+        // Change Submit button to Back button
+        const sendBtn = document.getElementById('btn-enviar-prova-oficial');
+        if (sendBtn) {
+          sendBtn.textContent = "CONCLUIR E VOLTAR AO MENU";
+          sendBtn.className = "menu-btn blue";
+          sendBtn.style.boxShadow = "0 4px 15px rgba(45, 156, 219, 0.4)";
+          sendBtn.onclick = function() {
+            window.resetAndExitAfterExam();
+          };
+        }
+
+        // Smooth scroll to top
+        document.getElementById('prova-student-panel').scrollIntoView({ behavior: 'smooth' });
+
       } catch (error) {
         await handleFirestoreError(error, 'create', 'exams');
       }
