@@ -1294,7 +1294,7 @@
       <div class="select-body" style="padding: 30px; text-align: center;">
         <h3 style="color: var(--accent-yellow); font-size: 1.2rem; margin-bottom: 15px; font-weight: 800;">ACESSO RESTRITO</h3>
         <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">Digite a senha de corretor para acessar as provas dos militares.</p>
-        <input type="password" id="provaPasswordInput" placeholder="Senha... (uh60mike)" style="width: 100%; text-align: center; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1.1rem; letter-spacing: 0.1rem; margin-bottom: 20px;" />
+        <input type="password" id="provaPasswordInput" placeholder="Senha..." style="width: 100%; text-align: center; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1.1rem; letter-spacing: 0.1rem; margin-bottom: 20px;" />
         <div style="display: flex; gap: 10px;">
           <button class="menu-btn white" onclick="window.backFromProvaSubPanel()" style="flex:1;">Voltar</button>
           <button class="menu-btn blue" onclick="window.confirmCorrectorPassword()" style="flex:1; font-weight: 800;">Entrar</button>
@@ -1311,9 +1311,17 @@
           <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
             <div>
               <label for="provaCorrecaoStudentSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 6px;">Selecione o Militar que realizou a prova:</label>
-              <select id="provaCorrecaoStudentSelect" onchange="window.selectExamToEvaluate()" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+              <select id="provaCorrecaoStudentSelect" onchange="window.selectMilitarToView()" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
                 <option value="">-- NENHUMA PROVA SELECIONADA --</option>
               </select>
+            </div>
+            
+            <!-- Dynamic History of Attempts Panel -->
+            <div id="militar-history-panel" style="display: none; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; margin-top: 5px;">
+              <span style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--accent-yellow); margin-bottom: 10px; text-transform: uppercase;">Provas Realizadas por este Militar:</span>
+              <div id="militar-history-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Loaded dynamically -->
+              </div>
             </div>
             
             <div id="corrector-select-wrap" style="display: none;">
@@ -1336,7 +1344,7 @@
 
       <!-- MAIN EXAM REVIEW CONTENT -->
       <div id="prova-review-container" style="display: none;">
-        <!-- Info Badges of Submission -->
+        <!-- Info Badges of Submission & Grades -->
         <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
           <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
             <div style="color: var(--text-dim); font-size: 0.75rem;">Militar:</div>
@@ -1353,6 +1361,14 @@
           <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
             <div style="color: var(--text-dim); font-size: 0.75rem;">Status:</div>
             <strong id="review-military-status" style="color: var(--accent-yellow); font-weight: 800;">-</strong>
+          </div>
+          <div style="background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.25); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Nota Limitações:</div>
+            <strong id="review-military-grade-lim" style="color: #27AE60; font-size: 1.1rem; font-weight: 900;">-</strong>
+          </div>
+          <div style="background: rgba(245,181,27,0.1); border: 1px solid rgba(245,181,27,0.25); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Nota Emergências:</div>
+            <strong id="review-military-grade-emg" style="color: var(--accent-yellow); font-size: 1.1rem; font-weight: 900;">-</strong>
           </div>
         </div>
 
@@ -2276,11 +2292,17 @@
       selectedExamToCorrect = null;
       window.currentExamEvaluations = {};
       
+      const headerLabel = document.getElementById('prova-header-label');
+      if (headerLabel) headerLabel.textContent = 'PROVA';
+      
       document.getElementById('prova-main-selectors').style.display = 'grid';
       document.getElementById('prova-student-panel').style.display = 'none';
       document.getElementById('prova-password-panel').style.display = 'none';
       document.getElementById('prova-correcao-panel').style.display = 'none';
       document.getElementById('prova-review-container').style.display = 'none';
+      
+      const historyPanel = document.getElementById('militar-history-panel');
+      if (historyPanel) historyPanel.style.display = 'none';
       
       document.getElementById('btn-select-piloto').className = 'menu-btn blue';
       document.getElementById('btn-select-mecanico').className = 'menu-btn blue';
@@ -2296,7 +2318,12 @@
     };
 
     window.backFromProva = function() {
-      window.showScreen('menu');
+      const selectors = document.getElementById('prova-main-selectors');
+      if (selectors && selectors.style.display === 'none') {
+        window.resetProvaScreen();
+      } else {
+        window.showScreen('menu');
+      }
     };
 
     window.backFromProvaSubPanel = function() {
@@ -2313,6 +2340,7 @@
       document.getElementById('prova-student-panel').style.display = 'none';
       document.getElementById('prova-password-panel').style.display = 'none';
       document.getElementById('prova-correcao-panel').style.display = 'none';
+      document.getElementById('prova-main-selectors').style.display = 'none';
       
       document.getElementById('btn-select-piloto').className = (role === 'piloto') ? 'menu-btn green font-extrabold' : 'menu-btn blue';
       document.getElementById('btn-select-mecanico').className = (role === 'mecanico') ? 'menu-btn green font-extrabold' : 'menu-btn blue';
@@ -2524,7 +2552,10 @@
 
     window.loadExamsForCorrector = async function() {
       const studentSelect = document.getElementById('provaCorrecaoStudentSelect');
+      const previouslySelectedMilitar = studentSelect ? studentSelect.value : '';
+
       studentSelect.innerHTML = '<option value="">-- CARREGANDO PROVAS SALVAS... --</option>';
+      document.getElementById('militar-history-panel').style.display = 'none';
       document.getElementById('prova-review-container').style.display = 'none';
 
       try {
@@ -2549,16 +2580,34 @@
           return;
         }
 
-        studentSelect.innerHTML = '<option value="">-- SELECIONE UM MILITAR PARA AVALIAÇÃO --</option>';
+        const uniqueMilitars = [];
+        const seen = new Set();
         window.loadedExamsForCorrection.forEach(exam => {
-          const formattedDate = exam.createdAt ? new Date(exam.createdAt.seconds * 1000).toLocaleDateString() : '';
-          const statusText = exam.status === 'corrected' ? '✓ CORRIGIDO' : '⏳ PENDENTE';
-          const roleLabel = exam.role === 'piloto' ? 'Piloto' : 'Mecânico';
+          if (exam.studentName && !seen.has(exam.studentName)) {
+            seen.add(exam.studentName);
+            uniqueMilitars.push({
+              name: exam.studentName,
+              role: exam.role
+            });
+          }
+        });
+
+        uniqueMilitars.sort((a,b) => a.name.localeCompare(b.name));
+
+        studentSelect.innerHTML = '<option value="">-- SELECIONE O MILITAR --</option>';
+        uniqueMilitars.forEach(pub => {
+          const roleLabel = pub.role === 'piloto' ? 'Piloto' : 'Mecânico';
           const option = document.createElement('option');
-          option.value = exam.id;
-          option.textContent = `${exam.studentName} (${roleLabel}) - ${statusText} - ${formattedDate}`;
+          option.value = pub.name;
+          option.textContent = `${pub.name} (${roleLabel})`;
           studentSelect.appendChild(option);
         });
+
+        // Restore previous selection if possible
+        if (previouslySelectedMilitar && seen.has(previouslySelectedMilitar)) {
+          studentSelect.value = previouslySelectedMilitar;
+          window.selectMilitarToView();
+        }
 
       } catch (error) {
         studentSelect.innerHTML = '<option value="">-- ERRO CONECTANDO AO FIREBASE --</option>';
@@ -2566,19 +2615,115 @@
       }
     };
 
-    window.selectExamToEvaluate = function() {
-      const selectedId = document.getElementById('provaCorrecaoStudentSelect').value;
-      if (!selectedId) {
-        document.getElementById('prova-review-container').style.display = 'none';
+    window.selectMilitarToView = function() {
+      const selectedMilitarName = document.getElementById('provaCorrecaoStudentSelect').value;
+      const historyPanel = document.getElementById('militar-history-panel');
+      const historyList = document.getElementById('militar-history-list');
+      
+      // Hide individual exam review until specifically selected from history
+      document.getElementById('prova-review-container').style.display = 'none';
+      if (document.getElementById('corrector-action-bar')) {
+        document.getElementById('corrector-action-bar').style.display = 'none';
+      }
+
+      if (!selectedMilitarName) {
+        if (historyPanel) historyPanel.style.display = 'none';
         return;
       }
 
-      selectedExamToCorrect = window.loadedExamsForCorrection.find(e => e.id === selectedId);
+      // Filter all exams submitted by this specific militar
+      const militaryExams = window.loadedExamsForCorrection.filter(e => e.studentName === selectedMilitarName);
+
+      if (militaryExams.length === 0) {
+        if (historyPanel) historyPanel.style.display = 'none';
+        return;
+      }
+
+      // Clear the previous lists
+      historyList.innerHTML = '';
+
+      militaryExams.forEach(exam => {
+        const formattedDate = exam.createdAt ? new Date(exam.createdAt.seconds * 1000).toLocaleString('pt-BR') : 'Data Indefinida';
+        const roleLabel = exam.role === 'piloto' ? 'Piloto' : 'Mecânico';
+        
+        let statusBadge = '';
+        if (exam.status === 'corrected') {
+          statusBadge = `<span style="color:#27AE60; font-weight:800; background:rgba(39,174,96,0.15); padding: 4px 8px; border-radius:4px; font-size:0.75rem;">✓ CORRIGIDO</span>`;
+        } else {
+          statusBadge = `<span style="color:var(--accent-yellow); font-weight:800; background:rgba(245,181,27,0.15); padding: 4px 8px; border-radius:4px; font-size:0.75rem;">⏳ PENDENTE</span>`;
+        }
+
+        const itemRow = document.createElement('div');
+        itemRow.style.cssText = `
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 16px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.25s, border-color 0.25s;
+        `;
+        
+        itemRow.onmouseover = () => {
+          itemRow.style.background = 'rgba(255,255,255,0.1)';
+          itemRow.style.borderColor = 'var(--accent-yellow)';
+        };
+        itemRow.onmouseout = () => {
+          if (selectedExamToCorrect && selectedExamToCorrect.id === exam.id) {
+            itemRow.style.background = 'rgba(245,181,27,0.1)';
+            itemRow.style.borderColor = 'var(--accent-yellow)';
+          } else {
+            itemRow.style.background = 'rgba(255,255,255,0.05)';
+            itemRow.style.borderColor = 'var(--border-color)';
+          }
+        };
+
+        // If this is currently the active exam being review, highlight it!
+        if (selectedExamToCorrect && selectedExamToCorrect.id === exam.id) {
+          itemRow.style.background = 'rgba(245,181,27,0.1)';
+          itemRow.style.borderColor = 'var(--accent-yellow)';
+        }
+
+        itemRow.innerHTML = `
+          <div style="text-align: left;">
+            <div style="font-weight: 800; color: #fff; font-size: 0.9rem;">Prova de ${roleLabel}</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 3px;">Data de envio: ${formattedDate}</div>
+          </div>
+          <div>
+            ${statusBadge}
+          </div>
+        `;
+
+        itemRow.onclick = () => {
+          // Reset highlights for all siblings
+          Array.from(historyList.children).forEach(sibling => {
+            sibling.style.borderColor = 'var(--border-color)';
+            sibling.style.background = 'rgba(255,255,255,0.05)';
+          });
+          
+          itemRow.style.background = 'rgba(245,181,27,0.1)';
+          itemRow.style.borderColor = 'var(--accent-yellow)';
+          
+          window.selectExamToEvaluate(exam.id);
+        };
+
+        historyList.appendChild(itemRow);
+      });
+
+      if (historyPanel) historyPanel.style.display = 'block';
+    };
+
+    window.selectExamToEvaluate = function(examId) {
+      if (!examId) return;
+
+      selectedExamToCorrect = window.loadedExamsForCorrection.find(e => e.id === examId);
       if (!selectedExamToCorrect) return;
 
       document.getElementById('review-military-name').textContent = selectedExamToCorrect.studentName;
       document.getElementById('review-military-role').textContent = selectedExamToCorrect.role === 'piloto' ? 'PILOTO' : 'MECÂNICO DE VOO';
-      const sentTime = selectedExamToCorrect.createdAt ? new Date(selectedExamToCorrect.createdAt.seconds * 1000).toLocaleString() : '--';
+      const sentTime = selectedExamToCorrect.createdAt ? new Date(selectedExamToCorrect.createdAt.seconds * 1000).toLocaleString('pt-BR') : '--';
       document.getElementById('review-military-date').textContent = sentTime;
       const statLabel = document.getElementById('review-military-status');
       statLabel.textContent = selectedExamToCorrect.status === 'corrected' ? '✓ CORRIGIDO' : '⏳ PENDENTE';
@@ -2629,8 +2774,16 @@
         • Grau Final Parcial: <span style="color:var(--accent-yellow); font-style: italic; font-weight:900;">${gradePercent} / 10</span>
       `;
 
+      // Assign the score badge for Limitations
+      const limBadge = document.getElementById('review-military-grade-lim');
+      if (limBadge) {
+        limBadge.textContent = `${gradePercent} / 10`;
+      }
+
       // 2. Emergency Evaluation Setup
       const emgInputs = document.querySelectorAll('#prova-eval-emg-sheet .emg-training-input');
+      let emgCorrect = 0, emgTotal = emgInputs.length;
+
       emgInputs.forEach((input, index) => {
         input.disabled = true;
         const userVal = (selectedExamToCorrect.emergenciesAnswers && selectedExamToCorrect.emergenciesAnswers[index]) || '';
@@ -2655,6 +2808,8 @@
           const initialCorrectActive = (window.currentExamEvaluations[index] === true);
           const initialIncorrectActive = (window.currentExamEvaluations[index] === false);
           
+          if (initialCorrectActive) emgCorrect++;
+
           reviewBlock.innerHTML = `
             <div style="margin-bottom: 5px; color: var(--text-dim);">Gabarito Oficial: <strong style="color:var(--accent-yellow);">${gabaritoText}</strong></div>
             <div style="display: flex; gap: 8px; margin-top: 5px;">
@@ -2665,6 +2820,18 @@
           parentElem.appendChild(reviewBlock);
         }
       });
+
+      const emgBadge = document.getElementById('review-military-grade-emg');
+      if (emgBadge) {
+        if (selectedExamToCorrect.status === 'corrected') {
+          const emgGradePercent = emgTotal > 0 ? ((emgCorrect / emgTotal) * 10).toFixed(1) : '0';
+          emgBadge.textContent = `${emgGradePercent} / 10`;
+          emgBadge.style.color = '#27AE60';
+        } else {
+          emgBadge.textContent = 'Pendente';
+          emgBadge.style.color = 'var(--accent-yellow)';
+        }
+      }
 
       document.getElementById('corrector-action-bar').style.display = 'block';
       window.toggleReviewTab('lim');
@@ -2709,6 +2876,23 @@
         wrongBtn.style.color = '#fff';
         correctBtn.style.background = 'transparent';
         correctBtn.style.color = '#27AE60';
+      }
+
+      // Dynamic real-time calculation of Emergencies grade
+      const emgInputs = document.querySelectorAll('#prova-eval-emg-sheet .emg-training-input');
+      const emgTotal = emgInputs.length;
+      let emgCorrect = 0;
+      for (let i = 0; i < emgTotal; i++) {
+        if (window.currentExamEvaluations[i] === true) {
+          emgCorrect++;
+        }
+      }
+      const emgGradePercent = emgTotal > 0 ? ((emgCorrect / emgTotal) * 10).toFixed(1) : '0';
+      
+      const emgBadge = document.getElementById('review-military-grade-emg');
+      if (emgBadge) {
+        emgBadge.textContent = `${emgGradePercent} / 10`;
+        emgBadge.style.color = '#27AE60';
       }
     };
 
