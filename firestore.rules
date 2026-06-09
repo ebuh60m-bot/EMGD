@@ -65,6 +65,12 @@ service cloud.firestore {
       allow delete: if true;
     }
 
+    // --- Exams ---
+    match /exams/{id} {
+      allow create: if isValidId(id);
+      allow list, get, update, delete: if true;
+    }
+
     function isValidLimitationEntry(data) {
       return data.keys().hasAll(['date', 'filled', 'correct', 'wrong', 'createdAt'])
         && data.keys().size() == 5

@@ -468,7 +468,10 @@
       .menu-btn { min-height: 70px; font-size: 0.85rem; }
       .header-status { text-align: left; width: 100%; margin-top: -5px; }
       .logo-area { font-size: 0.8rem; }
-      table { min-width: 100%; width: 100%; table-layout: fixed; }
+       table { min-width: 100%; width: 100%; table-layout: fixed; }
+      .group table { min-width: 620px !important; width: auto !important; table-layout: auto !important; }
+      #prova-main-selectors { grid-template-columns: 1fr !important; gap: 10px !important; }
+      #tab-student-lim, #tab-student-emg, #tab-eval-lim, #tab-eval-emg { min-height: 48px !important; font-size: 0.75rem !important; padding: 8px !important; }
       td, th { padding: 4px 2px; font-size: 0.7rem; overflow-wrap: break-word; }
       .quiz-input, .answer-short { font-size: 0.7rem; min-height: 24px; padding: 2px; }
       .range-answer { gap: 1px; }
@@ -807,6 +810,17 @@
             <button class="menu-btn gold" type="button" onclick="window.showScreen('showDoBlackzao')" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden;">
               <img src="https://i.postimg.cc/567Vf3CB/Show-do-Blackzao.png" alt="Show do Blackzão" style="width: 100%; height: 100%; object-fit: cover;">
             </button>
+          </div>
+        </div>
+
+        <!-- Visual Separation -->
+        <div style="height: 1px; background: radial-gradient(circle, rgba(242,201,76,0.15) 0%, transparent 100%); width: 80%; margin: 0 auto;"></div>
+
+        <!-- Category 3: Provas Oficiais -->
+        <div class="menu-section">
+          <div class="menu-section-label">Provas Oficiais</div>
+          <div class="menu-buttons" style="max-width: none; width: 100%;">
+            <button class="menu-btn red" type="button" onclick="window.showScreen('provaLimitaoeEmergencias')" style="width: 100%; font-weight: 800; font-family: var(--font-sans); letter-spacing: 0.05em; box-shadow: 0 4px 15px rgba(235, 87, 87, 0.3); background: linear-gradient(135deg, #a72828 0%, #eb5757 100%); border-color: rgba(255,255,255,0.2); color: #ffffff !important;">PROVA DE LIMITAÇÕES E EMERGÊNCIAS</button>
           </div>
         </div>
 
@@ -1198,6 +1212,177 @@
         </div>
       </section>
     </main>
+  </div>
+</section>
+
+<!-- SCREEN: PROVA DE LIMITAÇÕES E EMERGÊNCIAS -->
+<section id="provaLimitaoeEmergencias-screen" class="screen">
+  <div class="emg-toolbar">
+    <button type="button" onclick="window.backFromProva()">Voltar ao Menu</button>
+    <div style="flex-grow: 1;"></div>
+    <span style="font-weight: 900; color: var(--accent-yellow); font-family: var(--font-mono); font-size: 0.8rem;" id="prova-header-label">PROVA</span>
+  </div>
+  
+  <div class="emg-page">
+    <h1 style="text-align: center; font-size: 2rem; color: var(--accent-yellow); margin-bottom: 20px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;">Prova de Limitações e Emergências</h1>
+    
+    <!-- 3 MAIN SELECTION BUTTONS -->
+    <div id="prova-main-selectors" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 760px; margin: 0 auto 30px;">
+      <button class="menu-btn blue" id="btn-select-piloto" onclick="window.selectProvaRole('piloto')">PILOTOS</button>
+      <button class="menu-btn blue" id="btn-select-mecanico" onclick="window.selectProvaRole('mecanico')">MECÂNICOS DE VOO</button>
+      <button class="menu-btn white" id="btn-select-correcao" onclick="window.selectProvaRole('correcao')">CORREÇÃO</button>
+    </div>
+
+    <!-- ROLE 1 & 2: PILOTOS OR MECANICOS EXAM PAGE -->
+    <div id="prova-student-panel" style="display: none; max-width: 850px; margin: 0 auto;">
+      <!-- Selection of Name -->
+      <div class="select-card" style="margin-bottom: 25px;">
+        <div class="select-body" style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div id="student-name-container">
+            <label for="provaStudentNameSelect" style="display: block; font-weight: 800; font-size: 0.9rem; color: var(--accent-yellow); margin-bottom: 8px;">Selecione seu Nome (Militar):</label>
+            <!-- Dropdown for Pilots -->
+            <select id="provaStudentNameSelect" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+              <option value="">-- SELECIONE SEU NOME --</option>
+              <option value="Maj Costa Mendes">Maj Costa Mendes</option>
+              <option value="Maj Guilherme">Maj Guilherme</option>
+              <option value="Cap Rodrigo">Cap Rodrigo</option>
+              <option value="Cap Castilho">Cap Castilho</option>
+              <option value="TC Jeferson">TC Jeferson</option>
+              <option value="Maj Vigato">Maj Vigato</option>
+              <option value="Maj Franco Ferreira">Maj Franco Ferreira</option>
+              <option value="Cap João Pedro">Cap João Pedro</option>
+            </select>
+            <!-- Input text option for Mechanics or custom -->
+            <select id="provaMechanicNameSelect" onchange="window.onMechanicNameSelectChange()" style="display: none; width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+              <option value="">-- SELECIONE SEU NOME --</option>
+              <option value="Adj Wilson">Adj Wilson</option>
+              <option value="Sgt Bruno">Sgt Bruno</option>
+              <option value="Sgt Alencar">Sgt Alencar</option>
+              <option value="Sgt Marcel">Sgt Marcel</option>
+              <option value="Sgt Ramos">Sgt Ramos</option>
+              <option value="outro">-- OUTRO (DIGITAR MANUALMENTE) --</option>
+            </select>
+            <input type="text" id="provaMechanicNameInput" placeholder="Digite seu Nome de Guerra" style="display: none; width: 100%; margin-top: 10px; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs for Limitations / Emergencies -->
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <button class="menu-btn" id="tab-student-lim" onclick="window.toggleStudentTab('lim')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">📊 PROVA DE LIMITAÇÕES</button>
+        <button class="menu-btn" id="tab-student-emg" onclick="window.toggleStudentTab('emg')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">🗒️ PROVA DE EMERGÊNCIAS</button>
+      </div>
+
+      <!-- Limitations Sheet container -->
+      <div id="prova-student-lim-sheet" class="stack" style="margin-bottom: 30px;">
+        <!-- Hydrated automatically via window.getLimitationsTemplate() -->
+      </div>
+
+      <!-- Emergencies Sheet container (exactly as training) -->
+      <div id="prova-student-emg-sheet" class="stack" style="display: none; margin-bottom: 30px;">
+        <!-- Hydrated automatically via window.getEmergenciesTemplate() -->
+      </div>
+
+      <!-- Botão de Enviar Prova -->
+      <div style="text-align: center; margin: 40px auto 20px; max-width: 400px;">
+        <button class="menu-btn red" onclick="window.enviarProvaOficial()" style="width:100%; font-size: 1.2rem; font-weight: 900; letter-spacing: 0.05em; padding: 15px; box-shadow: 0 4px 15px rgba(235, 87, 87, 0.4);">ENVIAR PROVA OFICIAL</button>
+      </div>
+    </div>
+
+    <!-- PASSWORD MODAL FOR CORRECTION -->
+    <div id="prova-password-panel" style="display: none; max-width: 400px; margin: 0 auto;" class="select-card">
+      <div class="select-body" style="padding: 30px; text-align: center;">
+        <h3 style="color: var(--accent-yellow); font-size: 1.2rem; margin-bottom: 15px; font-weight: 800;">ACESSO RESTRITO</h3>
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">Digite a senha de corretor para acessar as provas dos militares.</p>
+        <input type="password" id="provaPasswordInput" placeholder="Senha... (uh60mike)" style="width: 100%; text-align: center; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1.1rem; letter-spacing: 0.1rem; margin-bottom: 20px;" />
+        <div style="display: flex; gap: 10px;">
+          <button class="menu-btn white" onclick="window.backFromProvaSubPanel()" style="flex:1;">Voltar</button>
+          <button class="menu-btn blue" onclick="window.confirmCorrectorPassword()" style="flex:1; font-weight: 800;">Entrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORRECAO PANEL (LOCKED BEHIND PASSWORD) -->
+    <div id="prova-correcao-panel" style="display: none; max-width: 850px; margin: 0 auto;">
+      <!-- Header with Selection of student -->
+      <div class="select-card" style="margin-bottom: 25px;">
+        <div class="select-body" style="padding: 20px;">
+          <h3 style="color: var(--accent-yellow); font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase;">Painel de Avaliação de Provas</h3>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+            <div>
+              <label for="provaCorrecaoStudentSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 6px;">Selecione o Militar que realizou a prova:</label>
+              <select id="provaCorrecaoStudentSelect" onchange="window.selectExamToEvaluate()" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+                <option value="">-- NENHUMA PROVA SELECIONADA --</option>
+              </select>
+            </div>
+            
+            <div id="corrector-select-wrap" style="display: none;">
+              <label for="provaCorrectorNameSelect" style="display: block; font-weight: 800; font-size: 0.85rem; color: var(--accent-yellow); margin-bottom: 6px;">Selecione o Avaliador (Corretor da Prova):</label>
+              <select id="provaCorrectorNameSelect" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-size: 1rem; font-weight: 700;">
+                <option value="">-- SELECIONE O AVALIADOR --</option>
+                <option value="Maj Costa Mendes">Maj Costa Mendes</option>
+                <option value="Maj Guilherme">Maj Guilherme</option>
+                <option value="Cap Rodrigo">Cap Rodrigo</option>
+                <option value="Cap Castilho">Cap Castilho</option>
+                <option value="TC Jeferson">TC Jeferson</option>
+                <option value="Maj Vigato">Maj Vigato</option>
+                <option value="Maj Franco Ferreira">Maj Franco Ferreira</option>
+                <option value="Cap João Pedro">Cap João Pedro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN EXAM REVIEW CONTENT -->
+      <div id="prova-review-container" style="display: none;">
+        <!-- Info Badges of Submission -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Militar:</div>
+            <strong id="review-military-name" style="color: #fff; font-weight: 800;">-</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Função:</div>
+            <strong id="review-military-role" style="color: #fff; font-weight: 800; text-transform: uppercase;">-</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Enviado em:</div>
+            <strong id="review-military-date" style="color: #fff; font-weight: 800;">-</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;">
+            <div style="color: var(--text-dim); font-size: 0.75rem;">Status:</div>
+            <strong id="review-military-status" style="color: var(--accent-yellow); font-weight: 800;">-</strong>
+          </div>
+        </div>
+
+        <!-- Correction tabs toggling -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+          <button class="menu-btn" id="tab-eval-lim" onclick="window.toggleReviewTab('lim')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">📊 LIMITAÇÕES AUTO</button>
+          <button class="menu-btn" id="tab-eval-emg" onclick="window.toggleReviewTab('emg')" style="flex: 1; padding: 10px; font-size:0.85rem; font-weight:800; border: 1px solid rgba(255,255,255,0.15);">🗒️ EMERGÊNCIAS MANUAL</button>
+        </div>
+
+        <!-- Auto-results box for limitations inside corrector panel -->
+        <div class="results-box" id="evalLimitationsResultsBox" style="margin-bottom: 25px; background: rgba(39, 174, 96, 0.1); border-color: rgba(39, 174, 96, 0.3);">
+          Aguardando análise de limitações...
+        </div>
+
+        <!-- Evaluation Limitations Sheet -->
+        <div id="prova-eval-lim-sheet" class="stack" style="margin-bottom:30px;">
+          <!-- Hydrated dynamically -->
+        </div>
+
+        <!-- Evaluation Emergencies Sheet -->
+        <div id="prova-eval-emg-sheet" class="stack" style="display:none; margin-bottom:30px;">
+          <!-- Hydrated dynamically -->
+        </div>
+
+        <!-- Corrector Submit Bar -->
+        <div id="corrector-action-bar" style="text-align: center; margin: 40px auto 20px; max-width: 400px; display: none;">
+          <button class="menu-btn green" onclick="window.finalizarCorrecaoManual()" style="width:100%; font-size: 1.2rem; font-weight: 900; padding: 15px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);">SALVAR AVALIAÇÃO FINAL</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1928,12 +2113,18 @@
         quizActive: 'quizActive-screen',
         quizResults: 'quizResults-screen',
         showDoBlackzao: 'showDoBlackzao-screen',
-        showDoBlackzaoGame: 'showDoBlackzaoGame-screen'
+        showDoBlackzaoGame: 'showDoBlackzaoGame-screen',
+        provaLimitaoeEmergencias: 'provaLimitaoeEmergencias-screen'
       };
       
       const target = document.getElementById(map[name]);
       if(target) target.classList.add('active');
 
+      if(name === 'provaLimitaoeEmergencias') {
+        if(typeof window.resetProvaScreen === 'function') {
+          window.resetProvaScreen();
+        }
+      }
       if(name === 'emergencias') {
         const date = document.getElementById('globalDate').value;
         document.getElementById('titleEMG').textContent = `EMERGÊNCIAS - ${window.getFormattedDate(date)}`;
@@ -2068,6 +2259,494 @@
         i.style.backgroundColor = '';
         i.style.borderColor = '';
       });
+    };
+
+    // ==========================================
+    // --- PROVA DE LIMITAÇÕES E EMERGÊNCIAS ---
+    // ==========================================
+    let currentExamRole = 'piloto'; // 'piloto' | 'mecanico' | 'correcao'
+    let correctorAuthenticated = false;
+    let selectedExamToCorrect = null;
+    window.loadedExamsForCorrection = [];
+    window.currentExamEvaluations = {}; // index -> bool
+
+    window.resetProvaScreen = function() {
+      currentExamRole = 'piloto';
+      correctorAuthenticated = false;
+      selectedExamToCorrect = null;
+      window.currentExamEvaluations = {};
+      
+      document.getElementById('prova-main-selectors').style.display = 'grid';
+      document.getElementById('prova-student-panel').style.display = 'none';
+      document.getElementById('prova-password-panel').style.display = 'none';
+      document.getElementById('prova-correcao-panel').style.display = 'none';
+      document.getElementById('prova-review-container').style.display = 'none';
+      
+      document.getElementById('btn-select-piloto').className = 'menu-btn blue';
+      document.getElementById('btn-select-mecanico').className = 'menu-btn blue';
+      document.getElementById('btn-select-correcao').className = 'menu-btn white';
+      
+      document.getElementById('provaStudentNameSelect').value = '';
+      document.getElementById('provaMechanicNameSelect').value = '';
+      document.getElementById('provaMechanicNameInput').value = '';
+      document.getElementById('provaMechanicNameInput').style.display = 'none';
+      document.getElementById('provaPasswordInput').value = '';
+      
+      window.toggleStudentTab('lim');
+    };
+
+    window.backFromProva = function() {
+      window.showScreen('menu');
+    };
+
+    window.backFromProvaSubPanel = function() {
+      window.resetProvaScreen();
+    };
+
+    window.selectProvaRole = function(role) {
+      currentExamRole = role;
+      
+      // Update header label
+      document.getElementById('prova-header-label').textContent = role.toUpperCase();
+      
+      // Reset interfaces
+      document.getElementById('prova-student-panel').style.display = 'none';
+      document.getElementById('prova-password-panel').style.display = 'none';
+      document.getElementById('prova-correcao-panel').style.display = 'none';
+      
+      document.getElementById('btn-select-piloto').className = (role === 'piloto') ? 'menu-btn green font-extrabold' : 'menu-btn blue';
+      document.getElementById('btn-select-mecanico').className = (role === 'mecanico') ? 'menu-btn green font-extrabold' : 'menu-btn blue';
+      document.getElementById('btn-select-correcao').className = (role === 'correcao') ? 'menu-btn red' : 'menu-btn white';
+
+      if (role === 'piloto' || role === 'mecanico') {
+        document.getElementById('prova-student-panel').style.display = 'block';
+        
+        if (role === 'piloto') {
+          document.getElementById('provaStudentNameSelect').style.display = 'block';
+          document.getElementById('provaMechanicNameSelect').style.display = 'none';
+          document.getElementById('provaMechanicNameInput').style.display = 'none';
+        } else {
+          document.getElementById('provaStudentNameSelect').style.display = 'none';
+          document.getElementById('provaMechanicNameSelect').style.display = 'block';
+          window.onMechanicNameSelectChange();
+        }
+
+        // Hydrate
+        document.getElementById('prova-student-lim-sheet').innerHTML = getLimitationsTemplate();
+        document.getElementById('prova-student-emg-sheet').innerHTML = getEmergenciesTemplate();
+
+        // Clear and force official placeholders
+        const limInputs = document.querySelectorAll('#prova-student-lim-sheet .quiz-input');
+        limInputs.forEach(input => {
+          input.value = '';
+          input.placeholder = '...';
+          input.style.backgroundColor = '';
+          input.style.borderColor = '';
+        });
+        const emgInputs = document.querySelectorAll('#prova-student-emg-sheet .emg-training-input');
+        emgInputs.forEach(input => {
+          input.value = '';
+          input.placeholder = '...';
+          input.style.backgroundColor = '';
+          input.style.borderColor = '';
+        });
+
+        window.toggleStudentTab('lim');
+      } else if (role === 'correcao') {
+        document.getElementById('prova-password-panel').style.display = 'block';
+        document.getElementById('provaPasswordInput').focus();
+      }
+    };
+
+    window.toggleStudentTab = function(tab) {
+      const btnLim = document.getElementById('tab-student-lim');
+      const btnEmg = document.getElementById('tab-student-emg');
+      
+      if (tab === 'lim') {
+        btnLim.classList.add('blue');
+        btnLim.classList.remove('white');
+        btnEmg.classList.add('white');
+        btnEmg.classList.remove('blue');
+        
+        document.getElementById('prova-student-lim-sheet').style.display = 'block';
+        document.getElementById('prova-student-emg-sheet').style.display = 'none';
+      } else {
+        btnEmg.classList.add('blue');
+        btnEmg.classList.remove('white');
+        btnLim.classList.add('white');
+        btnLim.classList.remove('blue');
+        
+        document.getElementById('prova-student-emg-sheet').style.display = 'block';
+        document.getElementById('prova-student-lim-sheet').style.display = 'none';
+      }
+    };
+
+    window.onMechanicNameSelectChange = function() {
+      const selectVal = document.getElementById('provaMechanicNameSelect').value;
+      const input = document.getElementById('provaMechanicNameInput');
+      if (selectVal === 'outro') {
+        input.style.display = 'block';
+        input.focus();
+      } else {
+        input.style.display = 'none';
+        input.value = '';
+      }
+    };
+
+    window.confirmCorrectorPassword = function() {
+      const pInput = document.getElementById('provaPasswordInput').value;
+      if (pInput === 'uh60mike') {
+        correctorAuthenticated = true;
+        document.getElementById('prova-password-panel').style.display = 'none';
+        document.getElementById('prova-correcao-panel').style.display = 'block';
+        window.loadExamsForCorrector();
+      } else {
+        alert("Senha de corretor inválida!");
+      }
+    };
+
+    window.enviarProvaOficial = async function() {
+      let studentName = "";
+      if (currentExamRole === 'piloto') {
+        studentName = document.getElementById('provaStudentNameSelect').value;
+        if (!studentName) return alert("Selecione seu nome de Piloto antes de enviar a prova.");
+      } else if (currentExamRole === 'mecanico') {
+        const selectVal = document.getElementById('provaMechanicNameSelect').value;
+        if (!selectVal) return alert("Selecione seu nome de Mecânico de voo antes de enviar a prova.");
+        if (selectVal === 'outro') {
+          studentName = document.getElementById('provaMechanicNameInput').value.trim();
+          if (!studentName) return alert("Digite o seu nome de guerra no campo de texto.");
+        } else {
+          studentName = selectVal;
+        }
+      }
+
+      const limInputs = document.querySelectorAll('#prova-student-lim-sheet .quiz-input');
+      const limitationsAnswers = {};
+      let anyLimFilled = false;
+      limInputs.forEach((input, index) => {
+        const val = input.value.trim();
+        limitationsAnswers[index] = val;
+        if (val) anyLimFilled = true;
+      });
+
+      const emgInputs = document.querySelectorAll('#prova-student-emg-sheet .emg-training-input');
+      const emergenciesAnswers = {};
+      let anyEmgFilled = false;
+      emgInputs.forEach((input, index) => {
+        const val = input.value.trim();
+        emergenciesAnswers[index] = val;
+        if (val) anyEmgFilled = true;
+      });
+
+      if (!anyLimFilled && !anyEmgFilled) {
+        return alert("Por favor, preencha ao menos uma resposta no teste correspondente antes de enviar!");
+      }
+
+      // Check for empty/missing items
+      const missingItems = [];
+      limInputs.forEach((input) => {
+        const val = input.value.trim();
+        if (!val) {
+          const group = input.closest('.group');
+          const groupTitle = group ? group.querySelector('.group-title').textContent.trim() : 'Limitação';
+          const row = input.closest('tr');
+          const desc = row ? row.cells[row.cells.length - 1].textContent.trim() : 'Geral';
+          const place = input.getAttribute('placeholder') || '';
+          
+          let label = `${groupTitle} - ${desc}`;
+          if (place) {
+            label += ` [${place}]`;
+          }
+          missingItems.push(label);
+        }
+      });
+
+      emgInputs.forEach((input) => {
+        const val = input.value.trim();
+        if (!val) {
+          const card = input.closest('.emg-card');
+          const cardTitle = card ? card.querySelector('.emg-card-title').textContent.trim() : 'Emergência';
+          
+          let lineIndex = 1;
+          if (card) {
+            const inputsInCard = card.querySelectorAll('.emg-training-input');
+            const arr = Array.from(inputsInCard);
+            lineIndex = arr.indexOf(input) + 1;
+          }
+          
+          const label = `Emergência: ${cardTitle} (Linha de Ação ${lineIndex})`;
+          missingItems.push(label);
+        }
+      });
+
+      if (missingItems.length > 0) {
+        let warningText = `A sua prova está INCOMPLETA!\n\nFalta preencher os seguintes itens:\n`;
+        const maxToShow = 10;
+        const shownItems = missingItems.slice(0, maxToShow);
+        shownItems.forEach(item => {
+          warningText += `• ${item}\n`;
+        });
+        
+        if (missingItems.length > maxToShow) {
+          warningText += `• ... e mais ${missingItems.length - maxToShow} item(ns) pendente(s).\n`;
+        }
+        
+        warningText += `\nDeseja ENVIAR a prova mesmo assim?`;
+        
+        const confirmAnyway = confirm(warningText);
+        if (!confirmAnyway) {
+          return; // Stop submission
+        }
+      }
+
+      const confirmSend = confirm(`Militar: Deseja de fato ENVIAR sua prova oficial como ${studentName}? Não será permitida nenhuma alteração posterior.`);
+      if (!confirmSend) return;
+
+      try {
+        await addDoc(collection(db, 'exams'), {
+          studentName: studentName,
+          role: currentExamRole,
+          limitationsAnswers: limitationsAnswers,
+          emergenciesAnswers: emergenciesAnswers,
+          status: 'pending',
+          correctorName: '',
+          emergenciesCorrection: {},
+          createdAt: serverTimestamp()
+        });
+
+        alert("Prova enviada com absoluto sucesso ao banco oficial!");
+        window.resetProvaScreen();
+      } catch (error) {
+        alert("Erro de persistência no Firestore: " + error.message);
+      }
+    };
+
+    window.loadExamsForCorrector = async function() {
+      const studentSelect = document.getElementById('provaCorrecaoStudentSelect');
+      studentSelect.innerHTML = '<option value="">-- CARREGANDO PROVAS SALVAS... --</option>';
+      document.getElementById('prova-review-container').style.display = 'none';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, 'exams'));
+        window.loadedExamsForCorrection = [];
+        
+        querySnapshot.forEach(docSnap => {
+          window.loadedExamsForCorrection.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+        });
+
+        window.loadedExamsForCorrection.sort((a, b) => {
+          const aTime = a.createdAt ? (a.createdAt.seconds || 0) : 0;
+          const bTime = b.createdAt ? (b.createdAt.seconds || 0) : 0;
+          return bTime - aTime;
+        });
+
+        if (window.loadedExamsForCorrection.length === 0) {
+          studentSelect.innerHTML = '<option value="">-- NENHUMA PROVA DISPONÍVEL NO BANCO --</option>';
+          return;
+        }
+
+        studentSelect.innerHTML = '<option value="">-- SELECIONE UM MILITAR PARA AVALIAÇÃO --</option>';
+        window.loadedExamsForCorrection.forEach(exam => {
+          const formattedDate = exam.createdAt ? new Date(exam.createdAt.seconds * 1000).toLocaleDateString() : '';
+          const statusText = exam.status === 'corrected' ? '✓ CORRIGIDO' : '⏳ PENDENTE';
+          const roleLabel = exam.role === 'piloto' ? 'Piloto' : 'Mecânico';
+          const option = document.createElement('option');
+          option.value = exam.id;
+          option.textContent = `${exam.studentName} (${roleLabel}) - ${statusText} - ${formattedDate}`;
+          studentSelect.appendChild(option);
+        });
+
+      } catch (error) {
+        studentSelect.innerHTML = '<option value="">-- ERRO CONECTANDO AO FIREBASE --</option>';
+        console.error(error);
+      }
+    };
+
+    window.selectExamToEvaluate = function() {
+      const selectedId = document.getElementById('provaCorrecaoStudentSelect').value;
+      if (!selectedId) {
+        document.getElementById('prova-review-container').style.display = 'none';
+        return;
+      }
+
+      selectedExamToCorrect = window.loadedExamsForCorrection.find(e => e.id === selectedId);
+      if (!selectedExamToCorrect) return;
+
+      document.getElementById('review-military-name').textContent = selectedExamToCorrect.studentName;
+      document.getElementById('review-military-role').textContent = selectedExamToCorrect.role === 'piloto' ? 'PILOTO' : 'MECÂNICO DE VOO';
+      const sentTime = selectedExamToCorrect.createdAt ? new Date(selectedExamToCorrect.createdAt.seconds * 1000).toLocaleString() : '--';
+      document.getElementById('review-military-date').textContent = sentTime;
+      const statLabel = document.getElementById('review-military-status');
+      statLabel.textContent = selectedExamToCorrect.status === 'corrected' ? '✓ CORRIGIDO' : '⏳ PENDENTE';
+      statLabel.style.color = selectedExamToCorrect.status === 'corrected' ? '#27AE60' : 'var(--accent-yellow)';
+
+      document.getElementById('prova-review-container').style.display = 'block';
+
+      // Load Sheets
+      document.getElementById('prova-eval-lim-sheet').innerHTML = getLimitationsTemplate();
+      document.getElementById('prova-eval-emg-sheet').innerHTML = getEmergenciesTemplate();
+
+      document.getElementById('corrector-select-wrap').style.display = 'block';
+      document.getElementById('provaCorrectorNameSelect').value = selectedExamToCorrect.correctorName || '';
+
+      window.currentExamEvaluations = selectedExamToCorrect.emergenciesCorrection || {};
+
+      // 1. Limitations Correction
+      const limInputs = document.querySelectorAll('#prova-eval-lim-sheet .quiz-input');
+      let limCorrect = 0, limWrong = 0, limEmpty = 0, limTotal = limInputs.length;
+      
+      limInputs.forEach((input, index) => {
+        input.disabled = true;
+        const userVal = (selectedExamToCorrect.limitationsAnswers && selectedExamToCorrect.limitationsAnswers[index]) || '';
+        input.value = userVal;
+        
+        if (!userVal) {
+          limEmpty++;
+          input.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+          input.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        } else {
+          const userSimp = window.simplify(userVal);
+          const answers = (input.dataset.answer || '').split('||').map(a => window.simplify(a));
+          const isCorrect = answers.includes(userSimp);
+          
+          if (isCorrect) limCorrect++; else limWrong++;
+          
+          input.style.backgroundColor = isCorrect ? 'rgba(39, 174, 96, 0.2)' : 'rgba(235, 87, 87, 0.2)';
+          input.style.borderColor = isCorrect ? '#27AE60' : '#EB5757';
+        }
+      });
+
+      const gradePercent = limTotal > 0 ? ((limCorrect / limTotal) * 10).toFixed(1) : '0';
+      document.getElementById('evalLimitationsResultsBox').innerHTML = `
+        <strong>Resultados do Teste de Limitações (Auto-Corrigido):</strong><br>
+        • Acertos: <span style="color:#27AE60; font-weight:900;">${limCorrect}</span><br>
+        • Erros: <span style="color:#EB5757; font-weight:900;">${limWrong}</span><br>
+        • Não respondido: <span>${limEmpty}</span><br>
+        • Grau Final Parcial: <span style="color:var(--accent-yellow); font-style: italic; font-weight:900;">${gradePercent} / 10</span>
+      `;
+
+      // 2. Emergency Evaluation Setup
+      const emgInputs = document.querySelectorAll('#prova-eval-emg-sheet .emg-training-input');
+      emgInputs.forEach((input, index) => {
+        input.disabled = true;
+        const userVal = (selectedExamToCorrect.emergenciesAnswers && selectedExamToCorrect.emergenciesAnswers[index]) || '';
+        input.value = userVal;
+        
+        const parentElem = input.parentElement;
+        if (parentElem) {
+          parentElem.style.flexDirection = 'column';
+          parentElem.style.alignItems = 'stretch';
+          parentElem.style.gap = '8px';
+          
+          const reviewBlock = document.createElement('div');
+          reviewBlock.style.marginTop = '6px';
+          reviewBlock.style.background = 'rgba(0,0,0,0.4)';
+          reviewBlock.style.border = '1px solid rgba(255,255,255,0.1)';
+          reviewBlock.style.padding = '8px';
+          reviewBlock.style.borderRadius = '6px';
+          reviewBlock.style.fontSize = '0.85rem';
+          
+          const gabaritoText = input.dataset.answer || '';
+          
+          const initialCorrectActive = (window.currentExamEvaluations[index] === true);
+          const initialIncorrectActive = (window.currentExamEvaluations[index] === false);
+          
+          reviewBlock.innerHTML = `
+            <div style="margin-bottom: 5px; color: var(--text-dim);">Gabarito Oficial: <strong style="color:var(--accent-yellow);">${gabaritoText}</strong></div>
+            <div style="display: flex; gap: 8px; margin-top: 5px;">
+              <button type="button" class="eval-btn-correct" id="eval-correct-${index}" onclick="window.markEmergencyInput(${index}, true)" style="flex:1; padding: 6px; font-size: 0.75rem; font-weight: 800; border-radius: 4px; border: 1px solid #27AE60; cursor: pointer; color: ${initialCorrectActive ? '#fff' : '#27AE60'}; background: ${initialCorrectActive ? '#27AE60' : 'transparent'};">🟢 CORRETO</button>
+              <button type="button" class="eval-btn-wrong" id="eval-wrong-${index}" onclick="window.markEmergencyInput(${index}, false)" style="flex:1; padding: 6px; font-size: 0.75rem; font-weight: 800; border-radius: 4px; border: 1px solid #EB5757; cursor: pointer; color: ${initialIncorrectActive ? '#fff' : '#EB5757'}; background: ${initialIncorrectActive ? '#EB5757' : 'transparent'};">🔴 INCORRETO</button>
+            </div>
+          `;
+          parentElem.appendChild(reviewBlock);
+        }
+      });
+
+      document.getElementById('corrector-action-bar').style.display = 'block';
+      window.toggleReviewTab('lim');
+    };
+
+    window.toggleReviewTab = function(tab) {
+      const btnLim = document.getElementById('tab-eval-lim');
+      const btnEmg = document.getElementById('tab-eval-emg');
+      
+      if (tab === 'lim') {
+        btnLim.classList.add('blue');
+        btnLim.classList.remove('white');
+        btnEmg.classList.add('white');
+        btnEmg.classList.remove('blue');
+        
+        document.getElementById('prova-eval-lim-sheet').style.display = 'block';
+        document.getElementById('prova-eval-emg-sheet').style.display = 'none';
+      } else {
+        btnEmg.classList.add('blue');
+        btnEmg.classList.remove('white');
+        btnLim.classList.add('white');
+        btnLim.classList.remove('blue');
+        
+        document.getElementById('prova-eval-emg-sheet').style.display = 'block';
+        document.getElementById('prova-eval-lim-sheet').style.display = 'none';
+      }
+    };
+
+    window.markEmergencyInput = function(index, status) {
+      window.currentExamEvaluations[index] = status;
+      
+      const correctBtn = document.getElementById(`eval-correct-${index}`);
+      const wrongBtn = document.getElementById(`eval-wrong-${index}`);
+      
+      if (status === true) {
+        correctBtn.style.background = '#27AE60';
+        correctBtn.style.color = '#fff';
+        wrongBtn.style.background = 'transparent';
+        wrongBtn.style.color = '#EB5757';
+      } else {
+        wrongBtn.style.background = '#EB5757';
+        wrongBtn.style.color = '#fff';
+        correctBtn.style.background = 'transparent';
+        correctBtn.style.color = '#27AE60';
+      }
+    };
+
+    window.finalizarCorrecaoManual = async function() {
+      if (!selectedExamToCorrect) return alert("Nenhuma prova ativa selecionada.");
+
+      const correctorName = document.getElementById('provaCorrectorNameSelect').value;
+      if (!correctorName) {
+        return alert("Selecione seu nome de Corretor/Avaliador oficial.");
+      }
+
+      const emgInputsCount = document.querySelectorAll('#prova-eval-emg-sheet .emg-training-input').length;
+      const evaluatedKeys = Object.keys(window.currentExamEvaluations);
+      
+      if (evaluatedKeys.length < emgInputsCount) {
+        const confirmIncomplete = confirm("Existem campos de emergências não avaliados pelo corretor. Deseja considerá-los incorretos para computar a nota final?");
+        if (!confirmIncomplete) return;
+        
+        for (let i = 0; i < emgInputsCount; i++) {
+          if (window.currentExamEvaluations[i] === undefined) {
+            window.currentExamEvaluations[i] = false;
+          }
+        }
+      }
+
+      try {
+        await setDoc(doc(db, 'exams', selectedExamToCorrect.id), {
+          status: 'corrected',
+          correctorName: correctorName,
+          emergenciesCorrection: window.currentExamEvaluations,
+          correctedAt: serverTimestamp()
+        }, { merge: true });
+
+        alert("Correção finalizada e gravada com sucesso!");
+        window.loadExamsForCorrector();
+      } catch (error) {
+        alert("Erro integrando ao Firebase: " + error.message);
+      }
     };
 
     // Initialize UI on load
@@ -2924,7 +3603,10 @@
             <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-primary); line-height: 1.4;">
               <li>– O nariz do helicóptero irá girar para a esquerda/direita independentemente da velocidade.</li>
               <li>– Em velocidades mais altas, uma guinada para a direita pode se desenvolver mais lentamente, mas pode continuar a aumentar.</li>
-              <li>– Em configurações de alta potência, uma guinada para a esquerda pode se desenvolver mais lentamente, mas pode se tornar m          <div>
+              <li>– Em configurações de alta potência, uma guinada para a esquerda pode se desenvolver mais lentamente, mas pode se tornar mais rápida.</li>
+            </ul>
+          </div>
+          <div>
             <div class="emg-section-label">Ações Imediatas (Memória)</div>
             <div class="emg-hachurado" style="gap: 12px;">
               <div style="font-size: 0.9rem; color: #fff; font-style: italic;">Se durante o voo de cruzeiro uma guinada para a direita se tornar incontrolável:</div>

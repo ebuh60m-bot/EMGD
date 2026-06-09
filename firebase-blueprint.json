@@ -64,6 +64,23 @@
         "value": { "type": "string" }
       },
       "required": ["value"]
+    },
+    "ExamEntry": {
+      "title": "Exam Submission Entry",
+      "description": "An exam submission containing student info, limitation answers, emergency answers, and optional corrector evaluations.",
+      "type": "object",
+      "properties": {
+        "studentName": { "type": "string" },
+        "role": { "type": "string" },
+        "limitationsAnswers": { "type": "object" },
+        "emergenciesAnswers": { "type": "object" },
+        "status": { "type": "string" },
+        "correctorName": { "type": "string" },
+        "emergenciesCorrection": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "correctedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentName", "role", "limitationsAnswers", "emergenciesAnswers", "status", "createdAt"]
     }
   },
   "firestore": {
@@ -78,6 +95,10 @@
     "/config/{id}": {
       "schema": "ConfigEntry",
       "description": "General application configuration."
+    },
+    "/exams/{id}": {
+      "schema": "ExamEntry",
+      "description": "Collection of exam submissions by pilots and mechanics."
     }
   }
 }
