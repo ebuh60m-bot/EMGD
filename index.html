@@ -2518,7 +2518,7 @@
         alert("Prova enviada com absoluto sucesso ao banco oficial!");
         window.resetProvaScreen();
       } catch (error) {
-        alert("Erro de persistência no Firestore: " + error.message);
+        await handleFirestoreError(error, 'create', 'exams');
       }
     };
 
@@ -2562,7 +2562,7 @@
 
       } catch (error) {
         studentSelect.innerHTML = '<option value="">-- ERRO CONECTANDO AO FIREBASE --</option>';
-        console.error(error);
+        await handleFirestoreError(error, 'list', 'exams');
       }
     };
 
@@ -2745,7 +2745,7 @@
         alert("Correção finalizada e gravada com sucesso!");
         window.loadExamsForCorrector();
       } catch (error) {
-        alert("Erro integrando ao Firebase: " + error.message);
+        await handleFirestoreError(error, 'update', 'exams');
       }
     };
 
